@@ -1,3 +1,4 @@
+///|
 using @engine {
   type ColumnDef,
   type DataChunk,
@@ -10,26 +11,26 @@ using @engine {
 }
 
 ///|
-/// Parsed JSONL data is exposed as inferred schema plus vectorized chunks.
-pub struct JsonlScan {
+/// The scan interface is pull-based so execution can consume one chunk at a time.
+pub struct JsonlScanner {
   path : String
   schema : Schema
-  chunks : Array[DataChunk]
+  priv rows : Array[ParsedJsonlRow]
+  mut next_row : Int
 } derive(Eq, Show)
 
 ///|
 priv struct ParsedJsonlRow {
   line_no : Int
   object : Map[String, Json]
-}
+} derive(Eq, Show)
 
 ///|
 /// Full JSONL scan entrypoint used by later planning/execution stages.
-pub fn read_jsonl(path : String) -> JsonlScan raise ScanError {
+pub fn read_jsonl(path : String) -> JsonlScanner raise ScanError {
   let rows = parse_jsonl_rows(path)
   let schema = infer_schema_from_rows(rows)
-  let chunks = materialize_chunks(schema, rows)
-  JsonlScan::{ path, schema, chunks }
+  JsonlScanner::{ path, schema, rows, next_row: 0 }
 }
 
 ///|
@@ -39,15 +40,44 @@ pub fn infer_jsonl_schema(path : String) -> Schema raise ScanError {
 }
 
 ///|
-/// Physical scan output is already chunked for the vectorized engine.
-pub fn scan_jsonl(path : String) -> Array[DataChunk] raise ScanError {
-  read_jsonl(path).chunks
+/// `schema()` is stable across the full scan.
+pub fn JsonlScanner::schema(self : JsonlScanner) -> Schema {
+  self.schema
+}
+
+///|
+/// Chunks are produced lazily so the executor does not need an in-memory chunk array.
+pub fn JsonlScanner::next_chunk(
+  self : JsonlScanner,
+) -> DataChunk? raise ScanError {
+  guard self.next_row < self.rows.length() else { return None }
+  let remaining = self.rows.length() - self.next_row
+  let len = if remaining > fixed_vector_size {
+    fixed_vector_size
+  } else {
+    remaining
+  }
+  let chunk = materialize_chunk(self.schema, self.rows, self.next_row, len)
+  self.next_row += len
+  Some(chunk)
+}
+
+///|
+/// Reset allows repeated scans after schema inference/binding has already happened.
+pub fn JsonlScanner::reset(self : JsonlScanner) -> Unit {
+  self.next_row = 0
+}
+
+///|
+/// `scan_jsonl` is the scanner constructor used by execution code.
+pub fn scan_jsonl(path : String) -> JsonlScanner raise ScanError {
+  read_jsonl(path)
 }
 
 ///|
 fn parse_jsonl_rows(path : String) -> Array[ParsedJsonlRow] raise ScanError {
-  let content = @fs.read_file_to_string(path) catch { err =>
-    raise map_io_error(err)
+  let content = @fs.read_file_to_string(path) catch {
+    err => raise map_io_error(err)
   }
   let rows = []
   let lines = content.split("\n").map(StringView::to_string).collect()
@@ -57,8 +87,8 @@ fn parse_jsonl_rows(path : String) -> Array[ParsedJsonlRow] raise ScanError {
     if line.trim() == "" {
       continue
     }
-    let parsed = @json.parse(line) catch { err =>
-      raise ScanError::JsonParse(line_no, json_parse_message(err))
+    let parsed = @json.parse(line) catch {
+      err => raise ScanError::JsonParse(line_no, json_parse_message(err))
     }
     match parsed {
       Object(object) => rows.push({ line_no, object })
@@ -90,7 +120,7 @@ fn infer_schema_from_rows(rows : Array[ParsedJsonlRow]) -> Schema {
     }
     columns.push(ColumnDef::{ name, data_type, nullable })
   }
-  Schema::{ columns }
+  Schema::{ columns, }
 }
 
 ///|
@@ -140,12 +170,7 @@ fn merge_logical_types(left : LogicalType, right : LogicalType) -> LogicalType {
 ///|
 fn json_number_to_bigint(number : Double, repr : String?) -> Int64? {
   match repr {
-    Some(text) =>
-      try {
-        Some(@strconv.parse_int64(text[:]))
-      } catch {
-        _ => None
-      }
+    Some(text) => Some(@strconv.parse_int64(text[:])) catch { _ => None }
     None =>
       // REVIEW: this fallback is only safe while core/json preserves integral
       // values exactly in `Double`. Large integers can lose precision before we
@@ -160,28 +185,17 @@ fn json_number_to_bigint(number : Double, repr : String?) -> Int64? {
 }
 
 ///|
-fn materialize_chunks(
+fn materialize_chunk(
   schema : Schema,
   rows : Array[ParsedJsonlRow],
-) -> Array[DataChunk] raise ScanError {
-  let chunks = []
-  let total_rows = rows.length()
-  let mut start = 0
-  while start < total_rows {
-    let remaining = total_rows - start
-    let len = if remaining > fixed_vector_size {
-      fixed_vector_size
-    } else {
-      remaining
-    }
-    let columns = []
-    for column in schema.columns {
-      columns.push(build_vector(column, rows, start, len))
-    }
-    chunks.push(DataChunk::{ schema, columns, len })
-    start += len
+  start : Int,
+  len : Int,
+) -> DataChunk raise ScanError {
+  let columns = []
+  for column in schema.columns {
+    columns.push(build_vector(column, rows, start, len))
   }
-  chunks
+  DataChunk::{ schema, columns, len }
 }
 
 ///|

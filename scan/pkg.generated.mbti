@@ -8,9 +8,9 @@ import {
 // Values
 pub fn infer_jsonl_schema(String) -> @engine.Schema raise ScanError
 
-pub fn read_jsonl(String) -> JsonlScan raise ScanError
+pub fn read_jsonl(String) -> JsonlScanner raise ScanError
 
-pub fn scan_jsonl(String) -> Array[@engine.DataChunk] raise ScanError
+pub fn scan_jsonl(String) -> JsonlScanner raise ScanError
 
 // Errors
 pub(all) suberror ScanError {
@@ -22,13 +22,17 @@ pub(all) suberror ScanError {
 pub impl Show for ScanError
 
 // Types and methods
-pub struct JsonlScan {
+pub struct JsonlScanner {
   path : String
   schema : @engine.Schema
-  chunks : Array[@engine.DataChunk]
+  mut next_row : Int
+  // private fields
 }
-pub impl Eq for JsonlScan
-pub impl Show for JsonlScan
+pub fn JsonlScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
+pub fn JsonlScanner::reset(Self) -> Unit
+pub fn JsonlScanner::schema(Self) -> @engine.Schema
+pub impl Eq for JsonlScanner
+pub impl Show for JsonlScanner
 
 // Type aliases
 

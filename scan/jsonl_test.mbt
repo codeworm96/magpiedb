@@ -1,28 +1,24 @@
-using @engine {
-  type LogicalType,
-  type VectorBuffer,
-}
+///|
+using @engine {type LogicalType, type VectorBuffer}
 
 ///|
 test "jsonl infers schema and materializes a columnar chunk" {
   let scan = read_jsonl("fixtures/jsonl/events.jsonl")
 
-  assert_eq(
-    scan.schema.columns,
-    [
-      { name: "active", data_type: LogicalType::Boolean, nullable: false },
-      { name: "id", data_type: LogicalType::BigInt, nullable: false },
-      { name: "meta", data_type: LogicalType::Varchar, nullable: true },
-      { name: "name", data_type: LogicalType::Varchar, nullable: true },
-    ],
-  )
-  assert_eq(scan.chunks.length(), 1)
-  assert_eq(scan.chunks[0].len, 3)
+  assert_eq(scan.schema().columns, [
+    { name: "active", data_type: LogicalType::Boolean, nullable: false },
+    { name: "id", data_type: LogicalType::BigInt, nullable: false },
+    { name: "meta", data_type: LogicalType::Varchar, nullable: true },
+    { name: "name", data_type: LogicalType::Varchar, nullable: true },
+  ])
+  let chunk = scan.next_chunk().unwrap()
+  assert_eq(chunk.len, 3)
+  assert_eq(scan.next_chunk(), None)
 
-  let active = scan.chunks[0].columns[0]
-  let ids = scan.chunks[0].columns[1]
-  let meta = scan.chunks[0].columns[2]
-  let names = scan.chunks[0].columns[3]
+  let active = chunk.columns[0]
+  let ids = chunk.columns[1]
+  let meta = chunk.columns[2]
+  let names = chunk.columns[3]
 
   assert_eq(active.values, VectorBuffer::Bool([true, false, true]))
   assert_eq(active.validity.bits, [true, true, true])
@@ -40,14 +36,25 @@ test "jsonl infers schema and materializes a columnar chunk" {
 ///|
 test "jsonl widens mixed numeric columns to double" {
   let schema = infer_jsonl_schema("fixtures/jsonl/mixed_numeric.jsonl")
-  assert_eq(
-    schema.columns,
-    [{ name: "score", data_type: LogicalType::Double, nullable: false }],
-  )
+  assert_eq(schema.columns, [
+    { name: "score", data_type: LogicalType::Double, nullable: false },
+  ])
 
-  let chunks = scan_jsonl("fixtures/jsonl/mixed_numeric.jsonl")
-  assert_eq(chunks.length(), 1)
-  assert_eq(chunks[0].columns[0].values, VectorBuffer::Double([1.0, 2.5, 3.0]))
+  let scan = scan_jsonl("fixtures/jsonl/mixed_numeric.jsonl")
+  let chunk = scan.next_chunk().unwrap()
+  assert_eq(chunk.columns[0].values, VectorBuffer::Double([1.0, 2.5, 3.0]))
+  assert_eq(scan.next_chunk(), None)
+}
+
+///|
+test "jsonl scanner can reset and re-stream chunks" {
+  let scan = read_jsonl("fixtures/jsonl/events.jsonl")
+  ignore(scan.next_chunk().unwrap())
+  assert_eq(scan.next_chunk(), None)
+
+  scan.reset()
+  let chunk = scan.next_chunk().unwrap()
+  assert_eq(chunk.len, 3)
 }
 
 ///|
