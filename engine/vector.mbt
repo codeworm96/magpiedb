@@ -1,12 +1,15 @@
 ///|
+/// The executor processes chunks in fixed-size vectors from the start.
 pub let fixed_vector_size : Int = 2048
 
 ///|
+/// Nullability is tracked separately from typed buffers to avoid sentinel values.
 pub(all) struct ValidityMask {
   bits : Array[Bool]
 } derive(Eq, Show)
 
 ///|
+/// Typed buffers hold only non-null payload storage for one logical column.
 pub(all) enum VectorBuffer {
   Nulls(Int)
   Bool(Array[Bool])
@@ -16,6 +19,7 @@ pub(all) enum VectorBuffer {
 } derive(Eq, Show)
 
 ///|
+/// A vector is one typed column plus its validity mask.
 pub(all) struct Vector {
   logical_type : LogicalType
   values : VectorBuffer
@@ -23,6 +27,7 @@ pub(all) struct Vector {
 } derive(Eq, Show)
 
 ///|
+/// DataChunk is the internal execution batch: many aligned column vectors, no rows.
 pub(all) struct DataChunk {
   schema : Schema
   columns : Array[Vector]
@@ -79,6 +84,7 @@ pub fn Vector::is_empty(self : Vector) -> Bool {
 }
 
 ///|
+/// Empty vectors still carry a logical type so operators can preserve schemas.
 pub fn empty_vector(logical_type : LogicalType) -> Vector {
   let values = match logical_type {
     Null => VectorBuffer::Nulls(0)
@@ -91,6 +97,7 @@ pub fn empty_vector(logical_type : LogicalType) -> Vector {
 }
 
 ///|
+/// Chunk construction follows schema order so downstream operators can index cheaply.
 pub fn DataChunk::empty(schema : Schema) -> DataChunk {
   let columns = []
   for column in schema.columns {

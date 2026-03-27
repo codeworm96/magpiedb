@@ -1,4 +1,5 @@
 ///|
+/// Root re-exports keep the public API small while execution types live in `engine`.
 pub using @engine {
   type ColumnDef,
   type LogicalType,
@@ -8,6 +9,7 @@ pub using @engine {
 }
 
 ///|
+/// Public error surface shared by parsing, binding, scanning, and execution.
 pub suberror DbError {
   InvalidArgument(String)
   SqlSyntax(String)

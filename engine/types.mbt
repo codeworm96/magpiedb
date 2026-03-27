@@ -1,4 +1,5 @@
 ///|
+/// Scalar logical types shared by planning, scanning, and execution.
 pub(all) enum LogicalType {
   Null
   Boolean
@@ -8,6 +9,7 @@ pub(all) enum LogicalType {
 } derive(Eq, Show)
 
 ///|
+/// Column metadata is stable across chunks and result sets.
 pub(all) struct ColumnDef {
   name : String
   data_type : LogicalType
@@ -15,11 +17,13 @@ pub(all) struct ColumnDef {
 } derive(Eq, Show)
 
 ///|
+/// Schemas describe column order and names; vectors follow this order exactly.
 pub(all) struct Schema {
   columns : Array[ColumnDef]
 } derive(Eq, Show)
 
 ///|
+/// Public scalar value container used at API boundaries.
 pub(all) enum Value {
   Null
   Boolean(Bool)
@@ -29,6 +33,7 @@ pub(all) enum Value {
 } derive(Eq, Show)
 
 ///|
+/// Rows stay as a public convenience type; internal operators should stay columnar.
 pub type Row = Array[Value]
 
 ///|
@@ -56,6 +61,7 @@ pub fn Schema::column_count(self : Schema) -> Int {
 }
 
 ///|
+/// Column names are resolved by exact schema order for deterministic plans/results.
 pub fn Schema::column_index(self : Schema, name : String) -> Int? {
   for index in 0..<self.columns.length() {
     if self.columns[index].name == name {
