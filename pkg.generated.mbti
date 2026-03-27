@@ -1,13 +1,37 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "username/magpiedb"
 
+import {
+  "username/magpiedb/engine",
+}
+
 // Values
 
 // Errors
+pub suberror DbError {
+  InvalidArgument(String)
+  SqlSyntax(String)
+  Bind(String)
+  Scan(String)
+  Io(String)
+  Execute(String)
+  Unsupported(String)
+  Internal(String)
+}
+pub impl Show for DbError
 
 // Types and methods
 
 // Type aliases
+pub using @engine {type ColumnDef}
+
+pub using @engine {type LogicalType}
+
+pub type Row = Array[@engine.Value]
+
+pub using @engine {type Schema}
+
+pub using @engine {type Value}
 
 // Traits
 

@@ -1,3 +1,20 @@
-// Main package file for your library code.
-// Put public APIs and shared helpers here.
-// Keep blocks small and focused for easy refactors.
+///|
+pub using @engine {
+  type ColumnDef,
+  type LogicalType,
+  type Row,
+  type Schema,
+  type Value,
+}
+
+///|
+pub suberror DbError {
+  InvalidArgument(String)
+  SqlSyntax(String)
+  Bind(String)
+  Scan(String)
+  Io(String)
+  Execute(String)
+  Unsupported(String)
+  Internal(String)
+} derive(Show)
