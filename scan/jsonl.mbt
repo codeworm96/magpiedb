@@ -78,6 +78,7 @@ pub fn scan_jsonl(path : String) -> JsonlScanner raise ScanError {
 }
 
 ///|
+/// Parse the JSONL file into object rows for schema inference and MVP chunk materialization.
 fn parse_jsonl_rows(path : String) -> Array[ParsedJsonlRow] raise ScanError {
   let content = @fs.read_file_to_string(path) catch {
     err => raise map_io_error(err)
@@ -102,6 +103,7 @@ fn parse_jsonl_rows(path : String) -> Array[ParsedJsonlRow] raise ScanError {
 }
 
 ///|
+/// Infer a deterministic schema across all observed JSONL object rows.
 fn infer_schema_from_rows(rows : Array[ParsedJsonlRow]) -> Schema {
   let column_names = collect_column_names(rows)
   let columns = []
@@ -127,6 +129,7 @@ fn infer_schema_from_rows(rows : Array[ParsedJsonlRow]) -> Schema {
 }
 
 ///|
+/// Collect column names from all rows and sort them lexically for stable schemas.
 fn collect_column_names(rows : Array[ParsedJsonlRow]) -> Array[String] {
   let seen : Map[String, Bool] = {}
   let names = []
@@ -159,6 +162,7 @@ fn infer_json_logical_type(value : Json) -> LogicalType {
 }
 
 ///|
+/// Merge observed JSON scalar categories into the narrowest supported v1 logical type.
 fn merge_logical_types(left : LogicalType, right : LogicalType) -> LogicalType {
   match (left, right) {
     (LogicalType::Null, other) => other
@@ -188,6 +192,7 @@ fn json_number_to_bigint(number : Double, repr : String?) -> Int64? {
 }
 
 ///|
+/// Convert one row slice into a single columnar `DataChunk`.
 fn materialize_chunk(
   schema : Schema,
   rows : Array[ParsedJsonlRow],
@@ -202,6 +207,7 @@ fn materialize_chunk(
 }
 
 ///|
+/// Dispatch chunk materialization to the typed vector builder for one column.
 fn build_vector(
   column : ColumnDef,
   rows : Array[ParsedJsonlRow],
@@ -225,6 +231,7 @@ fn build_vector(
 }
 
 ///|
+/// Materialize a boolean vector and track nulls through the validity mask.
 fn build_bool_vector(
   column : ColumnDef,
   rows : Array[ParsedJsonlRow],
@@ -263,6 +270,7 @@ fn build_bool_vector(
 }
 
 ///|
+/// Materialize an int64 vector, rejecting non-integral or incompatible JSON numbers.
 fn build_int64_vector(
   column : ColumnDef,
   rows : Array[ParsedJsonlRow],
@@ -306,6 +314,7 @@ fn build_int64_vector(
 }
 
 ///|
+/// Materialize a double vector while keeping nullability separate from payload values.
 fn build_double_vector(
   column : ColumnDef,
   rows : Array[ParsedJsonlRow],
@@ -340,6 +349,7 @@ fn build_double_vector(
 }
 
 ///|
+/// Materialize a varchar vector, stringifying nested JSON values for v1 compatibility.
 fn build_varchar_vector(
   column : ColumnDef,
   rows : Array[ParsedJsonlRow],
@@ -368,6 +378,7 @@ fn build_varchar_vector(
 }
 
 ///|
+/// Convert a JSON scalar or nested value into the scanner's v1 `VARCHAR` representation.
 fn json_value_to_varchar(value : Json) -> String {
   match value {
     String(text) => text
