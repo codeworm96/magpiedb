@@ -1,0 +1,7 @@
+// import {
+//   "username/magpiedb" @lib,
+// }
+
+options(
+  "is-main": true,
+)
