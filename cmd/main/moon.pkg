@@ -1,6 +1,7 @@
-// import {
-//   "username/magpiedb" @lib,
-// }
+import {
+  "moonbitlang/core/env",
+  "username/magpiedb" @lib,
+}
 
 options(
   "is-main": true,

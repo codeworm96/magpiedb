@@ -21,6 +21,27 @@ pub suberror DbError {
 pub impl Show for DbError
 
 // Types and methods
+pub struct Connection {
+}
+pub fn Connection::query(Self, String) -> Result[ResultSet, DbError]
+pub impl Eq for Connection
+pub impl Show for Connection
+
+pub struct Database {
+}
+pub fn Database::connect(Self) -> Connection
+pub fn Database::new() -> Self
+pub impl Eq for Database
+pub impl Show for Database
+
+pub struct ResultSet {
+  schema : @engine.Schema
+  // private fields
+}
+pub fn ResultSet::next(Self) -> Array[@engine.Value]?
+pub fn ResultSet::schema(Self) -> @engine.Schema
+pub impl Eq for ResultSet
+pub impl Show for ResultSet
 
 // Type aliases
 pub using @engine {type ColumnDef}
