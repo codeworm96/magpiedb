@@ -1,0 +1,69 @@
+using @engine {
+  type LogicalType,
+  type VectorBuffer,
+}
+
+///|
+test "jsonl infers schema and materializes a columnar chunk" {
+  let scan = read_jsonl("fixtures/jsonl/events.jsonl")
+
+  assert_eq(
+    scan.schema.columns,
+    [
+      { name: "active", data_type: LogicalType::Boolean, nullable: false },
+      { name: "id", data_type: LogicalType::BigInt, nullable: false },
+      { name: "meta", data_type: LogicalType::Varchar, nullable: true },
+      { name: "name", data_type: LogicalType::Varchar, nullable: true },
+    ],
+  )
+  assert_eq(scan.chunks.length(), 1)
+  assert_eq(scan.chunks[0].len, 3)
+
+  let active = scan.chunks[0].columns[0]
+  let ids = scan.chunks[0].columns[1]
+  let meta = scan.chunks[0].columns[2]
+  let names = scan.chunks[0].columns[3]
+
+  assert_eq(active.values, VectorBuffer::Bool([true, false, true]))
+  assert_eq(active.validity.bits, [true, true, true])
+  assert_eq(ids.values, VectorBuffer::Int64([1L, 2L, 3L]))
+  assert_eq(ids.validity.bits, [true, true, true])
+  assert_eq(
+    meta.values,
+    VectorBuffer::Varchar(["{\"city\":\"A\"}", "", "[1,2]"]),
+  )
+  assert_eq(meta.validity.bits, [true, false, true])
+  assert_eq(names.values, VectorBuffer::Varchar(["Ada", "Bob", ""]))
+  assert_eq(names.validity.bits, [true, true, false])
+}
+
+///|
+test "jsonl widens mixed numeric columns to double" {
+  let schema = infer_jsonl_schema("fixtures/jsonl/mixed_numeric.jsonl")
+  assert_eq(
+    schema.columns,
+    [{ name: "score", data_type: LogicalType::Double, nullable: false }],
+  )
+
+  let chunks = scan_jsonl("fixtures/jsonl/mixed_numeric.jsonl")
+  assert_eq(chunks.length(), 1)
+  assert_eq(chunks[0].columns[0].values, VectorBuffer::Double([1.0, 2.5, 3.0]))
+}
+
+///|
+test "jsonl reports malformed input with line numbers" {
+  let result = try? read_jsonl("fixtures/jsonl/malformed.jsonl")
+  match result {
+    Err(JsonParse(line_no, _)) => assert_eq(line_no, 2)
+    _ => fail("expected a JsonParse error on line 2")
+  }
+}
+
+///|
+test "jsonl rejects non-object rows" {
+  let result = try? read_jsonl("fixtures/jsonl/not_object.jsonl")
+  match result {
+    Err(JsonRootNotObject(line_no)) => assert_eq(line_no, 1)
+    _ => fail("expected JsonRootNotObject on line 1")
+  }
+}

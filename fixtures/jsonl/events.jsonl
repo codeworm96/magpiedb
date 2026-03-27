@@ -1,0 +1,3 @@
+{"id":1,"active":true,"name":"Ada","meta":{"city":"A"}}
+{"id":2,"active":false,"name":"Bob"}
+{"id":3,"active":true,"meta":[1,2]}

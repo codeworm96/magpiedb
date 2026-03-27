@@ -1,0 +1,36 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "username/magpiedb/scan"
+
+import {
+  "username/magpiedb/engine",
+}
+
+// Values
+pub fn infer_jsonl_schema(String) -> @engine.Schema raise ScanError
+
+pub fn read_jsonl(String) -> JsonlScan raise ScanError
+
+pub fn scan_jsonl(String) -> Array[@engine.DataChunk] raise ScanError
+
+// Errors
+pub(all) suberror ScanError {
+  Io(String)
+  JsonParse(Int, String)
+  JsonRootNotObject(Int)
+  TypeMismatch(String, Int, String)
+}
+pub impl Show for ScanError
+
+// Types and methods
+pub struct JsonlScan {
+  path : String
+  schema : @engine.Schema
+  chunks : Array[@engine.DataChunk]
+}
+pub impl Eq for JsonlScan
+pub impl Show for JsonlScan
+
+// Type aliases
+
+// Traits
+
