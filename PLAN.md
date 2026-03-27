@@ -19,13 +19,14 @@
 ## Implementation Changes
 
 - Split the module into packages for `sql`, `scan`, `engine`, and the root public API. Keep `cmd/main` as a thin manual query runner only.
-- Implement the SQL front end as owned code: hand-written tokenizer plus recursive-descent/Pratt parser for the supported subset. Do not depend on `moonbitlang/parser`. Do not use `moonyacc` in v1.
+- Implement the SQL front end with `moonlex` and `moonyacc` for the milestone-1 subset, while keeping the owned AST, binder, and planner interfaces local to this repo.
 - Add binder and planner stages that resolve names against exactly one scan source, check types, apply coercions, and lower to logical nodes `ScanCsv`, `ScanJsonl`, `Projection`, `Filter`, `Aggregate`, `Sort`, and `Limit`.
 - Implement a physical executor over `DataChunk`s with a fixed vector size of `2048`. Every operator consumes and produces typed column vectors plus null bitmaps.
 - Represent columns as typed vectors for `Bool`, `Int64`, `Double`, and `String`, with nullable wrappers handled separately through validity masks.
 - Make scans two-phase in v1: infer schema first, then execute. CSV supports UTF-8, comma delimiter, quoted fields, and header row defaulting to true. JSONL supports one UTF-8 object per line.
 - Build JSONL support directly on `moonbitlang/core/json` plus `moonbitlang/x/fs`.
 - Treat `xunyoyo/NyaCSV` as reference material or a short-lived spike dependency only; the planned production scanner remains owned in-repo so it can support chunked OLAP ingestion and future pushdown work.
+- Add an explicit licensing checkpoint around generated parser artifacts: confirm how `moonlex` and `moonyacc` license their generated output and only commit generated files if that distribution model is acceptable for this Apache-licensed repo.
 - Convert empty CSV fields and missing JSONL keys to `NULL`. Nested JSON values are serialized to `VARCHAR` instead of introducing nested types yet.
 - Add only lightweight optimization in this phase: constant folding, projection pruning, and filter pushdown into file scans.
 - Do not introduce a persistent catalog. Built-in table functions are the only relation sources in v1.
@@ -52,6 +53,7 @@
 - Add fixture directories for CSV and JSONL test data and decide one stable location for blackbox test inputs.
 - Define a minimal dependency direction: root depends on `sql`, `scan`, and `engine`; `engine` depends on `scan`; `scan` and `sql` stay independent.
 - Add `moonbitlang/x/fs` and `moonbitlang/core/json` as the only planned external scan dependencies in milestone 1.
+- Add `moonlex` and `moonyacc` to the SQL package toolchain plan and keep generated lexer/parser files isolated under the `sql` package.
 
 ### Task 2: Core Shared Types
 
@@ -62,11 +64,13 @@
 
 ### Task 3: SQL Front End
 
-- Implement a tokenizer for identifiers, keywords, strings, numbers, punctuation, and operators.
-- Implement a recursive-descent or Pratt parser for the milestone-1 subset:
+- Implement the SQL lexer with `moonlex` for identifiers, keywords, strings, numbers, punctuation, and operators.
+- Implement the SQL parser with `moonyacc` for the milestone-1 subset:
   `SELECT`, aliases, literals, column references, arithmetic, comparisons, boolean operators, parentheses, `CAST`, `IS NULL`, `FROM`, and `WHERE`.
 - Define an owned AST with separate nodes for query, select item, table function call, and expressions.
 - Standardize parser diagnostics early so later milestones reuse the same error shape and location reporting.
+- Keep the grammar intentionally narrow so unsupported syntax fails cleanly instead of forcing early grammar expansion.
+- Decide whether generated lexer/parser artifacts are checked into git or regenerated in build/test flows only after the licensing checkpoint is complete.
 
 ### Task 4: File Scan Interfaces
 
@@ -144,5 +148,6 @@
 - Native execution is the only initial target.
 - Input is external `.csv` and `.jsonl`; the engine does not persist output or maintain local tables in this phase.
 - Columnar plus vectorized execution is a hard architectural requirement from day one, even though SQL scope is intentionally narrow at first.
-- Parser-generator investigation result: `moonbitlang/parser` is unrelated; the relevant official projects are `moonlex` and `moonyacc`. `moonlex` can be evaluated later for lexer generation, but v1 should not depend on `moonyacc` because of licensing and tooling risk.
+- Parser-generator investigation result: `moonbitlang/parser` is unrelated; the relevant official projects are `moonlex` and `moonyacc`, and this plan now assumes both will be used for milestone 1.
+- Licensing caveat: `moonyacc`'s GPLv2 licensing creates redistribution risk for an Apache-licensed project if generated output contains GPL-covered code. The plan assumes the project will still proceed with `moonlex` and `moonyacc`, but will add a checkpoint before committing or shipping generated artifacts.
 - Package investigation result: `xunyoyo/NyaCSV` exists and is worth reviewing for CSV behavior, but the plan assumes an owned CSV scanner for chunked ingestion. No dedicated JSONL package is assumed; JSONL support is built directly on `moonbitlang/core/json` and `moonbitlang/x/fs`.
