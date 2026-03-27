@@ -28,6 +28,9 @@ priv struct ParsedJsonlRow {
 ///|
 /// Full JSONL scan entrypoint used by later planning/execution stages.
 pub fn read_jsonl(path : String) -> JsonlScanner raise ScanError {
+  // TODO(MVP follow-up): keep this pull-based interface, but replace the current
+  // full-file/full-row buffering with a true streaming implementation so large
+  // JSONL files do not need to fit in memory.
   let rows = parse_jsonl_rows(path)
   let schema = infer_schema_from_rows(rows)
   JsonlScanner::{ path, schema, rows, next_row: 0 }
