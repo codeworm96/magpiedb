@@ -1,6 +1,13 @@
 {
   "name": "username/magpiedb",
   "version": "0.1.0",
+  "deps": {
+    "moonbitlang/ulex-runtime": "0.4.3"
+  },
+  "bin-deps": {
+    "moonbitlang/ulex": "0.3.27",
+    "moonbitlang/yacc": "0.7.12"
+  },
   "readme": "README.mbt.md",
   "repository": "",
   "license": "Apache-2.0",

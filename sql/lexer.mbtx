@@ -1,0 +1,139 @@
+{
+using @lexbuf { type StringLexbuf }
+
+priv suberror EndOfInput
+}
+
+regex whitespace = [' ' '\t' '\n' '\r'];
+regex digit = ['0'-'9'];
+regex ident_start = ['A'-'Z' 'a'-'z' '_'];
+regex ident_continue = ['A'-'Z' 'a'-'z' '_' '0'-'9'];
+regex integer = digit+;
+regex exponent = ['e' 'E'] ['+' '-']? digit+;
+regex number = digit+ ( "." digit+ )? exponent?;
+regex sq_char = [^'\'' '\n' '\r'];
+
+rule lex_token(lexbuf : StringLexbuf) -> (Token, Int, Int) raise {
+  parse {
+    eof => { raise EndOfInput }
+    whitespace+ => { lex_token(lexbuf) }
+    "'" (sq_char | "''")* "'" as text => { make_string_token(text, $startpos, $endpos) }
+    "'" (sq_char | "''")* => { raise UnterminatedString($startpos) }
+    "<=" => { (LTE, $startpos, $endpos) }
+    ">=" => { (GTE, $startpos, $endpos) }
+    "<>" => { (NEQ, $startpos, $endpos) }
+    "!=" => { (NEQ, $startpos, $endpos) }
+    number as text => { make_number_token(text, $startpos, $endpos) }
+    ident_start ident_continue* as ident => { make_ident_or_keyword(ident, $startpos, $endpos) }
+    "(" => { (LPAREN, $startpos, $endpos) }
+    ")" => { (RPAREN, $startpos, $endpos) }
+    "," => { (COMMA, $startpos, $endpos) }
+    "." => { (DOT, $startpos, $endpos) }
+    "+" => { (PLUS, $startpos, $endpos) }
+    "-" => { (MINUS, $startpos, $endpos) }
+    "*" => { (STAR, $startpos, $endpos) }
+    "/" => { (SLASH, $startpos, $endpos) }
+    ";" => { (SEMICOLON, $startpos, $endpos) }
+    "=" => { (EQ, $startpos, $endpos) }
+    "<" => { (LT, $startpos, $endpos) }
+    ">" => { (GT, $startpos, $endpos) }
+    _ as c => { raise UnrecognizedChar($startpos, c) }
+  }
+}
+
+{
+fn make_ident_or_keyword(
+  text : String,
+  start : Int,
+  end_ : Int,
+) -> (Token, Int, Int) {
+  let upper = text.to_upper()
+  let token = match upper {
+    "SELECT" => SELECT
+    "FROM" => FROM
+    "WHERE" => WHERE
+    "AS" => AS
+    "CAST" => CAST
+    "IS" => IS
+    "NULL" => NULL
+    "NOT" => NOT
+    "AND" => AND
+    "OR" => OR
+    "TRUE" => TRUE
+    "FALSE" => FALSE
+    "BOOLEAN" => BOOLEAN_T
+    "BIGINT" => BIGINT_T
+    "DOUBLE" => DOUBLE_T
+    "VARCHAR" => VARCHAR_T
+    _ => IDENT(text)
+  }
+  (token, start, end_)
+}
+
+///|
+fn make_number_token(
+  text : String,
+  start : Int,
+  end_ : Int,
+) -> (Token, Int, Int) {
+  let token = if is_double_literal(text) {
+    DOUBLE_LITERAL(text)
+  } else {
+    INTEGER_LITERAL(text)
+  }
+  (token, start, end_)
+}
+
+///|
+fn is_double_literal(text : String) -> Bool {
+  text.contains(".") || text.contains("e") || text.contains("E")
+}
+
+///|
+fn make_string_token(
+  raw : String,
+  start : Int,
+  end_ : Int,
+) -> (Token, Int, Int) {
+  (STRING_LITERAL(decode_sql_string(raw)), start, end_)
+}
+
+///|
+fn decode_sql_string(raw : String) -> String {
+  if raw.length() < 2 {
+    return ""
+  }
+  let chars = []
+  let mut index = 1
+  let stop = raw.length() - 1
+  while index < stop {
+    let char = raw.get_char(index).unwrap()
+    if char == '\'' &&
+        index + 1 < stop &&
+        raw.get_char(index + 1) == Some('\'') {
+      chars.push('\'')
+      index += 2
+    } else {
+      chars.push(char)
+      index += 1
+    }
+  }
+  String::from_array(chars)
+}
+
+///|
+pub fn tokenize(input : String) -> Array[(Token, Int, Int)] raise LexError {
+  let lexbuf = StringLexbuf::from_string(input)
+  let tokens = []
+  for {
+    let token = lex_token(lexbuf) catch {
+      EndOfInput => break
+      UnrecognizedChar(_, _) as err => raise err
+      UnterminatedString(_) as err => raise err
+      _ => panic()
+    }
+    tokens.push(token)
+  }
+  tokens
+}
+}

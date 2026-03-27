@@ -1,0 +1,231 @@
+%derive<Show> Token
+%derive<Show> ParseError
+%position<Int>
+%start query
+
+%token<String> IDENT
+%token<String> STRING_LITERAL
+%token<String> INTEGER_LITERAL
+%token<String> DOUBLE_LITERAL
+%token SELECT     "SELECT"
+%token FROM       "FROM"
+%token WHERE      "WHERE"
+%token AS         "AS"
+%token CAST       "CAST"
+%token IS         "IS"
+%token NULL       "NULL"
+%token NOT        "NOT"
+%token AND        "AND"
+%token OR         "OR"
+%token TRUE       "TRUE"
+%token FALSE      "FALSE"
+%token BOOLEAN_T  "BOOLEAN"
+%token BIGINT_T   "BIGINT"
+%token DOUBLE_T   "DOUBLE"
+%token VARCHAR_T  "VARCHAR"
+%token LPAREN     "("
+%token RPAREN     ")"
+%token COMMA      ","
+%token DOT        "."
+%token PLUS       "+"
+%token MINUS      "-"
+%token STAR       "*"
+%token SLASH      "/"
+%token EQ         "="
+%token NEQ        "!="
+%token LT         "<"
+%token LTE        "<="
+%token GT         ">"
+%token GTE        ">="
+%token SEMICOLON  ";"
+
+%type<Query> query
+%type<Unit> opt_semicolon
+%type<Array[SelectItem]> select_list
+%type<SelectItem> select_item
+%type<String?> opt_alias
+%type<TableFunction> table_function
+%type<Array[Expr]> argument_list
+%type<Expr?> opt_where
+%type<Expr> expr
+%type<Expr> or_expr
+%type<Expr> and_expr
+%type<Expr> not_expr
+%type<Expr> comparison_expr
+%type<Expr> additive_expr
+%type<Expr> multiplicative_expr
+%type<Expr> unary_expr
+%type<Expr> primary_expr
+%type<Array[String]> identifier_path
+%type<TypeName> type_name
+
+%%
+
+query
+  : "SELECT" select_list "FROM" table_function opt_where opt_semicolon
+      { make_query($2, $4, $5) }
+  ;
+
+opt_semicolon
+  :
+      { () }
+  | ";"
+      { () }
+  ;
+
+select_list
+  : select_item
+      { [$1] }
+  | select_list "," select_item
+      { push_select_item($1, $3) }
+  ;
+
+select_item
+  : expr opt_alias
+      { make_select_item($1, $2) }
+  ;
+
+opt_alias
+  :
+      { None }
+  | "AS" IDENT
+      { Some($2) }
+  | IDENT
+      { Some($1) }
+  ;
+
+table_function
+  : IDENT "(" ")"
+      { make_table_function($1, []) }
+  | IDENT "(" argument_list ")"
+      { make_table_function($1, $3) }
+  ;
+
+argument_list
+  : expr
+      { [$1] }
+  | argument_list "," expr
+      { push_expr($1, $3) }
+  ;
+
+opt_where
+  :
+      { None }
+  | "WHERE" expr
+      { Some($2) }
+  ;
+
+expr
+  : or_expr
+      { $1 }
+  ;
+
+or_expr
+  : and_expr
+      { $1 }
+  | or_expr "OR" and_expr
+      { Expr::Binary(BinaryOp::Or, $1, $3) }
+  ;
+
+and_expr
+  : not_expr
+      { $1 }
+  | and_expr "AND" not_expr
+      { Expr::Binary(BinaryOp::And, $1, $3) }
+  ;
+
+not_expr
+  : comparison_expr
+      { $1 }
+  | "NOT" not_expr
+      { Expr::Unary(UnaryOp::Not, $2) }
+  ;
+
+comparison_expr
+  : additive_expr
+      { $1 }
+  | additive_expr "=" additive_expr
+      { Expr::Binary(BinaryOp::Equal, $1, $3) }
+  | additive_expr "!=" additive_expr
+      { Expr::Binary(BinaryOp::NotEqual, $1, $3) }
+  | additive_expr "<" additive_expr
+      { Expr::Binary(BinaryOp::LessThan, $1, $3) }
+  | additive_expr "<=" additive_expr
+      { Expr::Binary(BinaryOp::LessThanOrEqual, $1, $3) }
+  | additive_expr ">" additive_expr
+      { Expr::Binary(BinaryOp::GreaterThan, $1, $3) }
+  | additive_expr ">=" additive_expr
+      { Expr::Binary(BinaryOp::GreaterThanOrEqual, $1, $3) }
+  | additive_expr "IS" "NULL"
+      { Expr::IsNull($1) }
+  | additive_expr "IS" "NOT" "NULL"
+      { Expr::IsNotNull($1) }
+  ;
+
+additive_expr
+  : multiplicative_expr
+      { $1 }
+  | additive_expr "+" multiplicative_expr
+      { Expr::Binary(BinaryOp::Add, $1, $3) }
+  | additive_expr "-" multiplicative_expr
+      { Expr::Binary(BinaryOp::Subtract, $1, $3) }
+  ;
+
+multiplicative_expr
+  : unary_expr
+      { $1 }
+  | multiplicative_expr "*" unary_expr
+      { Expr::Binary(BinaryOp::Multiply, $1, $3) }
+  | multiplicative_expr "/" unary_expr
+      { Expr::Binary(BinaryOp::Divide, $1, $3) }
+  ;
+
+unary_expr
+  : primary_expr
+      { $1 }
+  | "+" unary_expr
+      { Expr::Unary(UnaryOp::Plus, $2) }
+  | "-" unary_expr
+      { Expr::Unary(UnaryOp::Minus, $2) }
+  ;
+
+primary_expr
+  : identifier_path
+      { Expr::ColumnRef($1) }
+  | STRING_LITERAL
+      { Expr::StringLiteral($1) }
+  | INTEGER_LITERAL
+      { Expr::IntegerLiteral($1) }
+  | DOUBLE_LITERAL
+      { Expr::DoubleLiteral($1) }
+  | "TRUE"
+      { Expr::BooleanLiteral(true) }
+  | "FALSE"
+      { Expr::BooleanLiteral(false) }
+  | "NULL"
+      { Expr::NullLiteral }
+  | "(" expr ")"
+      { $2 }
+  | "CAST" "(" expr "AS" type_name ")"
+      { Expr::Cast($3, $5) }
+  ;
+
+identifier_path
+  : IDENT
+      { [$1] }
+  | identifier_path "." IDENT
+      { push_string($1, $3) }
+  ;
+
+type_name
+  : "NULL"
+      { TypeName::Null }
+  | "BOOLEAN"
+      { TypeName::Boolean }
+  | "BIGINT"
+      { TypeName::BigInt }
+  | "DOUBLE"
+      { TypeName::Double }
+  | "VARCHAR"
+      { TypeName::Varchar }
+  ;

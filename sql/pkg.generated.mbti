@@ -1,0 +1,204 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "username/magpiedb/sql"
+
+// Values
+pub fn parse_sql(String) -> Result[Query, SqlSyntaxError]
+
+pub fn query(Array[(Token, Int, Int)], initial_pos? : Int) -> Query raise ParseError
+
+pub fn span_from_offsets(String, Int, Int) -> Span
+
+pub fn tokenize(String) -> Array[(Token, Int, Int)] raise LexError
+
+// Errors
+pub suberror LexError {
+  UnterminatedString(Int)
+  UnrecognizedChar(Int, Char)
+}
+pub impl Show for LexError
+
+pub suberror ParseError {
+  UnexpectedToken(Token, (Int, Int), Array[TokenKind])
+  UnexpectedEndOfInput(Int, Array[TokenKind])
+}
+pub impl Show for ParseError
+
+pub suberror SqlSyntaxError {
+  Lex(LexError)
+  Parse(ParseError)
+}
+pub fn SqlSyntaxError::span(Self, String) -> Span
+pub impl Show for SqlSyntaxError
+
+// Types and methods
+pub(all) enum BinaryOp {
+  Add
+  Subtract
+  Multiply
+  Divide
+  Equal
+  NotEqual
+  LessThan
+  LessThanOrEqual
+  GreaterThan
+  GreaterThanOrEqual
+  And
+  Or
+}
+pub impl Eq for BinaryOp
+pub impl Show for BinaryOp
+
+pub(all) enum Expr {
+  ColumnRef(Array[String])
+  StringLiteral(String)
+  IntegerLiteral(String)
+  DoubleLiteral(String)
+  BooleanLiteral(Bool)
+  NullLiteral
+  Unary(UnaryOp, Expr)
+  Binary(BinaryOp, Expr, Expr)
+  IsNull(Expr)
+  IsNotNull(Expr)
+  Cast(Expr, TypeName)
+}
+pub impl Eq for Expr
+pub impl Show for Expr
+
+pub struct Position {
+  offset : Int
+  line : Int
+  column : Int
+}
+pub impl Eq for Position
+pub impl Show for Position
+
+pub struct Query {
+  select_items : Array[SelectItem]
+  from : TableFunction
+  where_clause : Expr?
+}
+pub impl Eq for Query
+pub impl Show for Query
+
+pub struct SelectItem {
+  expr : Expr
+  output_name : String?
+}
+pub impl Eq for SelectItem
+pub impl Show for SelectItem
+
+pub struct Span {
+  start : Position
+  end_ : Position
+}
+pub impl Eq for Span
+pub impl Show for Span
+
+pub struct TableFunction {
+  name : String
+  arguments : Array[Expr]
+}
+pub impl Eq for TableFunction
+pub impl Show for TableFunction
+
+pub(all) enum Token {
+  IDENT(String)
+  STRING_LITERAL(String)
+  INTEGER_LITERAL(String)
+  DOUBLE_LITERAL(String)
+  SELECT
+  FROM
+  WHERE
+  AS
+  CAST
+  IS
+  NULL
+  NOT
+  AND
+  OR
+  TRUE
+  FALSE
+  BOOLEAN_T
+  BIGINT_T
+  DOUBLE_T
+  VARCHAR_T
+  LPAREN
+  RPAREN
+  COMMA
+  DOT
+  PLUS
+  MINUS
+  STAR
+  SLASH
+  EQ
+  NEQ
+  LT
+  LTE
+  GT
+  GTE
+  SEMICOLON
+}
+pub fn Token::kind(Self) -> TokenKind
+pub impl Show for Token
+
+pub(all) enum TokenKind {
+  TK_IDENT
+  TK_STRING_LITERAL
+  TK_INTEGER_LITERAL
+  TK_DOUBLE_LITERAL
+  TK_SELECT
+  TK_FROM
+  TK_WHERE
+  TK_AS
+  TK_CAST
+  TK_IS
+  TK_NULL
+  TK_NOT
+  TK_AND
+  TK_OR
+  TK_TRUE
+  TK_FALSE
+  TK_BOOLEAN_T
+  TK_BIGINT_T
+  TK_DOUBLE_T
+  TK_VARCHAR_T
+  TK_LPAREN
+  TK_RPAREN
+  TK_COMMA
+  TK_DOT
+  TK_PLUS
+  TK_MINUS
+  TK_STAR
+  TK_SLASH
+  TK_EQ
+  TK_NEQ
+  TK_LT
+  TK_LTE
+  TK_GT
+  TK_GTE
+  TK_SEMICOLON
+}
+pub impl Show for TokenKind
+
+pub(all) enum TypeName {
+  Null
+  Boolean
+  BigInt
+  Double
+  Varchar
+}
+pub impl Eq for TypeName
+pub impl Show for TypeName
+
+pub(all) enum UnaryOp {
+  Plus
+  Minus
+  Not
+}
+pub impl Eq for UnaryOp
+pub impl Show for UnaryOp
+
+// Type aliases
+
+// Traits
+
