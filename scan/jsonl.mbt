@@ -147,6 +147,10 @@ fn json_number_to_bigint(number : Double, repr : String?) -> Int64? {
         _ => None
       }
     None =>
+      // REVIEW: this fallback is only safe while core/json preserves integral
+      // values exactly in `Double`. Large integers can lose precision before we
+      // reach this conversion, so later work should prefer original numeric text
+      // or add explicit checked range/precision handling here.
       if number.trunc() == number {
         Some(number.to_int64())
       } else {
