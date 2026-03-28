@@ -1,8 +1,12 @@
 import {
+  "moonbitlang/async",
   "moonbitlang/core/env",
   "username/magpiedb" @lib,
+  "sennenki/pretty_prompt" @pp,
+  "sennenki/pretty_prompt/system" @ppsys,
 }
 
 options(
   "is-main": true,
+  targets: { "main.mbt": [ "native" ] },
 )
