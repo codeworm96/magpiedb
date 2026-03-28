@@ -31,7 +31,10 @@ pub fn Connection::query(
   let parsed = @sql.parse_sql(sql)
   match parsed {
     Ok(query) =>
-      Ok(make_result_set(@execute.execute_query(query))) catch {
+      try {
+        let plan = @execute.plan_query(query)
+        Ok(make_result_set(@execute.execute_plan(plan)))
+      } catch {
         err => Err(map_execute_error(err))
       }
     Err(err) => Err(DbError::SqlSyntax(err.to_string()))

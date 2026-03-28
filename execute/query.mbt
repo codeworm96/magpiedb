@@ -15,324 +15,160 @@ pub suberror ExecuteError {
 } derive(Show)
 
 ///|
-priv struct JsonlSource {
-  path : String
+pub fn execute_query(query : @sql.Query) -> QueryOutput raise ExecuteError {
+  execute_plan(plan_query(query))
 }
 
 ///|
-pub fn execute_query(query : @sql.Query) -> QueryOutput raise ExecuteError {
-  let source = bind_jsonl_source(query.from)
-  let scanner = @scan.read_jsonl(source.path) catch {
-    err => raise map_scan_error(err)
-  }
-  validate_query(query, scanner.schema())
-  let output_schema = project_schema(query, scanner.schema())
+pub fn execute_plan(plan : QueryPlan) -> QueryOutput raise ExecuteError {
+  let scan = find_scan_source(plan)
+  let scanner = open_scan_source(scan)
   let rows = []
   while true {
     let next_chunk = scanner.next_chunk() catch {
       err => raise map_scan_error(err)
     }
     match next_chunk {
-      Some(chunk) => append_projected_rows(rows, query, chunk)
+      Some(chunk) => append_rows(rows, plan, chunk)
       None => break
     }
   }
-  QueryOutput::{ schema: output_schema, rows }
+  QueryOutput::{ schema: query_plan_schema(plan), rows }
 }
 
 ///|
-fn bind_jsonl_source(
-  from : @sql.TableFunction,
-) -> JsonlSource raise ExecuteError {
-  guard from.name == "read_jsonl" else {
-    raise ExecuteError::Unsupported(
-      "only read_jsonl(path) is supported in the current MVP",
-    )
-  }
-  guard from.arguments.length() == 1 else {
-    raise ExecuteError::InvalidArgument(
-      "read_jsonl requires exactly one argument",
-    )
-  }
-  match from.arguments[0] {
-    @sql.Expr::StringLiteral(path) => JsonlSource::{ path, }
-    _ =>
-      raise ExecuteError::InvalidArgument(
-        "read_jsonl path must be a string literal",
-      )
+fn find_scan_source(plan : QueryPlan) -> ScanSource {
+  match plan {
+    Scan(scan_plan) => scan_plan.source
+    Filter(filter_plan) => find_scan_source(filter_plan.input)
+    Projection(projection_plan) => find_scan_source(projection_plan.input)
   }
 }
 
 ///|
-fn validate_query(
-  query : @sql.Query,
-  schema : @engine.Schema,
-) -> Unit raise ExecuteError {
-  for item in query.select_items {
-    ignore(infer_expr_type(item.expr, schema))
-  }
-  match query.where_clause {
-    Some(expr) =>
-      match infer_expr_type(expr, schema) {
-        @engine.LogicalType::Boolean => ()
-        @engine.LogicalType::Null => ()
-        _ => raise ExecuteError::Bind("WHERE clause must evaluate to BOOLEAN")
+fn open_scan_source(
+  source : ScanSource,
+) -> @scan.JsonlScanner raise ExecuteError {
+  match source {
+    Jsonl(scan) =>
+      @scan.read_jsonl(scan.path) catch {
+        err => raise map_scan_error(err)
       }
-    None => ()
   }
 }
 
 ///|
-fn project_schema(
-  query : @sql.Query,
-  input : @engine.Schema,
-) -> @engine.Schema raise ExecuteError {
-  let columns = []
-  for index in 0..<query.select_items.length() {
-    let item = query.select_items[index]
-    let data_type = infer_expr_type(item.expr, input)
-    let name = match item.output_name {
-      Some(output_name) => output_name
-      None => default_output_name(item.expr, index)
-    }
-    columns.push(@engine.ColumnDef::{
-      name,
-      data_type,
-      nullable: expr_can_be_null(item.expr, input),
-    })
-  }
-  @engine.Schema::{ columns, }
-}
-
-///|
-fn append_projected_rows(
+fn append_rows(
   rows : Array[@engine.Row],
-  query : @sql.Query,
+  plan : QueryPlan,
   chunk : @engine.DataChunk,
 ) -> Unit raise ExecuteError {
   for row_index in 0..<chunk.len {
-    if row_matches_where(query.where_clause, chunk, row_index) {
-      let row = []
-      for item in query.select_items {
-        row.push(eval_expr(item.expr, chunk, row_index))
-      }
-      rows.push(row)
-    }
+    append_row_if_visible(rows, plan, chunk, row_index)
   }
 }
 
 ///|
-fn row_matches_where(
-  where_clause : @sql.Expr?,
+fn append_row_if_visible(
+  rows : Array[@engine.Row],
+  plan : QueryPlan,
+  chunk : @engine.DataChunk,
+  row_index : Int,
+) -> Unit raise ExecuteError {
+  match plan {
+    Scan(_) => rows.push([])
+    Filter(filter_plan) =>
+      if row_matches_filter(filter_plan.predicate, chunk, row_index) {
+        append_row_if_visible(rows, filter_plan.input, chunk, row_index)
+      }
+    Projection(projection_plan) =>
+      if row_is_visible(projection_plan.input, chunk, row_index) {
+        let row = []
+        for item in projection_plan.projections {
+          row.push(eval_expr(item.expr, chunk, row_index))
+        }
+        rows.push(row)
+      }
+  }
+}
+
+///|
+fn row_is_visible(
+  plan : QueryPlan,
   chunk : @engine.DataChunk,
   row_index : Int,
 ) -> Bool raise ExecuteError {
-  match where_clause {
-    None => true
-    Some(expr) =>
-      match eval_expr(expr, chunk, row_index) {
-        @engine.Value::Boolean(value) => value
-        @engine.Value::Null => false
-        _ =>
-          raise ExecuteError::Execute(
-            "WHERE clause did not evaluate to BOOLEAN",
-          )
-      }
+  match plan {
+    Scan(_) => true
+    Filter(filter_plan) =>
+      row_matches_filter(filter_plan.predicate, chunk, row_index) &&
+      row_is_visible(filter_plan.input, chunk, row_index)
+    Projection(projection_plan) =>
+      row_is_visible(projection_plan.input, chunk, row_index)
   }
 }
 
 ///|
-fn infer_expr_type(
-  expr : @sql.Expr,
-  schema : @engine.Schema,
-) -> @engine.LogicalType raise ExecuteError {
-  match expr {
-    @sql.Expr::ColumnRef(path) => resolve_column(path, schema).data_type
-    @sql.Expr::StringLiteral(_) => @engine.LogicalType::Varchar
-    @sql.Expr::IntegerLiteral(_) => @engine.LogicalType::BigInt
-    @sql.Expr::DoubleLiteral(_) => @engine.LogicalType::Double
-    @sql.Expr::BooleanLiteral(_) => @engine.LogicalType::Boolean
-    @sql.Expr::NullLiteral => @engine.LogicalType::Null
-    @sql.Expr::Unary(op, inner) =>
-      match op {
-        @sql.UnaryOp::Not =>
-          match infer_expr_type(inner, schema) {
-            @engine.LogicalType::Boolean => @engine.LogicalType::Boolean
-            @engine.LogicalType::Null => @engine.LogicalType::Boolean
-            _ => raise ExecuteError::Bind("NOT requires a BOOLEAN expression")
-          }
-        @sql.UnaryOp::Plus | @sql.UnaryOp::Minus =>
-          infer_numeric_type(inner, schema)
-      }
-    @sql.Expr::Binary(op, left, right) =>
-      match op {
-        @sql.BinaryOp::Add
-        | @sql.BinaryOp::Subtract
-        | @sql.BinaryOp::Multiply
-        | @sql.BinaryOp::Divide =>
-          infer_binary_numeric_type(left, right, schema)
-        @sql.BinaryOp::And | @sql.BinaryOp::Or => {
-          validate_boolean_expr(left, schema)
-          validate_boolean_expr(right, schema)
-          @engine.LogicalType::Boolean
-        }
-        _ => {
-          ignore(infer_expr_type(left, schema))
-          ignore(infer_expr_type(right, schema))
-          @engine.LogicalType::Boolean
-        }
-      }
-    @sql.Expr::IsNull(_) | @sql.Expr::IsNotNull(_) =>
-      @engine.LogicalType::Boolean
-    @sql.Expr::Cast(_, type_name) => type_name_to_logical_type(type_name)
-  }
-}
-
-///|
-fn validate_boolean_expr(
-  expr : @sql.Expr,
-  schema : @engine.Schema,
-) -> Unit raise ExecuteError {
-  match infer_expr_type(expr, schema) {
-    @engine.LogicalType::Boolean => ()
-    @engine.LogicalType::Null => ()
-    _ => raise ExecuteError::Bind("boolean operator requires BOOLEAN operands")
-  }
-}
-
-///|
-fn infer_numeric_type(
-  expr : @sql.Expr,
-  schema : @engine.Schema,
-) -> @engine.LogicalType raise ExecuteError {
-  match infer_expr_type(expr, schema) {
-    @engine.LogicalType::BigInt => @engine.LogicalType::BigInt
-    @engine.LogicalType::Double => @engine.LogicalType::Double
-    @engine.LogicalType::Null => @engine.LogicalType::Null
-    _ =>
-      raise ExecuteError::Bind("numeric expression requires BIGINT or DOUBLE")
-  }
-}
-
-///|
-fn infer_binary_numeric_type(
-  left : @sql.Expr,
-  right : @sql.Expr,
-  schema : @engine.Schema,
-) -> @engine.LogicalType raise ExecuteError {
-  let left_type = infer_numeric_type(left, schema)
-  let right_type = infer_numeric_type(right, schema)
-  match (left_type, right_type) {
-    (@engine.LogicalType::Double, _) => @engine.LogicalType::Double
-    (_, @engine.LogicalType::Double) => @engine.LogicalType::Double
-    (@engine.LogicalType::Null, other) => other
-    (other, @engine.LogicalType::Null) => other
-    _ => @engine.LogicalType::BigInt
-  }
-}
-
-///|
-fn expr_can_be_null(expr : @sql.Expr, schema : @engine.Schema) -> Bool {
-  match expr {
-    @sql.Expr::ColumnRef(path) =>
-      match schema.column_index(path[path.length() - 1]) {
-        Some(index) => schema.columns[index].nullable
-        None => true
-      }
-    @sql.Expr::NullLiteral => true
-    @sql.Expr::Unary(_, inner) => expr_can_be_null(inner, schema)
-    @sql.Expr::Binary(_, left, right) =>
-      expr_can_be_null(left, schema) || expr_can_be_null(right, schema)
-    @sql.Expr::Cast(inner, _) => expr_can_be_null(inner, schema)
-    _ => false
-  }
-}
-
-///|
-fn default_output_name(expr : @sql.Expr, index : Int) -> String {
-  match expr {
-    @sql.Expr::ColumnRef(path) => path[path.length() - 1]
-    _ => "expr\{index + 1}"
-  }
-}
-
-///|
-fn resolve_column(
-  path : Array[String],
-  schema : @engine.Schema,
-) -> @engine.ColumnDef raise ExecuteError {
-  guard path.length() > 0 else {
-    raise ExecuteError::Bind("empty column reference")
-  }
-  let name = path[path.length() - 1]
-  match schema.column_index(name) {
-    Some(index) => schema.columns[index]
-    None => raise ExecuteError::Bind("unknown column: \{name}")
+fn row_matches_filter(
+  predicate : PlanExpr,
+  chunk : @engine.DataChunk,
+  row_index : Int,
+) -> Bool raise ExecuteError {
+  match eval_expr(predicate, chunk, row_index) {
+    @engine.Value::Boolean(value) => value
+    @engine.Value::Null => false
+    _ => raise ExecuteError::Execute("WHERE clause did not evaluate to BOOLEAN")
   }
 }
 
 ///|
 fn eval_expr(
-  expr : @sql.Expr,
+  expr : PlanExpr,
   chunk : @engine.DataChunk,
   row_index : Int,
 ) -> @engine.Value raise ExecuteError {
   match expr {
-    @sql.Expr::ColumnRef(path) => lookup_column_value(path, chunk, row_index)
-    @sql.Expr::StringLiteral(text) => @engine.Value::Varchar(text)
-    @sql.Expr::IntegerLiteral(text) =>
+    ColumnRef(column_ref) =>
+      vector_value_at(chunk.columns[column_ref.index], row_index)
+    StringLiteral(text) => @engine.Value::Varchar(text)
+    IntegerLiteral(text) =>
       @engine.Value::BigInt(
         @strconv.parse_int64(text[:]) catch {
           _ => raise ExecuteError::Execute("invalid integer literal: \{text}")
         },
       )
-    @sql.Expr::DoubleLiteral(text) =>
+    DoubleLiteral(text) =>
       @engine.Value::Double(
         @strconv.parse_double(text[:]) catch {
           _ => raise ExecuteError::Execute("invalid double literal: \{text}")
         },
       )
-    @sql.Expr::BooleanLiteral(value) => @engine.Value::Boolean(value)
-    @sql.Expr::NullLiteral => @engine.Value::Null
-    @sql.Expr::Unary(op, inner) =>
-      eval_unary(op, eval_expr(inner, chunk, row_index))
-    @sql.Expr::Binary(op, left, right) =>
+    BooleanLiteral(value) => @engine.Value::Boolean(value)
+    NullLiteral => @engine.Value::Null
+    Unary(op, inner) => eval_unary(op, eval_expr(inner, chunk, row_index))
+    Binary(op, left, right) =>
       eval_binary(
         op,
         eval_expr(left, chunk, row_index),
         eval_expr(right, chunk, row_index),
       )
-    @sql.Expr::IsNull(inner) =>
+    IsNull(inner) =>
       @engine.Value::Boolean(
         match eval_expr(inner, chunk, row_index) {
           @engine.Value::Null => true
           _ => false
         },
       )
-    @sql.Expr::IsNotNull(inner) =>
+    IsNotNull(inner) =>
       @engine.Value::Boolean(
         match eval_expr(inner, chunk, row_index) {
           @engine.Value::Null => false
           _ => true
         },
       )
-    @sql.Expr::Cast(inner, type_name) =>
-      cast_value(
-        eval_expr(inner, chunk, row_index),
-        type_name_to_logical_type(type_name),
-      )
+    Cast(inner, logical_type) =>
+      cast_value(eval_expr(inner, chunk, row_index), logical_type)
   }
-}
-
-///|
-fn lookup_column_value(
-  path : Array[String],
-  chunk : @engine.DataChunk,
-  row_index : Int,
-) -> @engine.Value raise ExecuteError {
-  let column = resolve_column(path, chunk.schema)
-  let column_index = chunk.schema.column_index(column.name).unwrap()
-  vector_value_at(chunk.columns[column_index], row_index)
 }
 
 ///|
@@ -522,48 +358,68 @@ fn value_to_double(value : @engine.Value) -> Double raise ExecuteError {
 ///|
 fn cast_value(
   value : @engine.Value,
-  target : @engine.LogicalType,
+  target_type : @engine.LogicalType,
 ) -> @engine.Value raise ExecuteError {
   match value {
     @engine.Value::Null => @engine.Value::Null
     _ =>
-      match (value, target) {
-        (_, @engine.LogicalType::Varchar) =>
+      match target_type {
+        @engine.LogicalType::Null => @engine.Value::Null
+        @engine.LogicalType::Boolean => cast_to_boolean(value)
+        @engine.LogicalType::BigInt => cast_to_bigint(value)
+        @engine.LogicalType::Double => cast_to_double(value)
+        @engine.LogicalType::Varchar =>
           @engine.Value::Varchar(value.to_string())
-        (@engine.Value::Boolean(v), @engine.LogicalType::Boolean) =>
-          @engine.Value::Boolean(v)
-        (@engine.Value::BigInt(v), @engine.LogicalType::BigInt) =>
-          @engine.Value::BigInt(v)
-        (@engine.Value::BigInt(v), @engine.LogicalType::Double) =>
-          @engine.Value::Double(v.to_double())
-        (@engine.Value::Double(v), @engine.LogicalType::Double) =>
-          @engine.Value::Double(v)
-        (@engine.Value::Double(v), @engine.LogicalType::BigInt) =>
-          @engine.Value::BigInt(v.to_int64())
-        (@engine.Value::Varchar(text), @engine.LogicalType::BigInt) =>
-          @engine.Value::BigInt(
-            @strconv.parse_int64(text[:]) catch {
-              _ =>
-                raise ExecuteError::Execute(
-                  "cannot cast VARCHAR to BIGINT: \{text}",
-                )
-            },
-          )
-        (@engine.Value::Varchar(text), @engine.LogicalType::Double) =>
-          @engine.Value::Double(
-            @strconv.parse_double(text[:]) catch {
-              _ =>
-                raise ExecuteError::Execute(
-                  "cannot cast VARCHAR to DOUBLE: \{text}",
-                )
-            },
-          )
-        (@engine.Value::Varchar("true"), @engine.LogicalType::Boolean) =>
-          @engine.Value::Boolean(true)
-        (@engine.Value::Varchar("false"), @engine.LogicalType::Boolean) =>
-          @engine.Value::Boolean(false)
-        _ => raise ExecuteError::Execute("unsupported cast")
       }
+  }
+}
+
+///|
+fn cast_to_boolean(value : @engine.Value) -> @engine.Value raise ExecuteError {
+  match value {
+    @engine.Value::Boolean(v) => @engine.Value::Boolean(v)
+    @engine.Value::BigInt(v) => @engine.Value::Boolean(v != 0L)
+    @engine.Value::Double(v) => @engine.Value::Boolean(v != 0.0)
+    @engine.Value::Varchar(text) =>
+      match text {
+        "true" | "TRUE" => @engine.Value::Boolean(true)
+        "false" | "FALSE" => @engine.Value::Boolean(false)
+        _ => raise ExecuteError::Execute("cannot cast VARCHAR to BOOLEAN")
+      }
+    @engine.Value::Null => @engine.Value::Null
+  }
+}
+
+///|
+fn cast_to_bigint(value : @engine.Value) -> @engine.Value raise ExecuteError {
+  match value {
+    @engine.Value::Boolean(v) => @engine.Value::BigInt(if v { 1L } else { 0L })
+    @engine.Value::BigInt(v) => @engine.Value::BigInt(v)
+    @engine.Value::Double(v) => @engine.Value::BigInt(v.to_int64())
+    @engine.Value::Varchar(text) =>
+      @engine.Value::BigInt(
+        @strconv.parse_int64(text[:]) catch {
+          _ => raise ExecuteError::Execute("cannot cast VARCHAR to BIGINT")
+        },
+      )
+    @engine.Value::Null => @engine.Value::Null
+  }
+}
+
+///|
+fn cast_to_double(value : @engine.Value) -> @engine.Value raise ExecuteError {
+  match value {
+    @engine.Value::Boolean(v) =>
+      @engine.Value::Double(if v { 1.0 } else { 0.0 })
+    @engine.Value::BigInt(v) => @engine.Value::Double(v.to_double())
+    @engine.Value::Double(v) => @engine.Value::Double(v)
+    @engine.Value::Varchar(text) =>
+      @engine.Value::Double(
+        @strconv.parse_double(text[:]) catch {
+          _ => raise ExecuteError::Execute("cannot cast VARCHAR to DOUBLE")
+        },
+      )
+    @engine.Value::Null => @engine.Value::Null
   }
 }
 
@@ -582,6 +438,13 @@ fn type_name_to_logical_type(type_name : @sql.TypeName) -> @engine.LogicalType {
 fn map_scan_error(err : @scan.ScanError) -> ExecuteError {
   match err {
     @scan.ScanError::Io(message) => ExecuteError::Io(message)
-    _ => ExecuteError::Scan(err.to_string())
+    @scan.ScanError::JsonParse(line_no, message) =>
+      ExecuteError::Scan("json parse error at line \{line_no}: \{message}")
+    @scan.ScanError::JsonRootNotObject(line_no) =>
+      ExecuteError::Scan("expected JSON object at line \{line_no}")
+    @scan.ScanError::TypeMismatch(column, line_no, message) =>
+      ExecuteError::Scan(
+        "type mismatch for column \{column} at line \{line_no}: \{message}",
+      )
   }
 }
