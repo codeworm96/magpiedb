@@ -5,16 +5,17 @@
     "moonbitlang/ulex-runtime": "0.4.3",
     "moonbitlang/x": "0.4.38",
     "sennenki/pretty_prompt": "0.1.1",
-    "moonbitlang/async": "0.16.8"
+    "moonbitlang/async": "0.16.8",
+    "hustcer/tabular": "0.5.1"
   },
   "bin-deps": {
     "moonbitlang/ulex": "0.3.27",
     "moonbitlang/yacc": "0.7.12"
   },
   "readme": "README.mbt.md",
-  "preferred-target": "native",
   "repository": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "description": ""
+  "description": "",
+  "preferred-target": "native"
 }

@@ -1,6 +1,7 @@
 import {
   "moonbitlang/async",
   "moonbitlang/core/env",
+  "hustcer/tabular" @tabular,
   "username/magpiedb" @lib,
   "sennenki/pretty_prompt" @pp,
   "sennenki/pretty_prompt/system" @ppsys,

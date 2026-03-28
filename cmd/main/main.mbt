@@ -34,14 +34,28 @@ async fn main {
 fn run_query(conn : @lib.Connection, sql : String) -> Unit {
   match conn.query(sql) {
     Ok(result) => {
-      println(result.schema().columns.map(col => col.name).to_string())
+      let rows = [result.schema().columns.map(col => col.name)]
       while true {
         match result.next() {
-          Some(row) => println(row.to_string())
+          Some(row) => rows.push(row.map(value_to_cell))
           None => break
         }
       }
+      let table = @tabular.Table::from_rows(rows)
+      table.apply(@tabular.Style::modern()) |> ignore
+      println(table.to_string())
     }
     Err(err) => println(err.to_string())
+  }
+}
+
+///|
+fn value_to_cell(value : @lib.Value) -> String {
+  match value {
+    @lib.Value::Null => "NULL"
+    @lib.Value::Boolean(v) => v.to_string()
+    @lib.Value::BigInt(v) => v.to_string()
+    @lib.Value::Double(v) => v.to_string()
+    @lib.Value::Varchar(v) => v
   }
 }
