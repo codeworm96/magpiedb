@@ -61,7 +61,7 @@ test "planner rejects non boolean where clause" {
   let err = (try? plan_query(query)).unwrap_err()
 
   match err {
-    ExecuteError::Bind(message) =>
+    PlanError::Bind(message) =>
       assert_true(message.contains("WHERE clause must evaluate to BOOLEAN"))
     _ => fail("expected bind error")
   }

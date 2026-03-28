@@ -32,7 +32,9 @@ pub fn Connection::query(
   match parsed {
     Ok(query) =>
       try {
-        let plan = @execute.plan_query(query)
+        let plan = @plan.plan_query(query) catch {
+          err => return Err(map_plan_error(err))
+        }
         Ok(make_result_set(@execute.execute_plan(plan)))
       } catch {
         err => Err(map_execute_error(err))
@@ -69,5 +71,17 @@ fn map_execute_error(err : @execute.ExecuteError) -> DbError {
     @execute.ExecuteError::Io(message) => DbError::Io(message)
     @execute.ExecuteError::Execute(message) => DbError::Execute(message)
     @execute.ExecuteError::Unsupported(message) => DbError::Unsupported(message)
+  }
+}
+
+///|
+fn map_plan_error(err : @plan.PlanError) -> DbError {
+  match err {
+    @plan.PlanError::InvalidArgument(message) =>
+      DbError::InvalidArgument(message)
+    @plan.PlanError::Bind(message) => DbError::Bind(message)
+    @plan.PlanError::Scan(message) => DbError::Scan(message)
+    @plan.PlanError::Io(message) => DbError::Io(message)
+    @plan.PlanError::Unsupported(message) => DbError::Unsupported(message)
   }
 }

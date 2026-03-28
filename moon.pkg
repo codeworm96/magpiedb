@@ -1,5 +1,6 @@
 import {
   "username/magpiedb/engine",
   "username/magpiedb/execute",
+  "username/magpiedb/plan",
   "username/magpiedb/sql",
 }

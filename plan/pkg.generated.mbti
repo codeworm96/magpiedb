@@ -1,0 +1,100 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "username/magpiedb/plan"
+
+import {
+  "username/magpiedb/engine",
+  "username/magpiedb/sql",
+}
+
+// Values
+pub fn plan_query(@sql.Query) -> QueryPlan raise PlanError
+
+pub fn query_plan_schema(QueryPlan) -> @engine.Schema
+
+// Errors
+pub suberror PlanError {
+  InvalidArgument(String)
+  Bind(String)
+  Scan(String)
+  Io(String)
+  Unsupported(String)
+}
+pub impl Show for PlanError
+
+// Types and methods
+pub(all) struct BoundColumnRef {
+  index : Int
+  column : @engine.ColumnDef
+}
+pub impl Eq for BoundColumnRef
+pub impl Show for BoundColumnRef
+
+pub(all) struct FilterPlan {
+  input : QueryPlan
+  predicate : PlanExpr
+}
+pub impl Eq for FilterPlan
+pub impl Show for FilterPlan
+
+pub(all) struct JsonlScan {
+  path : String
+  schema : @engine.Schema
+}
+pub impl Eq for JsonlScan
+pub impl Show for JsonlScan
+
+pub(all) enum PlanExpr {
+  ColumnRef(BoundColumnRef)
+  StringLiteral(String)
+  IntegerLiteral(String)
+  DoubleLiteral(String)
+  BooleanLiteral(Bool)
+  NullLiteral
+  Unary(@sql.UnaryOp, PlanExpr)
+  Binary(@sql.BinaryOp, PlanExpr, PlanExpr)
+  IsNull(PlanExpr)
+  IsNotNull(PlanExpr)
+  Cast(PlanExpr, @engine.LogicalType)
+}
+pub impl Eq for PlanExpr
+pub impl Show for PlanExpr
+
+pub(all) struct PlanSelectItem {
+  expr : PlanExpr
+  output_name : String
+}
+pub impl Eq for PlanSelectItem
+pub impl Show for PlanSelectItem
+
+pub(all) struct ProjectionPlan {
+  input : QueryPlan
+  projections : Array[PlanSelectItem]
+  output_schema : @engine.Schema
+}
+pub impl Eq for ProjectionPlan
+pub impl Show for ProjectionPlan
+
+pub(all) enum QueryPlan {
+  Scan(ScanPlan)
+  Filter(FilterPlan)
+  Projection(ProjectionPlan)
+}
+pub impl Eq for QueryPlan
+pub impl Show for QueryPlan
+
+pub(all) struct ScanPlan {
+  source : ScanSource
+}
+pub impl Eq for ScanPlan
+pub impl Show for ScanPlan
+
+pub(all) enum ScanSource {
+  Jsonl(JsonlScan)
+}
+pub impl Eq for ScanSource
+pub impl Show for ScanSource
+
+// Type aliases
+
+// Traits
+

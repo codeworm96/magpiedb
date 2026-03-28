@@ -1,7 +1,5 @@
 import {
-  "moonbitlang/core/strconv",
   "username/magpiedb/engine",
-  "username/magpiedb/plan",
   "username/magpiedb/scan",
   "username/magpiedb/sql",
 }

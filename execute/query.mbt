@@ -16,11 +16,12 @@ pub suberror ExecuteError {
 
 ///|
 pub fn execute_query(query : @sql.Query) -> QueryOutput raise ExecuteError {
-  execute_plan(plan_query(query))
+  let plan = @plan.plan_query(query) catch { err => raise map_plan_error(err) }
+  execute_plan(plan)
 }
 
 ///|
-pub fn execute_plan(plan : QueryPlan) -> QueryOutput raise ExecuteError {
+pub fn execute_plan(plan : @plan.QueryPlan) -> QueryOutput raise ExecuteError {
   let scan = find_scan_source(plan)
   let scanner = open_scan_source(scan)
   let rows = []
@@ -33,24 +34,25 @@ pub fn execute_plan(plan : QueryPlan) -> QueryOutput raise ExecuteError {
       None => break
     }
   }
-  QueryOutput::{ schema: query_plan_schema(plan), rows }
+  QueryOutput::{ schema: @plan.query_plan_schema(plan), rows }
 }
 
 ///|
-fn find_scan_source(plan : QueryPlan) -> ScanSource {
+fn find_scan_source(plan : @plan.QueryPlan) -> @plan.ScanSource {
   match plan {
-    Scan(scan_plan) => scan_plan.source
-    Filter(filter_plan) => find_scan_source(filter_plan.input)
-    Projection(projection_plan) => find_scan_source(projection_plan.input)
+    @plan.QueryPlan::Scan(scan_plan) => scan_plan.source
+    @plan.QueryPlan::Filter(filter_plan) => find_scan_source(filter_plan.input)
+    @plan.QueryPlan::Projection(projection_plan) =>
+      find_scan_source(projection_plan.input)
   }
 }
 
 ///|
 fn open_scan_source(
-  source : ScanSource,
+  source : @plan.ScanSource,
 ) -> @scan.JsonlScanner raise ExecuteError {
   match source {
-    Jsonl(scan) =>
+    @plan.ScanSource::Jsonl(scan) =>
       @scan.read_jsonl(scan.path) catch {
         err => raise map_scan_error(err)
       }
@@ -60,7 +62,7 @@ fn open_scan_source(
 ///|
 fn append_rows(
   rows : Array[@engine.Row],
-  plan : QueryPlan,
+  plan : @plan.QueryPlan,
   chunk : @engine.DataChunk,
 ) -> Unit raise ExecuteError {
   for row_index in 0..<chunk.len {
@@ -71,17 +73,17 @@ fn append_rows(
 ///|
 fn append_row_if_visible(
   rows : Array[@engine.Row],
-  plan : QueryPlan,
+  plan : @plan.QueryPlan,
   chunk : @engine.DataChunk,
   row_index : Int,
 ) -> Unit raise ExecuteError {
   match plan {
-    Scan(_) => rows.push([])
-    Filter(filter_plan) =>
+    @plan.QueryPlan::Scan(_) => rows.push([])
+    @plan.QueryPlan::Filter(filter_plan) =>
       if row_matches_filter(filter_plan.predicate, chunk, row_index) {
         append_row_if_visible(rows, filter_plan.input, chunk, row_index)
       }
-    Projection(projection_plan) =>
+    @plan.QueryPlan::Projection(projection_plan) =>
       if row_is_visible(projection_plan.input, chunk, row_index) {
         let row = []
         for item in projection_plan.projections {
@@ -94,23 +96,23 @@ fn append_row_if_visible(
 
 ///|
 fn row_is_visible(
-  plan : QueryPlan,
+  plan : @plan.QueryPlan,
   chunk : @engine.DataChunk,
   row_index : Int,
 ) -> Bool raise ExecuteError {
   match plan {
-    Scan(_) => true
-    Filter(filter_plan) =>
+    @plan.QueryPlan::Scan(_) => true
+    @plan.QueryPlan::Filter(filter_plan) =>
       row_matches_filter(filter_plan.predicate, chunk, row_index) &&
       row_is_visible(filter_plan.input, chunk, row_index)
-    Projection(projection_plan) =>
+    @plan.QueryPlan::Projection(projection_plan) =>
       row_is_visible(projection_plan.input, chunk, row_index)
   }
 }
 
 ///|
 fn row_matches_filter(
-  predicate : PlanExpr,
+  predicate : @plan.PlanExpr,
   chunk : @engine.DataChunk,
   row_index : Int,
 ) -> Bool raise ExecuteError {
@@ -123,50 +125,51 @@ fn row_matches_filter(
 
 ///|
 fn eval_expr(
-  expr : PlanExpr,
+  expr : @plan.PlanExpr,
   chunk : @engine.DataChunk,
   row_index : Int,
 ) -> @engine.Value raise ExecuteError {
   match expr {
-    ColumnRef(column_ref) =>
+    @plan.PlanExpr::ColumnRef(column_ref) =>
       vector_value_at(chunk.columns[column_ref.index], row_index)
-    StringLiteral(text) => @engine.Value::Varchar(text)
-    IntegerLiteral(text) =>
+    @plan.PlanExpr::StringLiteral(text) => @engine.Value::Varchar(text)
+    @plan.PlanExpr::IntegerLiteral(text) =>
       @engine.Value::BigInt(
         @strconv.parse_int64(text[:]) catch {
           _ => raise ExecuteError::Execute("invalid integer literal: \{text}")
         },
       )
-    DoubleLiteral(text) =>
+    @plan.PlanExpr::DoubleLiteral(text) =>
       @engine.Value::Double(
         @strconv.parse_double(text[:]) catch {
           _ => raise ExecuteError::Execute("invalid double literal: \{text}")
         },
       )
-    BooleanLiteral(value) => @engine.Value::Boolean(value)
-    NullLiteral => @engine.Value::Null
-    Unary(op, inner) => eval_unary(op, eval_expr(inner, chunk, row_index))
-    Binary(op, left, right) =>
+    @plan.PlanExpr::BooleanLiteral(value) => @engine.Value::Boolean(value)
+    @plan.PlanExpr::NullLiteral => @engine.Value::Null
+    @plan.PlanExpr::Unary(op, inner) =>
+      eval_unary(op, eval_expr(inner, chunk, row_index))
+    @plan.PlanExpr::Binary(op, left, right) =>
       eval_binary(
         op,
         eval_expr(left, chunk, row_index),
         eval_expr(right, chunk, row_index),
       )
-    IsNull(inner) =>
+    @plan.PlanExpr::IsNull(inner) =>
       @engine.Value::Boolean(
         match eval_expr(inner, chunk, row_index) {
           @engine.Value::Null => true
           _ => false
         },
       )
-    IsNotNull(inner) =>
+    @plan.PlanExpr::IsNotNull(inner) =>
       @engine.Value::Boolean(
         match eval_expr(inner, chunk, row_index) {
           @engine.Value::Null => false
           _ => true
         },
       )
-    Cast(inner, logical_type) =>
+    @plan.PlanExpr::Cast(inner, logical_type) =>
       cast_value(eval_expr(inner, chunk, row_index), logical_type)
   }
 }
@@ -424,17 +427,6 @@ fn cast_to_double(value : @engine.Value) -> @engine.Value raise ExecuteError {
 }
 
 ///|
-fn type_name_to_logical_type(type_name : @sql.TypeName) -> @engine.LogicalType {
-  match type_name {
-    @sql.TypeName::Null => @engine.LogicalType::Null
-    @sql.TypeName::Boolean => @engine.LogicalType::Boolean
-    @sql.TypeName::BigInt => @engine.LogicalType::BigInt
-    @sql.TypeName::Double => @engine.LogicalType::Double
-    @sql.TypeName::Varchar => @engine.LogicalType::Varchar
-  }
-}
-
-///|
 fn map_scan_error(err : @scan.ScanError) -> ExecuteError {
   match err {
     @scan.ScanError::Io(message) => ExecuteError::Io(message)
@@ -446,5 +438,17 @@ fn map_scan_error(err : @scan.ScanError) -> ExecuteError {
       ExecuteError::Scan(
         "type mismatch for column \{column} at line \{line_no}: \{message}",
       )
+  }
+}
+
+///|
+fn map_plan_error(err : @plan.PlanError) -> ExecuteError {
+  match err {
+    @plan.PlanError::InvalidArgument(message) =>
+      ExecuteError::InvalidArgument(message)
+    @plan.PlanError::Bind(message) => ExecuteError::Bind(message)
+    @plan.PlanError::Scan(message) => ExecuteError::Scan(message)
+    @plan.PlanError::Io(message) => ExecuteError::Io(message)
+    @plan.PlanError::Unsupported(message) => ExecuteError::Unsupported(message)
   }
 }
