@@ -42,10 +42,49 @@ test "planner binds jsonl scan, filter, and projections" {
                   assert_eq(scan.schema.column_index("id"), Some(1))
                   assert_eq(scan.schema.column_index("active"), Some(0))
                 }
+                _ => fail("expected jsonl scan source")
               }
             _ => fail("expected scan input under filter")
           }
         }
+        _ => fail("expected filter input under projection")
+      }
+    }
+    _ => fail("expected projection root")
+  }
+}
+
+///|
+test "planner binds csv scan, filter, and projections" {
+  let query = @sql.parse_sql(
+    "SELECT name, age FROM read_csv('fixtures/csv/people.csv') WHERE age > 18",
+  ).unwrap()
+  let plan = try! plan_query(query)
+
+  match plan {
+    Projection(projection_plan) => {
+      assert_eq(projection_plan.output_schema.columns, [
+        {
+          name: "name",
+          data_type: @engine.LogicalType::Varchar,
+          nullable: false,
+        },
+        { name: "age", data_type: @engine.LogicalType::BigInt, nullable: true },
+      ])
+      match projection_plan.input {
+        Filter(filter_plan) =>
+          match filter_plan.input {
+            Scan(scan_plan) =>
+              match scan_plan.source {
+                Csv(scan) => {
+                  assert_eq(scan.path, "fixtures/csv/people.csv")
+                  assert_eq(scan.schema.column_index("name"), Some(0))
+                  assert_eq(scan.schema.column_index("age"), Some(1))
+                }
+                _ => fail("expected csv scan source")
+              }
+            _ => fail("expected scan input under filter")
+          }
         _ => fail("expected filter input under projection")
       }
     }

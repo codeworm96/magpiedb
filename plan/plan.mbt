@@ -8,6 +8,12 @@ pub suberror PlanError {
 } derive(Show)
 
 ///|
+pub(all) struct CsvScan {
+  path : String
+  schema : @engine.Schema
+} derive(Eq, Show)
+
+///|
 pub(all) struct JsonlScan {
   path : String
   schema : @engine.Schema
@@ -15,6 +21,7 @@ pub(all) struct JsonlScan {
 
 ///|
 pub(all) enum ScanSource {
+  Csv(CsvScan)
   Jsonl(JsonlScan)
 } derive(Eq, Show)
 
@@ -102,25 +109,36 @@ pub fn query_plan_schema(plan : QueryPlan) -> @engine.Schema {
 
 ///|
 fn bind_scan_source(from : @sql.TableFunction) -> ScanSource raise PlanError {
-  guard from.name == "read_jsonl" else {
-    raise PlanError::Unsupported(
-      "only read_jsonl(path) is supported in the current MVP",
-    )
-  }
   guard from.arguments.length() == 1 else {
-    raise PlanError::InvalidArgument("read_jsonl requires exactly one argument")
+    raise PlanError::InvalidArgument(
+      "\{from.name} requires exactly one argument",
+    )
   }
   let path = match from.arguments[0] {
     @sql.Expr::StringLiteral(path) => path
     _ =>
       raise PlanError::InvalidArgument(
-        "read_jsonl path must be a string literal",
+        "\{from.name} path must be a string literal",
       )
   }
-  let scanner = @scan.read_jsonl(path) catch {
-    err => raise map_scan_error(err)
+  match from.name {
+    "read_csv" => {
+      let scanner = @scan.read_csv(path) catch {
+        err => raise map_scan_error(err)
+      }
+      ScanSource::Csv(CsvScan::{ path, schema: scanner.schema() })
+    }
+    "read_jsonl" => {
+      let scanner = @scan.read_jsonl(path) catch {
+        err => raise map_scan_error(err)
+      }
+      ScanSource::Jsonl(JsonlScan::{ path, schema: scanner.schema() })
+    }
+    _ =>
+      raise PlanError::Unsupported(
+        "only read_csv(path) and read_jsonl(path) are supported in the current MVP",
+      )
   }
-  ScanSource::Jsonl(JsonlScan::{ path, schema: scanner.schema() })
 }
 
 ///|
@@ -252,6 +270,7 @@ fn bind_binary_expr(
 ///|
 fn scan_source_schema(source : ScanSource) -> @engine.Schema {
   match source {
+    Csv(scan) => scan.schema
     Jsonl(scan) => scan.schema
   }
 }

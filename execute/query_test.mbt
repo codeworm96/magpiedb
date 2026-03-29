@@ -44,3 +44,25 @@ test "execute plan keeps literal projections chunked until materialization bound
   )
   assert_eq(chunk.columns[1].validity, @engine.ValidityMask::all_valid(2))
 }
+
+///|
+test "execute plan supports csv scan through the same chunk pipeline" {
+  let query = @sql.parse_sql(
+    "SELECT name, age FROM read_csv('fixtures/csv/people.csv') WHERE age > 18",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  assert_eq(output.chunks.length(), 1)
+  let chunk = output.chunks[0]
+  assert_eq(chunk.schema.columns, [
+    { name: "name", data_type: @engine.LogicalType::Varchar, nullable: false },
+    { name: "age", data_type: @engine.LogicalType::BigInt, nullable: true },
+  ])
+  assert_eq(
+    chunk.columns[0].values,
+    @engine.VectorBuffer::Varchar(["Ada", "Carla"]),
+  )
+  assert_eq(chunk.columns[0].validity, @engine.ValidityMask::all_valid(2))
+  assert_eq(chunk.columns[1].values, @engine.VectorBuffer::Int64([30L, 41L]))
+}

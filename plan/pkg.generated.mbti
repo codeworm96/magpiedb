@@ -29,6 +29,13 @@ pub(all) struct BoundColumnRef {
 pub impl Eq for BoundColumnRef
 pub impl Show for BoundColumnRef
 
+pub(all) struct CsvScan {
+  path : String
+  schema : @engine.Schema
+}
+pub impl Eq for CsvScan
+pub impl Show for CsvScan
+
 pub(all) struct FilterPlan {
   input : QueryPlan
   predicate : PlanExpr
@@ -89,6 +96,7 @@ pub impl Eq for ScanPlan
 pub impl Show for ScanPlan
 
 pub(all) enum ScanSource {
+  Csv(CsvScan)
   Jsonl(JsonlScan)
 }
 pub impl Eq for ScanSource

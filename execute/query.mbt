@@ -1,4 +1,10 @@
 ///|
+priv enum ScanOperator {
+  Csv(@scan.CsvScanner)
+  Jsonl(@scan.JsonlScanner)
+}
+
+///|
 pub struct QueryOutput {
   schema : @engine.Schema
   chunks : Array[@engine.DataChunk]
@@ -38,13 +44,10 @@ pub fn execute_plan(plan : @plan.QueryPlan) -> QueryOutput raise ExecuteError {
 ///|
 fn next_plan_chunk(
   plan : @plan.QueryPlan,
-  scanner : @scan.JsonlScanner,
+  scanner : ScanOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   match plan {
-    @plan.QueryPlan::Scan(_) =>
-      scanner.next_chunk() catch {
-        err => raise map_scan_error(err)
-      }
+    @plan.QueryPlan::Scan(_) => next_scan_chunk(scanner)
     @plan.QueryPlan::Filter(filter_plan) =>
       next_filter_chunk(filter_plan, scanner)
     @plan.QueryPlan::Projection(projection_plan) =>
@@ -55,7 +58,7 @@ fn next_plan_chunk(
 ///|
 fn next_filter_chunk(
   filter_plan : @plan.FilterPlan,
-  scanner : @scan.JsonlScanner,
+  scanner : ScanOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   let mut next_input = next_plan_chunk(filter_plan.input, scanner)
   while next_input is Some(chunk) {
@@ -71,7 +74,7 @@ fn next_filter_chunk(
 ///|
 fn next_projection_chunk(
   projection_plan : @plan.ProjectionPlan,
-  scanner : @scan.JsonlScanner,
+  scanner : ScanOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   match next_plan_chunk(projection_plan.input, scanner) {
     None => None
@@ -99,10 +102,34 @@ fn find_scan_source(plan : @plan.QueryPlan) -> @plan.ScanSource {
 ///|
 fn open_scan_source(
   source : @plan.ScanSource,
-) -> @scan.JsonlScanner raise ExecuteError {
+) -> ScanOperator raise ExecuteError {
   match source {
+    @plan.ScanSource::Csv(scan) =>
+      ScanOperator::Csv(
+        @scan.read_csv(scan.path) catch {
+          err => raise map_scan_error(err)
+        },
+      )
     @plan.ScanSource::Jsonl(scan) =>
-      @scan.read_jsonl(scan.path) catch {
+      ScanOperator::Jsonl(
+        @scan.read_jsonl(scan.path) catch {
+          err => raise map_scan_error(err)
+        },
+      )
+  }
+}
+
+///|
+fn next_scan_chunk(
+  scanner : ScanOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  match scanner {
+    ScanOperator::Csv(scanner) =>
+      scanner.next_chunk() catch {
+        err => raise map_scan_error(err)
+      }
+    ScanOperator::Jsonl(scanner) =>
+      scanner.next_chunk() catch {
         err => raise map_scan_error(err)
       }
   }
