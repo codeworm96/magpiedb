@@ -26,7 +26,7 @@ pub impl Show for ExecuteError
 // Types and methods
 pub struct QueryOutput {
   schema : @engine.Schema
-  rows : Array[Array[@engine.Value]]
+  chunks : Array[@engine.DataChunk]
 }
 pub impl Eq for QueryOutput
 pub impl Show for QueryOutput

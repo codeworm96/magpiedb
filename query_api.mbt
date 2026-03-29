@@ -58,7 +58,11 @@ pub fn ResultSet::next(self : ResultSet) -> Row? {
 
 ///|
 fn make_result_set(output : @execute.QueryOutput) -> ResultSet {
-  ResultSet::{ schema: output.schema, rows: output.rows, next_row: 0 }
+  ResultSet::{
+    schema: output.schema,
+    rows: materialize_rows(output.chunks),
+    next_row: 0,
+  }
 }
 
 ///|
@@ -83,5 +87,36 @@ fn map_plan_error(err : @plan.PlanError) -> DbError {
     @plan.PlanError::Scan(message) => DbError::Scan(message)
     @plan.PlanError::Io(message) => DbError::Io(message)
     @plan.PlanError::Unsupported(message) => DbError::Unsupported(message)
+  }
+}
+
+///|
+fn materialize_rows(chunks : Array[@engine.DataChunk]) -> Array[Row] {
+  let rows = []
+  for chunk in chunks {
+    for row_index in 0..<chunk.len {
+      let row = []
+      for column in chunk.columns {
+        row.push(vector_value_at(column, row_index))
+      }
+      rows.push(row)
+    }
+  }
+  rows
+}
+
+///|
+fn vector_value_at(vector : @engine.Vector, row_index : Int) -> Value {
+  let is_valid = match vector.validity.is_valid(row_index) {
+    Some(value) => value
+    None => false
+  }
+  guard is_valid else { return Value::Null }
+  match vector.values {
+    @engine.VectorBuffer::Nulls(_) => Value::Null
+    @engine.VectorBuffer::Bool(values) => Value::Boolean(values[row_index])
+    @engine.VectorBuffer::Int64(values) => Value::BigInt(values[row_index])
+    @engine.VectorBuffer::Double(values) => Value::Double(values[row_index])
+    @engine.VectorBuffer::Varchar(values) => Value::Varchar(values[row_index])
   }
 }
