@@ -4,6 +4,7 @@ pub(all) suberror ScanError {
   Io(String)
   JsonParse(Int, String)
   JsonRootNotObject(Int)
+  CsvMalformed(String)
   TypeMismatch(String, Int, String)
 } derive(Show)
 

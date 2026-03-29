@@ -6,9 +6,15 @@ import {
 }
 
 // Values
+pub fn infer_csv_schema(String) -> @engine.Schema raise ScanError
+
 pub fn infer_jsonl_schema(String) -> @engine.Schema raise ScanError
 
+pub fn read_csv(String) -> CsvScanner raise ScanError
+
 pub fn read_jsonl(String) -> JsonlScanner raise ScanError
+
+pub fn scan_csv(String) -> CsvScanner raise ScanError
 
 pub fn scan_jsonl(String) -> JsonlScanner raise ScanError
 
@@ -17,11 +23,24 @@ pub(all) suberror ScanError {
   Io(String)
   JsonParse(Int, String)
   JsonRootNotObject(Int)
+  CsvMalformed(String)
   TypeMismatch(String, Int, String)
 }
 pub impl Show for ScanError
 
 // Types and methods
+pub struct CsvScanner {
+  path : String
+  schema : @engine.Schema
+  mut next_row : Int
+  // private fields
+}
+pub fn CsvScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
+pub fn CsvScanner::reset(Self) -> Unit
+pub fn CsvScanner::schema(Self) -> @engine.Schema
+pub impl Eq for CsvScanner
+pub impl Show for CsvScanner
+
 pub struct JsonlScanner {
   path : String
   schema : @engine.Schema

@@ -1,0 +1,4 @@
+name,age,active
+Ada,30,true
+Bob,,false
+Carla,41,true

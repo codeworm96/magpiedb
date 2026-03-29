@@ -738,6 +738,7 @@ fn cast_to_double(value : @engine.Value) -> @engine.Value raise ExecuteError {
 fn map_scan_error(err : @scan.ScanError) -> ExecuteError {
   match err {
     @scan.ScanError::Io(message) => ExecuteError::Io(message)
+    @scan.ScanError::CsvMalformed(message) => ExecuteError::Scan(message)
     @scan.ScanError::JsonParse(line_no, message) =>
       ExecuteError::Scan("json parse error at line \{line_no}: \{message}")
     @scan.ScanError::JsonRootNotObject(line_no) =>

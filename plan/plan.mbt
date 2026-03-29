@@ -369,6 +369,7 @@ fn type_name_to_logical_type(type_name : @sql.TypeName) -> @engine.LogicalType {
 fn map_scan_error(err : @scan.ScanError) -> PlanError {
   match err {
     @scan.ScanError::Io(message) => PlanError::Io(message)
+    @scan.ScanError::CsvMalformed(message) => PlanError::Scan(message)
     @scan.ScanError::JsonParse(line_no, message) =>
       PlanError::Scan("json parse error at line \{line_no}: \{message}")
     @scan.ScanError::JsonRootNotObject(line_no) =>
