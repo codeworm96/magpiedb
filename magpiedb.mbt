@@ -19,4 +19,9 @@ pub suberror DbError {
   Execute(String)
   Unsupported(String)
   Internal(String)
-} derive(Show)
+} derive(Debug)
+
+///|
+fn _keep_internal_error_variant() -> DbError {
+  DbError::Internal("")
+}

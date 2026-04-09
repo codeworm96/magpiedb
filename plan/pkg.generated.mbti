@@ -2,6 +2,7 @@
 package "username/magpiedb/plan"
 
 import {
+  "moonbitlang/core/debug",
   "username/magpiedb/engine",
   "username/magpiedb/sql",
 }
@@ -18,37 +19,28 @@ pub suberror PlanError {
   Scan(String)
   Io(String)
   Unsupported(String)
-}
-pub impl Show for PlanError
+} derive(@debug.Debug)
 
 // Types and methods
 pub(all) struct BoundColumnRef {
   index : Int
   column : @engine.ColumnDef
-}
-pub impl Eq for BoundColumnRef
-pub impl Show for BoundColumnRef
+} derive(Eq, @debug.Debug)
 
 pub(all) struct CsvScan {
   path : String
   schema : @engine.Schema
-}
-pub impl Eq for CsvScan
-pub impl Show for CsvScan
+} derive(Eq, @debug.Debug)
 
 pub(all) struct FilterPlan {
   input : QueryPlan
   predicate : PlanExpr
-}
-pub impl Eq for FilterPlan
-pub impl Show for FilterPlan
+} derive(Eq, @debug.Debug)
 
 pub(all) struct JsonlScan {
   path : String
   schema : @engine.Schema
-}
-pub impl Eq for JsonlScan
-pub impl Show for JsonlScan
+} derive(Eq, @debug.Debug)
 
 pub(all) enum PlanExpr {
   ColumnRef(BoundColumnRef)
@@ -62,45 +54,33 @@ pub(all) enum PlanExpr {
   IsNull(PlanExpr)
   IsNotNull(PlanExpr)
   Cast(PlanExpr, @engine.LogicalType)
-}
-pub impl Eq for PlanExpr
-pub impl Show for PlanExpr
+} derive(Eq, @debug.Debug)
 
 pub(all) struct PlanSelectItem {
   expr : PlanExpr
   output_name : String
-}
-pub impl Eq for PlanSelectItem
-pub impl Show for PlanSelectItem
+} derive(Eq, @debug.Debug)
 
 pub(all) struct ProjectionPlan {
   input : QueryPlan
   projections : Array[PlanSelectItem]
   output_schema : @engine.Schema
-}
-pub impl Eq for ProjectionPlan
-pub impl Show for ProjectionPlan
+} derive(Eq, @debug.Debug)
 
 pub(all) enum QueryPlan {
   Scan(ScanPlan)
   Filter(FilterPlan)
   Projection(ProjectionPlan)
-}
-pub impl Eq for QueryPlan
-pub impl Show for QueryPlan
+} derive(Eq, @debug.Debug)
 
 pub(all) struct ScanPlan {
   source : ScanSource
-}
-pub impl Eq for ScanPlan
-pub impl Show for ScanPlan
+} derive(Eq, @debug.Debug)
 
 pub(all) enum ScanSource {
   Csv(CsvScan)
   Jsonl(JsonlScan)
-}
-pub impl Eq for ScanSource
-pub impl Show for ScanSource
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

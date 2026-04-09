@@ -17,13 +17,13 @@ pub struct JsonlScanner {
   schema : Schema
   priv rows : Array[ParsedJsonlRow]
   mut next_row : Int
-} derive(Eq, Show)
+}
 
 ///|
 priv struct ParsedJsonlRow {
   line_no : Int
   object : Map[String, Json]
-} derive(Eq, Show)
+}
 
 ///|
 /// Full JSONL scan entrypoint used by later planning/execution stages.
@@ -177,7 +177,7 @@ fn merge_logical_types(left : LogicalType, right : LogicalType) -> LogicalType {
 ///|
 fn json_number_to_bigint(number : Double, repr : String?) -> Int64? {
   match repr {
-    Some(text) => Some(@strconv.parse_int64(text[:])) catch { _ => None }
+    Some(text) => Some(@string.parse_int64(text[:])) catch { _ => None }
     None =>
       // REVIEW: this fallback is only safe while core/json preserves integral
       // values exactly in `Double`. Large integers can lose precision before we

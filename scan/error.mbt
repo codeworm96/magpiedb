@@ -6,7 +6,7 @@ pub(all) suberror ScanError {
   JsonRootNotObject(Int)
   CsvMalformed(String)
   TypeMismatch(String, Int, String)
-} derive(Show)
+} derive(Debug)
 
 ///|
 fn map_io_error(err : @fs.IOError) -> ScanError {
@@ -19,7 +19,7 @@ fn map_io_error(err : @fs.IOError) -> ScanError {
 fn json_parse_message(err : @json.ParseError) -> String {
   match err {
     InvalidChar(position, char) =>
-      "invalid character \{repr(char)} at line \{position.line}, column \{position.column}"
+      "invalid character \{to_repr(char)} at line \{position.line}, column \{position.column}"
     InvalidEof => "unexpected end of input"
     InvalidNumber(position, repr) =>
       "invalid number \{repr} at line \{position.line}, column \{position.column}"

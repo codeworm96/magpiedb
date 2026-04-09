@@ -6,7 +6,7 @@ pub(all) enum LogicalType {
   BigInt
   Double
   Varchar
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Column metadata is stable across chunks and result sets.
@@ -14,13 +14,13 @@ pub(all) struct ColumnDef {
   name : String
   data_type : LogicalType
   nullable : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Schemas describe column order and names; vectors follow this order exactly.
 pub(all) struct Schema {
   columns : Array[ColumnDef]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Public scalar value container used at API boundaries.
@@ -30,7 +30,7 @@ pub(all) enum Value {
   BigInt(Int64)
   Double(Double)
   Varchar(String)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Rows stay as a public convenience type; internal operators should stay columnar.

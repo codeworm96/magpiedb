@@ -8,7 +8,7 @@ priv enum ScanOperator {
 pub struct QueryOutput {
   schema : @engine.Schema
   chunks : Array[@engine.DataChunk]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub suberror ExecuteError {
@@ -18,7 +18,7 @@ pub suberror ExecuteError {
   Io(String)
   Execute(String)
   Unsupported(String)
-} derive(Show)
+} derive(Debug)
 
 ///|
 pub fn execute_query(query : @sql.Query) -> QueryOutput raise ExecuteError {
@@ -189,7 +189,7 @@ fn eval_expr_to_vector(
     @plan.PlanExpr::IntegerLiteral(text) =>
       constant_vector(
         @engine.Value::BigInt(
-          @strconv.parse_int64(text[:]) catch {
+          @string.parse_int64(text[:]) catch {
             _ => raise ExecuteError::Execute("invalid integer literal: \{text}")
           },
         ),
@@ -198,7 +198,7 @@ fn eval_expr_to_vector(
     @plan.PlanExpr::DoubleLiteral(text) =>
       constant_vector(
         @engine.Value::Double(
-          @strconv.parse_double(text[:]) catch {
+          @string.parse_double(text[:]) catch {
             _ => raise ExecuteError::Execute("invalid double literal: \{text}")
           },
         ),
@@ -736,7 +736,7 @@ fn cast_to_bigint(value : @engine.Value) -> @engine.Value raise ExecuteError {
     @engine.Value::Double(v) => @engine.Value::BigInt(v.to_int64())
     @engine.Value::Varchar(text) =>
       @engine.Value::BigInt(
-        @strconv.parse_int64(text[:]) catch {
+        @string.parse_int64(text[:]) catch {
           _ => raise ExecuteError::Execute("cannot cast VARCHAR to BIGINT")
         },
       )
@@ -753,7 +753,7 @@ fn cast_to_double(value : @engine.Value) -> @engine.Value raise ExecuteError {
     @engine.Value::Double(v) => @engine.Value::Double(v)
     @engine.Value::Varchar(text) =>
       @engine.Value::Double(
-        @strconv.parse_double(text[:]) catch {
+        @string.parse_double(text[:]) catch {
           _ => raise ExecuteError::Execute("cannot cast VARCHAR to DOUBLE")
         },
       )

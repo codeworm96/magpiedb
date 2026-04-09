@@ -3,25 +3,25 @@ pub struct Position {
   offset : Int
   line : Int
   column : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub struct Span {
   start : Position
   end_ : Position
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub suberror LexError {
   UnterminatedString(Int)
   UnrecognizedChar(Int, Char)
-} derive(Show)
+} derive(Debug)
 
 ///|
 pub suberror SqlSyntaxError {
   Lex(LexError)
   Parse(ParseError)
-} derive(Show)
+}
 
 ///|
 pub fn span_from_offsets(sql : String, start : Int, end_ : Int) -> Span {

@@ -1,15 +1,15 @@
 ///|
-pub struct Database {} derive(Eq, Show)
+pub struct Database {} derive(Eq, Debug)
 
 ///|
-pub struct Connection {} derive(Eq, Show)
+pub struct Connection {} derive(Eq, Debug)
 
 ///|
 pub struct ResultSet {
   schema : Schema
   priv rows : Array[Row]
   priv mut next_row : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub fn Database::new() -> Database {

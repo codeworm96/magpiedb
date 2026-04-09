@@ -4,7 +4,7 @@ pub struct CsvScanner {
   schema : Schema
   priv rows : Array[Array[String]]
   mut next_row : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Full CSV scan entrypoint used by later planning/execution stages.
@@ -174,14 +174,14 @@ fn merge_csv_logical_types(
 
 ///|
 fn parse_csv_int64(field : String) -> Int64? {
-  Some(@strconv.parse_int64(field[:])) catch {
+  Some(@string.parse_int64(field[:])) catch {
     _ => None
   }
 }
 
 ///|
 fn parse_csv_double(field : String) -> Double? {
-  Some(@strconv.parse_double(field[:])) catch {
+  Some(@string.parse_double(field[:])) catch {
     _ => None
   }
 }

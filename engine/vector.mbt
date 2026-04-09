@@ -6,7 +6,7 @@ pub let fixed_vector_size : Int = 2048
 /// Nullability is tracked separately from typed buffers to avoid sentinel values.
 pub(all) struct ValidityMask {
   bits : Array[Bool]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Typed buffers hold only non-null payload storage for one logical column.
@@ -16,7 +16,7 @@ pub(all) enum VectorBuffer {
   Int64(Array[Int64])
   Double(Array[Double])
   Varchar(Array[String])
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// A vector is one typed column plus its validity mask.
@@ -24,7 +24,7 @@ pub(all) struct Vector {
   logical_type : LogicalType
   values : VectorBuffer
   validity : ValidityMask
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// DataChunk is the internal execution batch: many aligned column vectors, no rows.
@@ -32,7 +32,7 @@ pub(all) struct DataChunk {
   schema : Schema
   columns : Array[Vector]
   len : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub fn ValidityMask::new(bits : Array[Bool]) -> ValidityMask {

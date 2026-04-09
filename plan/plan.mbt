@@ -5,31 +5,31 @@ pub suberror PlanError {
   Scan(String)
   Io(String)
   Unsupported(String)
-} derive(Show)
+} derive(Debug)
 
 ///|
 pub(all) struct CsvScan {
   path : String
   schema : @engine.Schema
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) struct JsonlScan {
   path : String
   schema : @engine.Schema
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) enum ScanSource {
   Csv(CsvScan)
   Jsonl(JsonlScan)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) struct BoundColumnRef {
   index : Int
   column : @engine.ColumnDef
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) enum PlanExpr {
@@ -44,38 +44,38 @@ pub(all) enum PlanExpr {
   IsNull(PlanExpr)
   IsNotNull(PlanExpr)
   Cast(PlanExpr, @engine.LogicalType)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) struct PlanSelectItem {
   expr : PlanExpr
   output_name : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) struct ScanPlan {
   source : ScanSource
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) struct FilterPlan {
   input : QueryPlan
   predicate : PlanExpr
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) struct ProjectionPlan {
   input : QueryPlan
   projections : Array[PlanSelectItem]
   output_schema : @engine.Schema
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) enum QueryPlan {
   Scan(ScanPlan)
   Filter(FilterPlan)
   Projection(ProjectionPlan)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub fn plan_query(query : @sql.Query) -> QueryPlan raise PlanError {

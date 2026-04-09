@@ -2,6 +2,7 @@
 package "username/magpiedb/scan"
 
 import {
+  "moonbitlang/core/debug",
   "username/magpiedb/engine",
 }
 
@@ -25,8 +26,7 @@ pub(all) suberror ScanError {
   JsonRootNotObject(Int)
   CsvMalformed(String)
   TypeMismatch(String, Int, String)
-}
-pub impl Show for ScanError
+} derive(@debug.Debug)
 
 // Types and methods
 pub struct CsvScanner {
@@ -34,12 +34,10 @@ pub struct CsvScanner {
   schema : @engine.Schema
   mut next_row : Int
   // private fields
-}
+} derive(Eq, @debug.Debug)
 pub fn CsvScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
 pub fn CsvScanner::reset(Self) -> Unit
 pub fn CsvScanner::schema(Self) -> @engine.Schema
-pub impl Eq for CsvScanner
-pub impl Show for CsvScanner
 
 pub struct JsonlScanner {
   path : String
@@ -50,8 +48,6 @@ pub struct JsonlScanner {
 pub fn JsonlScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
 pub fn JsonlScanner::reset(Self) -> Unit
 pub fn JsonlScanner::schema(Self) -> @engine.Schema
-pub impl Eq for JsonlScanner
-pub impl Show for JsonlScanner
 
 // Type aliases
 

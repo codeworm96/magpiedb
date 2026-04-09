@@ -5,14 +5,14 @@ pub(all) enum TypeName {
   BigInt
   Double
   Varchar
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) enum UnaryOp {
   Plus
   Minus
   Not
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) enum BinaryOp {
@@ -28,7 +28,7 @@ pub(all) enum BinaryOp {
   GreaterThanOrEqual
   And
   Or
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub(all) enum Expr {
@@ -43,23 +43,23 @@ pub(all) enum Expr {
   IsNull(Expr)
   IsNotNull(Expr)
   Cast(Expr, TypeName)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub struct SelectItem {
   expr : Expr
   output_name : String?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub struct TableFunction {
   name : String
   arguments : Array[Expr]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub struct Query {
   select_items : Array[SelectItem]
   from : TableFunction
   where_clause : Expr?
-} derive(Eq, Show)
+} derive(Eq, Debug)

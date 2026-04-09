@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "username/magpiedb/engine"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub fn empty_vector(LogicalType) -> Vector
 
@@ -13,20 +17,18 @@ pub(all) struct ColumnDef {
   name : String
   data_type : LogicalType
   nullable : Bool
-}
-pub impl Eq for ColumnDef
+} derive(Eq, @debug.Debug)
 pub impl Show for ColumnDef
 
 pub(all) struct DataChunk {
   schema : Schema
   columns : Array[Vector]
   len : Int
-}
+} derive(Eq, @debug.Debug)
 pub fn DataChunk::column_count(Self) -> Int
 pub fn DataChunk::empty(Schema) -> Self
 pub fn DataChunk::is_empty(Self) -> Bool
 pub fn DataChunk::is_full(Self) -> Bool
-pub impl Eq for DataChunk
 pub impl Show for DataChunk
 
 pub(all) enum LogicalType {
@@ -35,27 +37,23 @@ pub(all) enum LogicalType {
   BigInt
   Double
   Varchar
-}
-pub impl Eq for LogicalType
+} derive(Eq, @debug.Debug)
 pub impl Show for LogicalType
 
 pub(all) struct Schema {
   columns : Array[ColumnDef]
-}
+} derive(Eq, @debug.Debug)
 pub fn Schema::column_count(Self) -> Int
 pub fn Schema::column_index(Self, String) -> Int?
-pub impl Eq for Schema
-pub impl Show for Schema
 
 pub(all) struct ValidityMask {
   bits : Array[Bool]
-}
+} derive(Eq, @debug.Debug)
 pub fn ValidityMask::all_null(Int) -> Self
 pub fn ValidityMask::all_valid(Int) -> Self
 pub fn ValidityMask::is_valid(Self, Int) -> Bool?
 pub fn ValidityMask::len(Self) -> Int
 pub fn ValidityMask::new(Array[Bool]) -> Self
-pub impl Eq for ValidityMask
 pub impl Show for ValidityMask
 
 pub(all) enum Value {
@@ -64,21 +62,18 @@ pub(all) enum Value {
   BigInt(Int64)
   Double(Double)
   Varchar(String)
-}
+} derive(Eq, @debug.Debug)
 pub fn Value::is_null(Self) -> Bool
 pub fn Value::logical_type(Self) -> LogicalType
-pub impl Eq for Value
 pub impl Show for Value
 
 pub(all) struct Vector {
   logical_type : LogicalType
   values : VectorBuffer
   validity : ValidityMask
-}
+} derive(Eq, @debug.Debug)
 pub fn Vector::is_empty(Self) -> Bool
 pub fn Vector::len(Self) -> Int
-pub impl Eq for Vector
-pub impl Show for Vector
 
 pub(all) enum VectorBuffer {
   Nulls(Int)
@@ -86,8 +81,7 @@ pub(all) enum VectorBuffer {
   Int64(Array[Int64])
   Double(Array[Double])
   Varchar(Array[String])
-}
-pub impl Eq for VectorBuffer
+} derive(Eq, @debug.Debug)
 pub impl Show for VectorBuffer
 
 // Type aliases

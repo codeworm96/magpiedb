@@ -2,6 +2,7 @@
 package "username/magpiedb/execute"
 
 import {
+  "moonbitlang/core/debug",
   "username/magpiedb/engine",
   "username/magpiedb/plan",
   "username/magpiedb/sql",
@@ -20,16 +21,13 @@ pub suberror ExecuteError {
   Io(String)
   Execute(String)
   Unsupported(String)
-}
-pub impl Show for ExecuteError
+} derive(@debug.Debug)
 
 // Types and methods
 pub struct QueryOutput {
   schema : @engine.Schema
   chunks : Array[@engine.DataChunk]
-}
-pub impl Eq for QueryOutput
-pub impl Show for QueryOutput
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 
