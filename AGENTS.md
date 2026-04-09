@@ -44,6 +44,10 @@ You can browse and install extra skills here:
 - Run `moon test` to check tests pass. MoonBit supports snapshot testing; when
   changes affect outputs, run `moon test --update` to refresh snapshots.
 
+- Warnings in generated `sql/parser.mbt` and `sql/lexer.mbt` are allowed. Do
+  not bypass `parser.mbty` / `lexer.mbtx` or add post-processing just to remove
+  warnings from those generated files.
+
 - Prefer `assert_eq` or `assert_true(pattern is Pattern(...))` for results that
   are stable or very unlikely to change. Use snapshot tests to record current
   behavior. For solid, well-defined results (e.g. scientific computations),
