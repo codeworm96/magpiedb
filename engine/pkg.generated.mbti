@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "username/magpiedb/engine"
+package "codeworm96/magpiedb/engine"
 
 import {
   "moonbitlang/core/debug",

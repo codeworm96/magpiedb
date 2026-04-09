@@ -1,6 +1,6 @@
 import {
-  "username/magpiedb/engine",
-  "username/magpiedb/execute",
-  "username/magpiedb/plan",
-  "username/magpiedb/sql",
+  "codeworm96/magpiedb/engine",
+  "codeworm96/magpiedb/execute",
+  "codeworm96/magpiedb/plan",
+  "codeworm96/magpiedb/sql",
 }

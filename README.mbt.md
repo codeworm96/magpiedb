@@ -1,1 +1,1 @@
-# username/magpiedb
+# codeworm96/magpiedb

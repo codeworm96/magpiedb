@@ -1,11 +1,11 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "username/magpiedb/execute"
+package "codeworm96/magpiedb/execute"
 
 import {
+  "codeworm96/magpiedb/engine",
+  "codeworm96/magpiedb/plan",
+  "codeworm96/magpiedb/sql",
   "moonbitlang/core/debug",
-  "username/magpiedb/engine",
-  "username/magpiedb/plan",
-  "username/magpiedb/sql",
 }
 
 // Values

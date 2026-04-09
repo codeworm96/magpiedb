@@ -2,6 +2,6 @@ import {
   "moonbitlang/core/json",
   "moonbitlang/core/string",
   "moonbitlang/x/fs",
-  "username/magpiedb/engine",
+  "codeworm96/magpiedb/engine",
   "xunyoyo/NyaCSV",
 }

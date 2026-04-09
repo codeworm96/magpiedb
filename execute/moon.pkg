@@ -1,7 +1,7 @@
 import {
   "moonbitlang/core/string",
-  "username/magpiedb/engine",
-  "username/magpiedb/plan",
-  "username/magpiedb/scan",
-  "username/magpiedb/sql",
+  "codeworm96/magpiedb/engine",
+  "codeworm96/magpiedb/plan",
+  "codeworm96/magpiedb/scan",
+  "codeworm96/magpiedb/sql",
 }
