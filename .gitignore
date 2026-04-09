@@ -2,3 +2,5 @@
 _build/
 .mooncakes/
 .moonagent/
+sql/lexer.mbt
+sql/parser.mbt
