@@ -64,6 +64,7 @@ pub struct Query {
   select_items : Array[SelectItem]
   from : TableFunction
   where_clause : Expr?
+  // Each GROUP BY item is a column-reference path like ["active"] or ["people", "active"].
   group_by : Array[Array[String]]
   having_clause : Expr?
 } derive(Eq, Debug)
