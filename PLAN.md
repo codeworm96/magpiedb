@@ -35,8 +35,50 @@
 
 - Milestone 1: SQL lexer/parser/AST, file scanners, schema inference, public `query()` API, and projection/filter over CSV and JSONL.
 - Milestone 2: typed expression evaluation, null semantics, aggregate execution, grouped aggregation, and stable result materialization.
-- Milestone 3: sort/limit, filter pushdown, projection pruning, end-to-end fixtures, and CLI demo package.
-- Milestone 4: internal cleanup for the later roadmap: operator interfaces, vector APIs, and planner boundaries frozen so joins and persistent storage can be added without reworking the public API.
+- Milestone 3: table joins, multi-source binding, qualified column resolution, and join execution over chunked inputs.
+- Milestone 4: sort/limit, filter pushdown, projection pruning, end-to-end fixtures, and CLI demo package.
+- Milestone 5: internal cleanup for the later roadmap: operator interfaces, vector APIs, and planner boundaries frozen so persistent storage and broader SQL features can be added without reworking the public API.
+
+## Join Plan
+
+### Scope
+
+- Add table joins as the next major relational capability after grouped aggregation.
+- Support exactly two input sources in the first join milestone.
+- Support `INNER JOIN` first, with `LEFT JOIN` as the next extension if the executor structure remains clean.
+- Restrict join predicates to equality conditions between columns from the left and right inputs in the first implementation.
+- Keep relation sources limited to built-in table functions such as `read_csv(path)` and `read_jsonl(path)`.
+
+### SQL Surface
+
+- Extend `FROM` to support `source [AS alias] JOIN source [AS alias] ON left_col = right_col`.
+- Support qualified references such as `left.id` and `right.id`, and require qualification when column names are ambiguous.
+- Preserve existing `WHERE` behavior after join output is formed.
+- Keep non-equality joins, `USING`, `NATURAL JOIN`, and multi-join chains out of scope for the first join milestone.
+
+### Planner and Binder Changes
+
+- Extend the SQL AST to represent joined relations, relation aliases, and join predicates.
+- Replace the single-source binder with relation-scope binding that tracks left and right schemas plus optional aliases.
+- Add ambiguity checks so duplicate column names require qualification.
+- Lower bound joins to a logical `Join` node with explicit left input, right input, join kind, join keys, and output schema.
+- Preserve the current `Filter` and `Projection` layering above the join node so existing executor code can be reused.
+
+### Execution Changes
+
+- Add a physical join operator over `DataChunk`s.
+- Start with an in-memory hash join for `INNER JOIN`, building on the smaller or right-side input and probing with the other side.
+- Materialize join output as chunked column vectors, not rows, and keep row materialization only at the public `ResultSet` boundary.
+- Define null join semantics explicitly: `NULL` never matches `NULL` for equality joins.
+- Delay join reordering and cost-based decisions; the first implementation can execute joins in written order.
+
+### Tests
+
+- Parser tests for join syntax, aliases, qualified columns, and unsupported join forms.
+- Binder tests for ambiguous columns, missing aliases, wrong join predicate shapes, and schema/output naming.
+- Executor tests for successful inner joins across CSV/CSV, CSV/JSONL, and JSONL/JSONL fixtures.
+- Null-behavior tests confirming rows with null join keys do not match.
+- End-to-end public API tests for joined queries with projection and `WHERE`.
 
 ## Milestone 1 Breakdown
 
