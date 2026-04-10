@@ -52,6 +52,9 @@ fn make_ident_or_keyword(
     "SELECT" => SELECT
     "FROM" => FROM
     "WHERE" => WHERE
+    "GROUP" => GROUP
+    "BY" => BY
+    "HAVING" => HAVING
     "AS" => AS
     "CAST" => CAST
     "IS" => IS

@@ -55,6 +55,8 @@ pub(all) enum Expr {
   DoubleLiteral(String)
   BooleanLiteral(Bool)
   NullLiteral
+  FunctionCall(String, Array[Expr])
+  FunctionCallStar(String)
   Unary(UnaryOp, Expr)
   Binary(BinaryOp, Expr, Expr)
   IsNull(Expr)
@@ -73,6 +75,8 @@ pub struct Query {
   select_items : Array[SelectItem]
   from : TableFunction
   where_clause : Expr?
+  group_by : Array[Array[String]]
+  having_clause : Expr?
 } derive(Eq, @debug.Debug)
 
 pub struct SelectItem {
@@ -98,6 +102,9 @@ pub(all) enum Token {
   SELECT
   FROM
   WHERE
+  GROUP
+  BY
+  HAVING
   AS
   CAST
   IS
@@ -137,6 +144,9 @@ pub(all) enum TokenKind {
   TK_SELECT
   TK_FROM
   TK_WHERE
+  TK_GROUP
+  TK_BY
+  TK_HAVING
   TK_AS
   TK_CAST
   TK_IS

@@ -38,6 +38,8 @@ pub(all) enum Expr {
   DoubleLiteral(String)
   BooleanLiteral(Bool)
   NullLiteral
+  FunctionCall(String, Array[Expr])
+  FunctionCallStar(String)
   Unary(UnaryOp, Expr)
   Binary(BinaryOp, Expr, Expr)
   IsNull(Expr)
@@ -62,4 +64,6 @@ pub struct Query {
   select_items : Array[SelectItem]
   from : TableFunction
   where_clause : Expr?
+  group_by : Array[Array[String]]
+  having_clause : Expr?
 } derive(Eq, Debug)

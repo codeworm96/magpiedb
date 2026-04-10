@@ -199,6 +199,14 @@ fn bind_expr(
     @sql.Expr::DoubleLiteral(text) => PlanExpr::DoubleLiteral(text)
     @sql.Expr::BooleanLiteral(value) => PlanExpr::BooleanLiteral(value)
     @sql.Expr::NullLiteral => PlanExpr::NullLiteral
+    @sql.Expr::FunctionCall(name, _) =>
+      raise PlanError::Unsupported(
+        "function calls are not planned yet: \{name}",
+      )
+    @sql.Expr::FunctionCallStar(name) =>
+      raise PlanError::Unsupported(
+        "aggregate calls are not planned yet: \{name}(*)",
+      )
     @sql.Expr::Unary(op, inner) => bind_unary_expr(op, inner, schema)
     @sql.Expr::Binary(op, left, right) =>
       bind_binary_expr(op, left, right, schema)
