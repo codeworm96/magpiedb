@@ -39,6 +39,102 @@
 - Milestone 4: sort/limit, filter pushdown, projection pruning, end-to-end fixtures, and CLI demo package.
 - Milestone 5: internal cleanup for the later roadmap: operator interfaces, vector APIs, and planner boundaries frozen so persistent storage and broader SQL features can be added without reworking the public API.
 
+## Milestone 2 Breakdown
+
+### Scope
+
+- Extend the current single-source query engine to support scalar aggregates and grouped aggregation over existing CSV and JSONL scan sources.
+- Support global aggregate queries without `GROUP BY`, grouped aggregate queries with `GROUP BY`, and post-aggregate filtering with `HAVING`.
+- Keep the milestone limited to one scan source per query; joins, sort/limit, subqueries, and window functions remain out of scope.
+- Support aggregate functions `COUNT(*)`, `COUNT(expr)`, `SUM`, `AVG`, `MIN`, and `MAX`.
+- Exclude `DISTINCT`, `COUNT(DISTINCT ...)`, `GROUPING SETS`, rollups, and aggregate `ORDER BY` from this milestone.
+
+### Task 1: SQL Surface Expansion
+
+- Extend the SQL AST and parser to represent function-call expressions for aggregates, `GROUP BY`, and optional `HAVING`.
+- Treat aggregate function names case-insensitively and normalize them during binding.
+- Add parser support for `COUNT(*)` as a dedicated aggregate form instead of treating `*` as a normal expression.
+- Keep the first grouped-aggregation surface intentionally narrow: `GROUP BY` items are column references only, not arbitrary expressions.
+
+### Task 2: Aggregate Binding and Validation
+
+- Add binder logic that distinguishes scalar expressions, grouped column references, and aggregate expressions.
+- Reject invalid shapes early: nested aggregates, aggregates in `WHERE`, non-grouped/non-aggregated expressions in aggregate queries, and invalid `HAVING` references.
+- Allow `HAVING` to reference grouped columns and aggregate results only.
+- Define aggregate output types and nullability now:
+  `COUNT(*)` and `COUNT(expr)` -> `BIGINT NOT NULL`,
+  `SUM(BIGINT)` -> `BIGINT NULL`,
+  `SUM(DOUBLE)` -> `DOUBLE NULL`,
+  `AVG(...)` -> `DOUBLE NULL`,
+  `MIN/MAX(T)` -> `T NULL`.
+- Restrict `SUM` and `AVG` to numeric input, allow `COUNT` on any input, and allow `MIN/MAX` on `BOOLEAN`, `BIGINT`, `DOUBLE`, and `VARCHAR`.
+
+### Task 3: Null and Scalar Semantics
+
+- Centralize scalar expression semantics so the same rules apply in `WHERE`, aggregate arguments, `HAVING`, and final projections.
+- Use SQL-style null propagation for arithmetic and comparisons.
+- Keep three-valued logic for boolean expressions: `TRUE`, `FALSE`, and `NULL`, with `WHERE` and `HAVING` treating `NULL` as not passing the filter.
+- Define aggregate null behavior explicitly:
+  `COUNT(expr)` ignores nulls,
+  `SUM/AVG/MIN/MAX` ignore nulls,
+  and aggregates over an all-null group return `NULL` except `COUNT`, which returns `0`.
+- Define empty-input behavior explicitly:
+  a global aggregate query without `GROUP BY` returns one row,
+  while a grouped aggregate query over empty input returns zero rows.
+
+### Task 4: Logical Plan Changes
+
+- Add an `Aggregate` logical plan node that carries input plan, group keys, aggregate definitions, and output schema.
+- Model query flow as `Scan -> Filter(where) -> Aggregate(optional) -> Filter(having optional) -> Projection`.
+- Keep projection as the top layer so the public result materialization path stays unchanged.
+- Preserve the current single-source scan model under the aggregate node; multi-source binding is deferred to the join milestone.
+
+### Task 5: Aggregate State Model
+
+- Define explicit internal aggregate states for `Count`, `SumInt64`, `SumDouble`, `Avg`, `Min`, and `Max`.
+- Make state update and finalize behavior explicit so later partial aggregation or parallel execution can reuse the same interfaces.
+- For `AVG`, track running count plus running double sum and finalize to `DOUBLE`.
+- Keep group-key storage separate from aggregate states so grouped output schema and hash-key handling stay straightforward.
+
+### Task 6: Physical Aggregation Executor
+
+- Implement a global aggregation path for queries without `GROUP BY`.
+- Implement grouped hash aggregation for `GROUP BY`, keyed by the grouped columns.
+- Preserve deterministic group output order by emitting groups in first-seen input order rather than raw hash-table order.
+- Materialize aggregate output into `DataChunk`s using the same vector and validity-mask conventions as the current executor.
+- Keep row materialization only at the public `ResultSet` boundary.
+
+### Task 7: Expression Evaluation Refactor
+
+- Refactor expression evaluation so scalar kernels can be reused across pre-aggregate filters, aggregate argument evaluation, `HAVING`, and final projections.
+- Keep existing filter/projection behavior intact for non-aggregate queries.
+- Add explicit coercion points needed by aggregation, especially `BIGINT -> DOUBLE` for mixed numeric flows and `AVG`.
+- Make aggregate-query column naming deterministic: explicit aliases win; otherwise use stable defaults such as `count`, `sum`, `avg`, `min`, and `max`.
+
+### Task 8: Public API and CLI Wiring
+
+- Keep the public API shape unchanged: `Connection::query(sql)` still returns `Result[ResultSet, DbError]`.
+- Ensure `ResultSet::schema()` reports aggregate output columns with correct types and nullability.
+- Keep `ResultSet::next()` row-oriented even though grouped execution stays chunked internally.
+- Update the CLI path and any inline documentation/examples to demonstrate at least one global aggregate and one grouped aggregate query.
+
+### Task 9: Tests and Fixtures
+
+- Add parser tests for aggregate function syntax, `COUNT(*)`, `GROUP BY`, `HAVING`, and invalid aggregate forms.
+- Add binder/planner tests for grouped-column validation, aggregate type rules, nested-aggregate rejection, and invalid `HAVING` references.
+- Add executor tests for global aggregation, grouped aggregation, null handling, empty-input behavior, and deterministic group output ordering.
+- Add end-to-end public API tests for CSV and JSONL aggregate queries, including aliases and `HAVING`.
+- Add fixtures with repeated group keys, null values, and empty result cases so aggregate semantics are tested directly.
+
+### Acceptance Criteria
+
+- A user can run `SELECT COUNT(*) AS total FROM read_csv('fixtures/csv/people.csv')`.
+- A user can run `SELECT active, COUNT(*) AS total FROM read_jsonl('fixtures/jsonl/events.jsonl') GROUP BY active`.
+- A user can run a grouped aggregate with `HAVING`, and rows that do not satisfy the `HAVING` predicate are excluded.
+- Aggregate result schemas report the correct types and nullability through `ResultSet::schema()`.
+- Invalid aggregate queries return structured bind or execution errors rather than panics.
+- All Milestone 2 tests pass under `moon test`, and the public API generated by `moon info` reflects only the intended surface changes.
+
 ## Join Plan
 
 ### Scope
