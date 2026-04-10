@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "deps": {
     "moonbitlang/ulex-runtime": "0.4.3",
-    "moonbitlang/x": "0.4.38",
+    "moonbitlang/x": "0.4.43",
     "sennenki/pretty_prompt": "0.1.1",
-    "moonbitlang/async": "0.16.8",
-    "hustcer/tabular": "0.5.1",
+    "moonbitlang/async": "0.17.0",
+    "hustcer/tabular": "0.5.2",
     "xunyoyo/NyaCSV": "0.3.3"
   },
   "bin-deps": {
     "moonbitlang/ulex": "0.3.27",
-    "moonbitlang/yacc": "0.7.12"
+    "moonbitlang/yacc": "0.7.13"
   },
   "readme": "README.mbt.md",
   "repository": "",

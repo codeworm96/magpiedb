@@ -167,6 +167,7 @@ pub(all) enum TokenKind {
   TK_SEMICOLON
 }
 pub impl Show for TokenKind
+pub impl @debug.Debug for TokenKind
 
 pub(all) enum TypeName {
   Null
