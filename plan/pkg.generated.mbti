@@ -22,6 +22,28 @@ pub suberror PlanError {
 } derive(@debug.Debug)
 
 // Types and methods
+pub(all) struct AggregateDef {
+  kind : AggregateKind
+  input_expr : PlanExpr?
+  result_column : @engine.ColumnDef
+} derive(Eq, @debug.Debug)
+
+pub(all) enum AggregateKind {
+  CountStar
+  Count
+  Sum
+  Avg
+  Min
+  Max
+} derive(Eq, @debug.Debug)
+
+pub(all) struct AggregatePlan {
+  input : QueryPlan
+  group_keys : Array[BoundColumnRef]
+  aggregates : Array[AggregateDef]
+  output_schema : @engine.Schema
+} derive(Eq, @debug.Debug)
+
 pub(all) struct BoundColumnRef {
   index : Int
   column : @engine.ColumnDef
@@ -70,6 +92,7 @@ pub(all) struct ProjectionPlan {
 pub(all) enum QueryPlan {
   Scan(ScanPlan)
   Filter(FilterPlan)
+  Aggregate(AggregatePlan)
   Projection(ProjectionPlan)
 } derive(Eq, @debug.Debug)
 

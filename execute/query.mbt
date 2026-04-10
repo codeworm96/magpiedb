@@ -1,7 +1,11 @@
 ///|
-priv enum ScanOperator {
-  Csv(@scan.CsvScanner)
-  Jsonl(@scan.JsonlScanner)
+priv enum AggregateState {
+  Count(Int64)
+  SumInt64(Int64, Bool)
+  SumDouble(Double, Bool)
+  Avg(Double, Int64)
+  Min(@engine.Value)
+  Max(@engine.Value)
 }
 
 ///|
@@ -28,111 +32,438 @@ pub fn execute_query(query : @sql.Query) -> QueryOutput raise ExecuteError {
 
 ///|
 pub fn execute_plan(plan : @plan.QueryPlan) -> QueryOutput raise ExecuteError {
-  let scan = find_scan_source(plan)
-  let scanner = open_scan_source(scan)
+  let chunks = execute_plan_chunks(plan)
+  QueryOutput::{ schema: @plan.query_plan_schema(plan), chunks }
+}
+
+///|
+fn execute_plan_chunks(
+  plan : @plan.QueryPlan,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  match plan {
+    @plan.QueryPlan::Scan(scan_plan) => scan_source_chunks(scan_plan.source)
+    @plan.QueryPlan::Filter(filter_plan) =>
+      filter_plan_chunks(filter_plan.input, filter_plan.predicate)
+    @plan.QueryPlan::Aggregate(aggregate_plan) =>
+      aggregate_plan_chunks(aggregate_plan)
+    @plan.QueryPlan::Projection(projection_plan) =>
+      project_plan_chunks(
+        projection_plan.input,
+        projection_plan.projections,
+        projection_plan.output_schema,
+      )
+  }
+}
+
+///|
+fn scan_source_chunks(
+  source : @plan.ScanSource,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  match source {
+    @plan.ScanSource::Csv(scan) => {
+      let scanner = @scan.read_csv(scan.path) catch {
+        err => raise map_scan_error(err)
+      }
+      collect_csv_chunks(scanner)
+    }
+    @plan.ScanSource::Jsonl(scan) => {
+      let scanner = @scan.read_jsonl(scan.path) catch {
+        err => raise map_scan_error(err)
+      }
+      collect_jsonl_chunks(scanner)
+    }
+  }
+}
+
+///|
+fn collect_csv_chunks(
+  scanner : @scan.CsvScanner,
+) -> Array[@engine.DataChunk] raise ExecuteError {
   let chunks = []
   while true {
-    let next_chunk = next_plan_chunk(plan, scanner)
+    let next_chunk = scanner.next_chunk() catch {
+      err => raise map_scan_error(err)
+    }
     match next_chunk {
       Some(chunk) => chunks.push(chunk)
       None => break
     }
   }
-  QueryOutput::{ schema: @plan.query_plan_schema(plan), chunks }
+  chunks
 }
 
 ///|
-fn next_plan_chunk(
-  plan : @plan.QueryPlan,
-  scanner : ScanOperator,
-) -> @engine.DataChunk? raise ExecuteError {
-  match plan {
-    @plan.QueryPlan::Scan(_) => next_scan_chunk(scanner)
-    @plan.QueryPlan::Filter(filter_plan) =>
-      next_filter_chunk(filter_plan, scanner)
-    @plan.QueryPlan::Projection(projection_plan) =>
-      next_projection_chunk(projection_plan, scanner)
-  }
-}
-
-///|
-fn next_filter_chunk(
-  filter_plan : @plan.FilterPlan,
-  scanner : ScanOperator,
-) -> @engine.DataChunk? raise ExecuteError {
-  let mut next_input = next_plan_chunk(filter_plan.input, scanner)
-  while next_input is Some(chunk) {
-    let filtered = filter_chunk(chunk, filter_plan.predicate)
-    if !filtered.is_empty() {
-      return Some(filtered)
+fn collect_jsonl_chunks(
+  scanner : @scan.JsonlScanner,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let chunks = []
+  while true {
+    let next_chunk = scanner.next_chunk() catch {
+      err => raise map_scan_error(err)
     }
-    next_input = next_plan_chunk(filter_plan.input, scanner)
+    match next_chunk {
+      Some(chunk) => chunks.push(chunk)
+      None => break
+    }
   }
-  None
+  chunks
 }
 
 ///|
-fn next_projection_chunk(
-  projection_plan : @plan.ProjectionPlan,
-  scanner : ScanOperator,
-) -> @engine.DataChunk? raise ExecuteError {
-  match next_plan_chunk(projection_plan.input, scanner) {
-    None => None
-    Some(chunk) =>
-      Some(
-        project_chunk(
-          chunk,
-          projection_plan.projections,
-          projection_plan.output_schema,
-        ),
-      )
+fn filter_plan_chunks(
+  input : @plan.QueryPlan,
+  predicate : @plan.PlanExpr,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let output = []
+  for chunk in execute_plan_chunks(input) {
+    let filtered = filter_chunk(chunk, predicate)
+    if !filtered.is_empty() {
+      output.push(filtered)
+    }
   }
+  output
 }
 
 ///|
-fn find_scan_source(plan : @plan.QueryPlan) -> @plan.ScanSource {
-  match plan {
-    @plan.QueryPlan::Scan(scan_plan) => scan_plan.source
-    @plan.QueryPlan::Filter(filter_plan) => find_scan_source(filter_plan.input)
-    @plan.QueryPlan::Projection(projection_plan) =>
-      find_scan_source(projection_plan.input)
+fn project_plan_chunks(
+  input : @plan.QueryPlan,
+  projections : Array[@plan.PlanSelectItem],
+  output_schema : @engine.Schema,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let output = []
+  for chunk in execute_plan_chunks(input) {
+    output.push(project_chunk(chunk, projections, output_schema))
   }
+  output
 }
 
 ///|
-fn open_scan_source(
-  source : @plan.ScanSource,
-) -> ScanOperator raise ExecuteError {
-  match source {
-    @plan.ScanSource::Csv(scan) =>
-      ScanOperator::Csv(
-        @scan.read_csv(scan.path) catch {
-          err => raise map_scan_error(err)
-        },
-      )
-    @plan.ScanSource::Jsonl(scan) =>
-      ScanOperator::Jsonl(
-        @scan.read_jsonl(scan.path) catch {
-          err => raise map_scan_error(err)
-        },
-      )
-  }
-}
+fn aggregate_plan_chunks(
+  aggregate_plan : @plan.AggregatePlan,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let input_chunks = execute_plan_chunks(aggregate_plan.input)
+  let group_indices : Map[String, Int] = {}
+  let group_values = []
+  let group_states = []
 
-///|
-fn next_scan_chunk(
-  scanner : ScanOperator,
-) -> @engine.DataChunk? raise ExecuteError {
-  match scanner {
-    ScanOperator::Csv(scanner) =>
-      scanner.next_chunk() catch {
-        err => raise map_scan_error(err)
+  if aggregate_plan.group_keys.length() == 0 {
+    group_indices[""] = 0
+    group_values.push([])
+    group_states.push(init_aggregate_states(aggregate_plan.aggregates))
+  }
+
+  for chunk in input_chunks {
+    let group_vectors = []
+    for group_key in aggregate_plan.group_keys {
+      group_vectors.push(chunk.columns[group_key.index])
+    }
+    let aggregate_input_vectors = []
+    for aggregate in aggregate_plan.aggregates {
+      match aggregate.input_expr {
+        Some(expr) =>
+          aggregate_input_vectors.push(Some(eval_expr_to_vector(expr, chunk)))
+        None => aggregate_input_vectors.push(None)
       }
-    ScanOperator::Jsonl(scanner) =>
-      scanner.next_chunk() catch {
-        err => raise map_scan_error(err)
+    }
+
+    for row_index in 0..<chunk.len {
+      let group_index = if aggregate_plan.group_keys.length() == 0 {
+        0
+      } else {
+        let key_values = []
+        for vector in group_vectors {
+          key_values.push(vector_value_at(vector, row_index))
+        }
+        let key = encode_group_key(key_values)
+        match group_indices.get(key) {
+          Some(index) => index
+          None => {
+            let index = group_values.length()
+            group_indices[key] = index
+            group_values.push(key_values)
+            group_states.push(init_aggregate_states(aggregate_plan.aggregates))
+            index
+          }
+        }
       }
+      let states = group_states[group_index]
+      for aggregate_index in 0..<aggregate_plan.aggregates.length() {
+        let aggregate = aggregate_plan.aggregates[aggregate_index]
+        let next_state = match aggregate_input_vectors[aggregate_index] {
+          Some(vector) =>
+            update_aggregate_state(
+              states[aggregate_index],
+              aggregate.kind,
+              Some(vector_value_at(vector, row_index)),
+            )
+          None =>
+            update_aggregate_state(
+              states[aggregate_index],
+              aggregate.kind,
+              None,
+            )
+        }
+        states[aggregate_index] = next_state
+      }
+    }
   }
+
+  if aggregate_plan.group_keys.length() > 0 && group_values.length() == 0 {
+    return []
+  }
+
+  let rows = []
+  for group_index in 0..<group_values.length() {
+    let row = []
+    for value in group_values[group_index] {
+      row.push(value)
+    }
+    for state in group_states[group_index] {
+      row.push(finalize_aggregate_state(state))
+    }
+    rows.push(row)
+  }
+  rows_to_chunks(aggregate_plan.output_schema, rows)
+}
+
+///|
+fn init_aggregate_states(
+  aggregates : Array[@plan.AggregateDef],
+) -> Array[AggregateState] {
+  let states = []
+  for aggregate in aggregates {
+    states.push(init_aggregate_state(aggregate))
+  }
+  states
+}
+
+///|
+fn init_aggregate_state(aggregate : @plan.AggregateDef) -> AggregateState {
+  match aggregate.kind {
+    @plan.AggregateKind::CountStar | @plan.AggregateKind::Count =>
+      AggregateState::Count(0L)
+    @plan.AggregateKind::Sum =>
+      match aggregate.result_column.data_type {
+        @engine.LogicalType::BigInt => AggregateState::SumInt64(0L, false)
+        _ => AggregateState::SumDouble(0.0, false)
+      }
+    @plan.AggregateKind::Avg => AggregateState::Avg(0.0, 0L)
+    @plan.AggregateKind::Min => AggregateState::Min(@engine.Value::Null)
+    @plan.AggregateKind::Max => AggregateState::Max(@engine.Value::Null)
+  }
+}
+
+///|
+fn update_aggregate_state(
+  state : AggregateState,
+  kind : @plan.AggregateKind,
+  value : @engine.Value?,
+) -> AggregateState raise ExecuteError {
+  match (kind, state, value) {
+    (@plan.AggregateKind::CountStar, AggregateState::Count(count), _) =>
+      AggregateState::Count(count + 1L)
+    (
+      @plan.AggregateKind::Count,
+      AggregateState::Count(count),
+      Some(@engine.Value::Null),
+    )
+    | (@plan.AggregateKind::Count, AggregateState::Count(count), None) =>
+      AggregateState::Count(count)
+    (@plan.AggregateKind::Count, AggregateState::Count(count), Some(_)) =>
+      AggregateState::Count(count + 1L)
+    (
+      @plan.AggregateKind::Sum,
+      AggregateState::SumInt64(sum, _),
+      Some(@engine.Value::BigInt(v)),
+    ) => AggregateState::SumInt64(sum + v, true)
+    (
+      @plan.AggregateKind::Sum,
+      AggregateState::SumInt64(sum, seen),
+      Some(@engine.Value::Null),
+    )
+    | (@plan.AggregateKind::Sum, AggregateState::SumInt64(sum, seen), None) =>
+      AggregateState::SumInt64(sum, seen)
+    (
+      @plan.AggregateKind::Sum,
+      AggregateState::SumDouble(sum, _),
+      Some(@engine.Value::BigInt(v)),
+    ) => AggregateState::SumDouble(sum + v.to_double(), true)
+    (
+      @plan.AggregateKind::Sum,
+      AggregateState::SumDouble(sum, _),
+      Some(@engine.Value::Double(v)),
+    ) => AggregateState::SumDouble(sum + v, true)
+    (
+      @plan.AggregateKind::Sum,
+      AggregateState::SumDouble(sum, seen),
+      Some(@engine.Value::Null),
+    )
+    | (@plan.AggregateKind::Sum, AggregateState::SumDouble(sum, seen), None) =>
+      AggregateState::SumDouble(sum, seen)
+    (
+      @plan.AggregateKind::Avg,
+      AggregateState::Avg(sum, count),
+      Some(@engine.Value::BigInt(v)),
+    ) => AggregateState::Avg(sum + v.to_double(), count + 1L)
+    (
+      @plan.AggregateKind::Avg,
+      AggregateState::Avg(sum, count),
+      Some(@engine.Value::Double(v)),
+    ) => AggregateState::Avg(sum + v, count + 1L)
+    (
+      @plan.AggregateKind::Avg,
+      AggregateState::Avg(sum, count),
+      Some(@engine.Value::Null),
+    )
+    | (@plan.AggregateKind::Avg, AggregateState::Avg(sum, count), None) =>
+      AggregateState::Avg(sum, count)
+    (@plan.AggregateKind::Min, AggregateState::Min(current), Some(value)) =>
+      AggregateState::Min(update_extreme_value(current, value, true))
+    (@plan.AggregateKind::Min, AggregateState::Min(current), None) =>
+      AggregateState::Min(current)
+    (@plan.AggregateKind::Max, AggregateState::Max(current), Some(value)) =>
+      AggregateState::Max(update_extreme_value(current, value, false))
+    (@plan.AggregateKind::Max, AggregateState::Max(current), None) =>
+      AggregateState::Max(current)
+    _ => raise ExecuteError::Execute("invalid aggregate state update")
+  }
+}
+
+///|
+fn update_extreme_value(
+  current : @engine.Value,
+  next : @engine.Value,
+  choose_min : Bool,
+) -> @engine.Value raise ExecuteError {
+  guard next != @engine.Value::Null else { return current }
+  guard current != @engine.Value::Null else { return next }
+  let ordering = compare_values(current, next)
+  if choose_min {
+    if ordering <= 0 {
+      current
+    } else {
+      next
+    }
+  } else if ordering >= 0 {
+    current
+  } else {
+    next
+  }
+}
+
+///|
+fn compare_values(
+  left : @engine.Value,
+  right : @engine.Value,
+) -> Int raise ExecuteError {
+  match (left, right) {
+    (@engine.Value::Boolean(l), @engine.Value::Boolean(r)) =>
+      if l == r {
+        0
+      } else if !l && r {
+        -1
+      } else {
+        1
+      }
+    (@engine.Value::BigInt(l), @engine.Value::BigInt(r)) =>
+      if l < r {
+        -1
+      } else if l > r {
+        1
+      } else {
+        0
+      }
+    (@engine.Value::Double(l), @engine.Value::Double(r)) =>
+      if l < r {
+        -1
+      } else if l > r {
+        1
+      } else {
+        0
+      }
+    (@engine.Value::Varchar(l), @engine.Value::Varchar(r)) =>
+      l.lexical_compare(r)
+    _ => raise ExecuteError::Execute("invalid aggregate comparison")
+  }
+}
+
+///|
+fn finalize_aggregate_state(state : AggregateState) -> @engine.Value {
+  match state {
+    AggregateState::Count(count) => @engine.Value::BigInt(count)
+    AggregateState::SumInt64(sum, seen) =>
+      if seen {
+        @engine.Value::BigInt(sum)
+      } else {
+        @engine.Value::Null
+      }
+    AggregateState::SumDouble(sum, seen) =>
+      if seen {
+        @engine.Value::Double(sum)
+      } else {
+        @engine.Value::Null
+      }
+    AggregateState::Avg(sum, count) =>
+      if count == 0L {
+        @engine.Value::Null
+      } else {
+        @engine.Value::Double(sum / count.to_double())
+      }
+    AggregateState::Min(value) | AggregateState::Max(value) => value
+  }
+}
+
+///|
+fn encode_group_key(values : Array[@engine.Value]) -> String {
+  let parts = []
+  for value in values {
+    parts.push(encode_group_key_part(value))
+  }
+  parts.join("|")
+}
+
+///|
+fn encode_group_key_part(value : @engine.Value) -> String {
+  match value {
+    @engine.Value::Null => "n:"
+    @engine.Value::Boolean(v) => "b:\{v}"
+    @engine.Value::BigInt(v) => "i:\{v}"
+    @engine.Value::Double(v) => "d:\{v}"
+    @engine.Value::Varchar(v) => "s:\{v}"
+  }
+}
+
+///|
+fn rows_to_chunks(
+  schema : @engine.Schema,
+  rows : Array[Array[@engine.Value]],
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  if rows.length() == 0 {
+    return []
+  }
+  let chunks = []
+  let mut start = 0
+  while start < rows.length() {
+    let remaining = rows.length() - start
+    let len = if remaining > @engine.fixed_vector_size {
+      @engine.fixed_vector_size
+    } else {
+      remaining
+    }
+    let columns = []
+    for column_index in 0..<schema.columns.length() {
+      let values = []
+      for row_index in start..<(start + len) {
+        values.push(rows[row_index][column_index])
+      }
+      columns.push(
+        build_vector_from_values(schema.columns[column_index].data_type, values),
+      )
+    }
+    chunks.push(@engine.DataChunk::{ schema, columns, len })
+    start += len
+  }
+  chunks
 }
 
 ///|
@@ -147,7 +478,9 @@ fn filter_chunk(
       @engine.Value::Boolean(true) => selected_indices.push(row_index)
       @engine.Value::Boolean(false) | @engine.Value::Null => ()
       _ =>
-        raise ExecuteError::Execute("WHERE clause did not evaluate to BOOLEAN")
+        raise ExecuteError::Execute(
+          "filter predicate did not evaluate to BOOLEAN",
+        )
     }
   }
   if selected_indices.length() == 0 {

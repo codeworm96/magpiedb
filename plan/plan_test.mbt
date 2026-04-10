@@ -105,3 +105,55 @@ test "planner rejects non boolean where clause" {
     _ => fail("expected bind error")
   }
 }
+
+///|
+test "planner lowers grouped aggregate with having" {
+  let query = @sql.parse_sql(
+    "SELECT active, COUNT(*) AS total FROM read_jsonl('fixtures/jsonl/events.jsonl') GROUP BY active HAVING COUNT(*) > 1",
+  ).unwrap()
+  let plan = try! plan_query(query)
+
+  match plan {
+    Projection(projection_plan) => {
+      assert_eq(projection_plan.output_schema.columns, [
+        {
+          name: "active",
+          data_type: @engine.LogicalType::Boolean,
+          nullable: false,
+        },
+        {
+          name: "total",
+          data_type: @engine.LogicalType::BigInt,
+          nullable: false,
+        },
+      ])
+      match projection_plan.input {
+        Filter(filter_plan) =>
+          match filter_plan.input {
+            Aggregate(aggregate_plan) => {
+              assert_eq(aggregate_plan.group_keys.length(), 1)
+              assert_eq(aggregate_plan.aggregates.length(), 1)
+              assert_true(aggregate_plan.aggregates[0].kind == CountStar)
+            }
+            _ => fail("expected aggregate below having filter")
+          }
+        _ => fail("expected having filter under projection")
+      }
+    }
+    _ => fail("expected projection root")
+  }
+}
+
+///|
+test "planner rejects non grouped column in aggregate query" {
+  let query = @sql.parse_sql(
+    "SELECT name, COUNT(*) FROM read_csv('fixtures/csv/people.csv') GROUP BY active",
+  ).unwrap()
+  let err = (try? plan_query(query)).unwrap_err()
+
+  match err {
+    PlanError::Bind(message) =>
+      assert_true(message.contains("GROUP BY") || message.contains("aggregate"))
+    _ => fail("expected bind error")
+  }
+}
