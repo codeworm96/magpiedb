@@ -23,7 +23,7 @@ pub suberror LexError {
 pub suberror ParseError {
   UnexpectedToken(Token, (Int, Int), Array[TokenKind])
   UnexpectedEndOfInput(Int, Array[TokenKind])
-} derive(Show)
+} derive(@debug.Debug)
 
 pub suberror SqlSyntaxError {
   Lex(LexError)
@@ -126,7 +126,7 @@ pub(all) enum Token {
   GT
   GTE
   SEMICOLON
-} derive(Show)
+} derive(@debug.Debug)
 pub fn Token::kind(Self) -> TokenKind
 
 pub(all) enum TokenKind {

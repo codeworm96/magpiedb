@@ -7,6 +7,6 @@ pub impl Show for Expr with output(self, logger) {
 pub impl Show for SqlSyntaxError with output(self, logger) {
   match self {
     Lex(err) => logger.write_string("Lex(\{err.to_repr()})")
-    Parse(err) => logger.write_string("Parse(\{err.to_string()})")
+    Parse(err) => logger.write_string("Parse(\{err.to_repr()})")
   }
 }
