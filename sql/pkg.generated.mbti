@@ -65,6 +65,22 @@ pub(all) enum Expr {
 } derive(Eq, @debug.Debug)
 pub impl Show for Expr
 
+pub(all) enum FromItem {
+  Source(SourceRef)
+  Join(JoinRelation)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum JoinKind {
+  Inner
+} derive(Eq, @debug.Debug)
+
+pub struct JoinRelation {
+  left : SourceRef
+  right : SourceRef
+  join_kind : JoinKind
+  on : Expr
+} derive(Eq, @debug.Debug)
+
 pub struct Position {
   offset : Int
   line : Int
@@ -73,7 +89,7 @@ pub struct Position {
 
 pub struct Query {
   select_items : Array[SelectItem]
-  from : TableFunction
+  from : FromItem
   where_clause : Expr?
   group_by : Array[Array[String]]
   having_clause : Expr?
@@ -82,6 +98,11 @@ pub struct Query {
 pub struct SelectItem {
   expr : Expr
   output_name : String?
+} derive(Eq, @debug.Debug)
+
+pub struct SourceRef {
+  source : TableFunction
+  alias_name : String?
 } derive(Eq, @debug.Debug)
 
 pub struct Span {
@@ -105,6 +126,9 @@ pub(all) enum Token {
   GROUP
   BY
   HAVING
+  JOIN
+  INNER
+  ON
   AS
   CAST
   IS
@@ -147,6 +171,9 @@ pub(all) enum TokenKind {
   TK_GROUP
   TK_BY
   TK_HAVING
+  TK_JOIN
+  TK_INNER
+  TK_ON
   TK_AS
   TK_CAST
   TK_IS

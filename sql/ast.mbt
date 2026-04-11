@@ -60,9 +60,34 @@ pub struct TableFunction {
 } derive(Eq, Debug)
 
 ///|
+pub struct SourceRef {
+  source : TableFunction
+  alias_name : String?
+} derive(Eq, Debug)
+
+///|
+pub(all) enum JoinKind {
+  Inner
+} derive(Eq, Debug)
+
+///|
+pub struct JoinRelation {
+  left : SourceRef
+  right : SourceRef
+  join_kind : JoinKind
+  on : Expr
+} derive(Eq, Debug)
+
+///|
+pub(all) enum FromItem {
+  Source(SourceRef)
+  Join(JoinRelation)
+} derive(Eq, Debug)
+
+///|
 pub struct Query {
   select_items : Array[SelectItem]
-  from : TableFunction
+  from : FromItem
   where_clause : Expr?
   // Each GROUP BY item is a column-reference path like ["active"] or ["people", "active"].
   group_by : Array[Array[String]]

@@ -55,6 +55,9 @@ fn make_ident_or_keyword(
     "GROUP" => GROUP
     "BY" => BY
     "HAVING" => HAVING
+    "JOIN" => JOIN
+    "INNER" => INNER
+    "ON" => ON
     "AS" => AS
     "CAST" => CAST
     "IS" => IS

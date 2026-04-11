@@ -30,7 +30,7 @@ fn make_select_item(expr : Expr, output_name : String?) -> SelectItem {
 ///|
 fn make_query(
   select_items : Array[SelectItem],
-  from : TableFunction,
+  from : FromItem,
   where_clause : Expr?,
   group_by : Array[Array[String]],
   having_clause : Expr?,
@@ -41,6 +41,25 @@ fn make_query(
 ///|
 fn make_table_function(name : String, arguments : Array[Expr]) -> TableFunction {
   { name, arguments }
+}
+
+///|
+fn make_source_ref(source : TableFunction, alias_name : String?) -> SourceRef {
+  { source, alias_name }
+}
+
+///|
+fn make_source_from_item(source : SourceRef) -> FromItem {
+  FromItem::Source(source)
+}
+
+///|
+fn make_join_from_item(
+  left : SourceRef,
+  right : SourceRef,
+  on : Expr,
+) -> FromItem {
+  FromItem::Join(JoinRelation::{ left, right, join_kind: JoinKind::Inner, on })
 }
 
 ///|

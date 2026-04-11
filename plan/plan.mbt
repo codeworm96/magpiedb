@@ -226,20 +226,25 @@ fn plan_aggregate_query(
 }
 
 ///|
-fn bind_scan_source(from : @sql.TableFunction) -> ScanSource raise PlanError {
-  guard from.arguments.length() == 1 else {
+fn bind_scan_source(from : @sql.FromItem) -> ScanSource raise PlanError {
+  let source = match from {
+    @sql.FromItem::Source(source) => source.source
+    @sql.FromItem::Join(_) =>
+      raise PlanError::Unsupported("joins are not planned yet")
+  }
+  guard source.arguments.length() == 1 else {
     raise PlanError::InvalidArgument(
-      "\{from.name} requires exactly one argument",
+      "\{source.name} requires exactly one argument",
     )
   }
-  let path = match from.arguments[0] {
+  let path = match source.arguments[0] {
     @sql.Expr::StringLiteral(path) => path
     _ =>
       raise PlanError::InvalidArgument(
-        "\{from.name} path must be a string literal",
+        "\{source.name} path must be a string literal",
       )
   }
-  match from.name {
+  match source.name {
     "read_csv" => {
       let scanner = @scan.read_csv(path) catch {
         err => raise map_scan_error(err)
@@ -823,9 +828,8 @@ fn infer_binary_expr_type(
       ignore(infer_numeric_type(right))
       @engine.LogicalType::Double
     }
-    @sql.BinaryOp::Add
-    | @sql.BinaryOp::Subtract
-    | @sql.BinaryOp::Multiply => infer_binary_numeric_type(left, right)
+    @sql.BinaryOp::Add | @sql.BinaryOp::Subtract | @sql.BinaryOp::Multiply =>
+      infer_binary_numeric_type(left, right)
     _ => @engine.LogicalType::Boolean
   }
 }
