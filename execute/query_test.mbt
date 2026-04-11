@@ -123,3 +123,41 @@ test "execute plan treats division as double in aggregate inputs" {
   assert_eq(chunk.columns[0].values, @engine.VectorBuffer::Double([35.5]))
   assert_eq(chunk.columns[0].validity, @engine.ValidityMask::all_valid(1))
 }
+
+///|
+test "execute plan performs inner join with deterministic output order" {
+  let query = @sql.parse_sql(
+    "SELECT people.name, events.name, events.active FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  assert_eq(output.chunks.length(), 1)
+  let chunk = output.chunks[0]
+  assert_eq(chunk.len, 5)
+  assert_eq(
+    chunk.columns[0].values,
+    @engine.VectorBuffer::Varchar(["Ada", "Bob", "Bob", "Bobby", "Bobby"]),
+  )
+  assert_eq(
+    chunk.columns[1].values,
+    @engine.VectorBuffer::Varchar([
+      "Launch", "Review", "Retry", "Review", "Retry",
+    ]),
+  )
+  assert_eq(
+    chunk.columns[2].values,
+    @engine.VectorBuffer::Bool([true, false, true, false, true]),
+  )
+}
+
+///|
+test "execute plan does not match null join keys" {
+  let query = @sql.parse_sql(
+    "SELECT people.name FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id WHERE people.name = 'NoId'",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  assert_eq(output.chunks.length(), 0)
+}

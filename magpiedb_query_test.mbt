@@ -114,3 +114,25 @@ test "query treats division as float division inside aggregates" {
   assert_eq(result.next(), Some([Value::Double(35.5)]))
   assert_eq(result.next(), None)
 }
+
+///|
+test "query executes inner join with where over joined rows" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT people.name, events.active FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id WHERE events.active = true",
+    )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "name", data_type: LogicalType::Varchar, nullable: false },
+    { name: "active", data_type: LogicalType::Boolean, nullable: false },
+  ])
+  assert_eq(result.next(), Some([Value::Varchar("Ada"), Value::Boolean(true)]))
+  assert_eq(result.next(), Some([Value::Varchar("Bob"), Value::Boolean(true)]))
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Bobby"), Value::Boolean(true)]),
+  )
+  assert_eq(result.next(), None)
+}

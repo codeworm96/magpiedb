@@ -157,3 +157,71 @@ test "planner rejects non grouped column in aggregate query" {
     _ => fail("expected bind error")
   }
 }
+
+///|
+test "planner lowers inner join with qualified columns" {
+  let query = @sql.parse_sql(
+    "SELECT people.name, events.active FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id WHERE events.active = true",
+  ).unwrap()
+  let plan = try! plan_query(query)
+
+  match plan {
+    Projection(projection_plan) => {
+      assert_eq(projection_plan.output_schema.columns, [
+        {
+          name: "name",
+          data_type: @engine.LogicalType::Varchar,
+          nullable: false,
+        },
+        {
+          name: "active",
+          data_type: @engine.LogicalType::Boolean,
+          nullable: false,
+        },
+      ])
+      match projection_plan.input {
+        Filter(filter_plan) =>
+          match filter_plan.input {
+            Join(join_plan) => {
+              assert_eq(join_plan.left_key.index, 0)
+              assert_eq(join_plan.right_key.index, 1)
+              assert_eq(join_plan.output_schema.columns[0].name, "id")
+              assert_eq(join_plan.output_schema.columns[4].name, "id")
+            }
+            _ => fail("expected join under filter")
+          }
+        _ => fail("expected filter under projection")
+      }
+    }
+    _ => fail("expected projection root")
+  }
+}
+
+///|
+test "planner rejects ambiguous unqualified join columns" {
+  let query = @sql.parse_sql(
+    "SELECT name FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id",
+  ).unwrap()
+  let err = (try? plan_query(query)).unwrap_err()
+
+  match err {
+    PlanError::Bind(message) => assert_true(message.contains("ambiguous"))
+    _ => fail("expected bind error")
+  }
+}
+
+///|
+test "planner rejects invalid join predicate shape" {
+  let query = @sql.parse_sql(
+    "SELECT people.name FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = 1",
+  ).unwrap()
+  let err = (try? plan_query(query)).unwrap_err()
+
+  match err {
+    PlanError::Bind(message) =>
+      assert_true(
+        message.contains("column references") || message.contains("JOIN ON"),
+      )
+    _ => fail("expected bind error")
+  }
+}

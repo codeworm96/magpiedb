@@ -59,6 +59,15 @@ pub(all) struct FilterPlan {
   predicate : PlanExpr
 } derive(Eq, @debug.Debug)
 
+pub(all) struct JoinPlan {
+  left : QueryPlan
+  right : QueryPlan
+  join_kind : @sql.JoinKind
+  left_key : BoundColumnRef
+  right_key : BoundColumnRef
+  output_schema : @engine.Schema
+} derive(Eq, @debug.Debug)
+
 pub(all) struct JsonlScan {
   path : String
   schema : @engine.Schema
@@ -91,6 +100,7 @@ pub(all) struct ProjectionPlan {
 
 pub(all) enum QueryPlan {
   Scan(ScanPlan)
+  Join(JoinPlan)
   Filter(FilterPlan)
   Aggregate(AggregatePlan)
   Projection(ProjectionPlan)

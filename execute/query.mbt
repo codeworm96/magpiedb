@@ -42,6 +42,7 @@ fn execute_plan_chunks(
 ) -> Array[@engine.DataChunk] raise ExecuteError {
   match plan {
     @plan.QueryPlan::Scan(scan_plan) => scan_source_chunks(scan_plan.source)
+    @plan.QueryPlan::Join(join_plan) => join_plan_chunks(join_plan)
     @plan.QueryPlan::Filter(filter_plan) =>
       filter_plan_chunks(filter_plan.input, filter_plan.predicate)
     @plan.QueryPlan::Aggregate(aggregate_plan) =>
@@ -224,6 +225,73 @@ fn aggregate_plan_chunks(
     rows.push(row)
   }
   rows_to_chunks(aggregate_plan.output_schema, rows)
+}
+
+///|
+fn join_plan_chunks(
+  join_plan : @plan.JoinPlan,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  match join_plan.join_kind {
+    @sql.JoinKind::Inner => inner_join_plan_chunks(join_plan)
+  }
+}
+
+///|
+fn inner_join_plan_chunks(
+  join_plan : @plan.JoinPlan,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let left_chunks = execute_plan_chunks(join_plan.left)
+  let right_chunks = execute_plan_chunks(join_plan.right)
+  let right_rows = chunks_to_rows(right_chunks)
+  let right_indices : Map[String, Array[Int]] = {}
+
+  for index in 0..<right_rows.length() {
+    let key = encode_join_key(
+      right_rows[index][join_plan.right_key.index],
+      join_plan.left_key.column.data_type,
+      join_plan.right_key.column.data_type,
+    )
+    match key {
+      Some(key) =>
+        match right_indices.get(key) {
+          Some(indices) => indices.push(index)
+          None => right_indices[key] = [index]
+        }
+      None => ()
+    }
+  }
+
+  let output_rows = []
+  for left_chunk in left_chunks {
+    for left_row_index in 0..<left_chunk.len {
+      let left_row = chunk_row_at(left_chunk, left_row_index)
+      let key = encode_join_key(
+        left_row[join_plan.left_key.index],
+        join_plan.left_key.column.data_type,
+        join_plan.right_key.column.data_type,
+      )
+      match key {
+        Some(key) =>
+          match right_indices.get(key) {
+            Some(indices) =>
+              for index in indices {
+                let joined_row = []
+                for value in left_row {
+                  joined_row.push(value)
+                }
+                for value in right_rows[index] {
+                  joined_row.push(value)
+                }
+                output_rows.push(joined_row)
+              }
+            None => ()
+          }
+        None => ()
+      }
+    }
+  }
+
+  rows_to_chunks(join_plan.output_schema, output_rows)
 }
 
 ///|
@@ -434,6 +502,68 @@ fn encode_group_key_part(value : @engine.Value) -> String {
 }
 
 ///|
+fn chunks_to_rows(
+  chunks : Array[@engine.DataChunk],
+) -> Array[Array[@engine.Value]] {
+  let rows = []
+  for chunk in chunks {
+    for row_index in 0..<chunk.len {
+      rows.push(chunk_row_at(chunk, row_index))
+    }
+  }
+  rows
+}
+
+///|
+fn chunk_row_at(
+  chunk : @engine.DataChunk,
+  row_index : Int,
+) -> Array[@engine.Value] {
+  let row = []
+  for column in chunk.columns {
+    row.push(vector_value_at(column, row_index))
+  }
+  row
+}
+
+///|
+fn encode_join_key(
+  value : @engine.Value,
+  left_type : @engine.LogicalType,
+  right_type : @engine.LogicalType,
+) -> String? raise ExecuteError {
+  guard value != @engine.Value::Null else { return None }
+  if is_mixed_numeric_join(left_type, right_type) {
+    Some("n:\{value_to_double(value)}")
+  } else {
+    Some(encode_join_key_part(value))
+  }
+}
+
+///|
+fn is_mixed_numeric_join(
+  left_type : @engine.LogicalType,
+  right_type : @engine.LogicalType,
+) -> Bool {
+  match (left_type, right_type) {
+    (@engine.LogicalType::BigInt, @engine.LogicalType::Double)
+    | (@engine.LogicalType::Double, @engine.LogicalType::BigInt) => true
+    _ => false
+  }
+}
+
+///|
+fn encode_join_key_part(value : @engine.Value) -> String {
+  match value {
+    @engine.Value::Null => "n"
+    @engine.Value::Boolean(v) => if v { "b:1" } else { "b:0" }
+    @engine.Value::BigInt(v) => "i:\{v}"
+    @engine.Value::Double(v) => "d:\{v}"
+    @engine.Value::Varchar(v) => "s:\{v.length()}:\{v}"
+  }
+}
+
+///|
 fn rows_to_chunks(
   schema : @engine.Schema,
   rows : Array[Array[@engine.Value]],
@@ -637,10 +767,7 @@ fn infer_binary_type(
   match op {
     @sql.BinaryOp::And | @sql.BinaryOp::Or => @engine.LogicalType::Boolean
     @sql.BinaryOp::Divide => @engine.LogicalType::Double
-    @sql.BinaryOp::Add
-    | @sql.BinaryOp::Subtract
-    | @sql.BinaryOp::Multiply
-    =>
+    @sql.BinaryOp::Add | @sql.BinaryOp::Subtract | @sql.BinaryOp::Multiply =>
       match (left_type, right_type) {
         (@engine.LogicalType::Double, _) => @engine.LogicalType::Double
         (_, @engine.LogicalType::Double) => @engine.LogicalType::Double

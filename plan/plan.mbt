@@ -75,6 +75,16 @@ pub(all) struct ScanPlan {
 } derive(Eq, Debug)
 
 ///|
+pub(all) struct JoinPlan {
+  left : QueryPlan
+  right : QueryPlan
+  join_kind : @sql.JoinKind
+  left_key : BoundColumnRef
+  right_key : BoundColumnRef
+  output_schema : @engine.Schema
+} derive(Eq, Debug)
+
+///|
 pub(all) struct FilterPlan {
   input : QueryPlan
   predicate : PlanExpr
@@ -98,31 +108,62 @@ pub(all) struct ProjectionPlan {
 ///|
 pub(all) enum QueryPlan {
   Scan(ScanPlan)
+  Join(JoinPlan)
   Filter(FilterPlan)
   Aggregate(AggregatePlan)
   Projection(ProjectionPlan)
 } derive(Eq, Debug)
 
 ///|
+priv struct BoundRelation {
+  schema : @engine.Schema
+  alias_name : String?
+  relation_name : String
+  output_offset : Int
+}
+
+///|
+priv struct ColumnBindContext {
+  schema : @engine.Schema
+  relations : Array[BoundRelation]
+}
+
+///|
+priv struct BoundFrom {
+  plan : QueryPlan
+  context : ColumnBindContext
+  has_join : Bool
+}
+
+///|
+priv struct JoinColumnRef {
+  relation_index : Int
+  local_ref : BoundColumnRef
+}
+
+///|
 priv struct AggregateBindContext {
-  input_schema : @engine.Schema
+  input_context : ColumnBindContext
   group_keys : Array[BoundColumnRef]
   aggregates : Array[AggregateDef]
 }
 
 ///|
 pub fn plan_query(query : @sql.Query) -> QueryPlan raise PlanError {
-  let source = bind_scan_source(query.from)
-  let scan_plan = QueryPlan::Scan(ScanPlan::{ source, })
-  let input_schema = query_plan_schema(scan_plan)
+  let bound_from = bind_from_item(query.from)
 
   if contains_aggregate_in_query(query) || query.group_by.length() > 0 {
-    plan_aggregate_query(query, scan_plan, input_schema)
+    guard !bound_from.has_join else {
+      raise PlanError::Unsupported(
+        "aggregate queries over joins are not supported yet",
+      )
+    }
+    plan_aggregate_query(query, bound_from.plan, bound_from.context)
   } else {
     guard query.having_clause is None else {
       raise PlanError::Bind("HAVING requires GROUP BY or aggregate functions")
     }
-    plan_scalar_query(query, scan_plan, input_schema)
+    plan_scalar_query(query, bound_from.plan, bound_from.context)
   }
 }
 
@@ -130,6 +171,7 @@ pub fn plan_query(query : @sql.Query) -> QueryPlan raise PlanError {
 pub fn query_plan_schema(plan : QueryPlan) -> @engine.Schema {
   match plan {
     Scan(scan_plan) => scan_source_schema(scan_plan.source)
+    Join(join_plan) => join_plan.output_schema
     Filter(filter_plan) => query_plan_schema(filter_plan.input)
     Aggregate(aggregate_plan) => aggregate_plan.output_schema
     Projection(projection_plan) => projection_plan.output_schema
@@ -139,24 +181,24 @@ pub fn query_plan_schema(plan : QueryPlan) -> @engine.Schema {
 ///|
 fn plan_scalar_query(
   query : @sql.Query,
-  scan_plan : QueryPlan,
-  input_schema : @engine.Schema,
+  input_plan : QueryPlan,
+  context : ColumnBindContext,
 ) -> QueryPlan raise PlanError {
   guard !contains_aggregate_expr_option(query.where_clause) else {
     raise PlanError::Bind("aggregate functions are not allowed in WHERE")
   }
   let with_filter = match query.where_clause {
-    None => scan_plan
+    None => input_plan
     Some(expr) => {
-      let predicate = bind_scalar_expr(expr, input_schema)
+      let predicate = bind_scalar_expr(expr, context)
       match plan_expr_type(predicate) {
         @engine.LogicalType::Boolean | @engine.LogicalType::Null => ()
         _ => raise PlanError::Bind("WHERE clause must evaluate to BOOLEAN")
       }
-      QueryPlan::Filter(FilterPlan::{ input: scan_plan, predicate })
+      QueryPlan::Filter(FilterPlan::{ input: input_plan, predicate })
     }
   }
-  let projections = bind_scalar_select_items(query.select_items, input_schema)
+  let projections = bind_scalar_select_items(query.select_items, context)
   let output_schema = build_output_schema(projections)
   QueryPlan::Projection(ProjectionPlan::{
     input: with_filter,
@@ -168,27 +210,27 @@ fn plan_scalar_query(
 ///|
 fn plan_aggregate_query(
   query : @sql.Query,
-  scan_plan : QueryPlan,
-  input_schema : @engine.Schema,
+  input_plan : QueryPlan,
+  context : ColumnBindContext,
 ) -> QueryPlan raise PlanError {
   guard !contains_aggregate_expr_option(query.where_clause) else {
     raise PlanError::Bind("aggregate functions are not allowed in WHERE")
   }
   let with_filter = match query.where_clause {
-    None => scan_plan
+    None => input_plan
     Some(expr) => {
-      let predicate = bind_scalar_expr(expr, input_schema)
+      let predicate = bind_scalar_expr(expr, context)
       match plan_expr_type(predicate) {
         @engine.LogicalType::Boolean | @engine.LogicalType::Null => ()
         _ => raise PlanError::Bind("WHERE clause must evaluate to BOOLEAN")
       }
-      QueryPlan::Filter(FilterPlan::{ input: scan_plan, predicate })
+      QueryPlan::Filter(FilterPlan::{ input: input_plan, predicate })
     }
   }
 
-  let group_keys = bind_group_keys(query.group_by, input_schema)
+  let group_keys = bind_group_keys(query.group_by, context)
   let context = AggregateBindContext::{
-    input_schema,
+    input_context: context,
     group_keys,
     aggregates: [],
   }
@@ -226,12 +268,64 @@ fn plan_aggregate_query(
 }
 
 ///|
-fn bind_scan_source(from : @sql.FromItem) -> ScanSource raise PlanError {
-  let source = match from {
-    @sql.FromItem::Source(source) => source.source
-    @sql.FromItem::Join(_) =>
-      raise PlanError::Unsupported("joins are not planned yet")
+fn bind_from_item(from : @sql.FromItem) -> BoundFrom raise PlanError {
+  match from {
+    @sql.FromItem::Source(source_ref) => {
+      let source = bind_source_ref(source_ref)
+      let schema = scan_source_schema(source)
+      let relation = BoundRelation::{
+        schema,
+        alias_name: source_ref.alias_name,
+        relation_name: source_ref.source.name,
+        output_offset: 0,
+      }
+      BoundFrom::{
+        plan: QueryPlan::Scan(ScanPlan::{ source, }),
+        context: ColumnBindContext::{ schema, relations: [relation] },
+        has_join: false,
+      }
+    }
+    @sql.FromItem::Join(join) => bind_join_from_item(join)
   }
+}
+
+///|
+fn bind_join_from_item(join : @sql.JoinRelation) -> BoundFrom raise PlanError {
+  let left_source = bind_source_ref(join.left)
+  let right_source = bind_source_ref(join.right)
+  let left_schema = scan_source_schema(left_source)
+  let right_schema = scan_source_schema(right_source)
+  let left_relation = BoundRelation::{
+    schema: left_schema,
+    alias_name: join.left.alias_name,
+    relation_name: join.left.source.name,
+    output_offset: 0,
+  }
+  let right_relation = BoundRelation::{
+    schema: right_schema,
+    alias_name: join.right.alias_name,
+    relation_name: join.right.source.name,
+    output_offset: left_schema.columns.length(),
+  }
+  let context = ColumnBindContext::{
+    schema: join_output_schema(left_schema, right_schema),
+    relations: [left_relation, right_relation],
+  }
+  let (left_key, right_key) = bind_join_predicate(join.on, context)
+  let plan = QueryPlan::Join(JoinPlan::{
+    left: QueryPlan::Scan(ScanPlan::{ source: left_source }),
+    right: QueryPlan::Scan(ScanPlan::{ source: right_source }),
+    join_kind: join.join_kind,
+    left_key: left_key.local_ref,
+    right_key: right_key.local_ref,
+    output_schema: context.schema,
+  })
+  BoundFrom::{ plan, context, has_join: true }
+}
+
+///|
+fn bind_source_ref(source_ref : @sql.SourceRef) -> ScanSource raise PlanError {
+  let source = source_ref.source
   guard source.arguments.length() == 1 else {
     raise PlanError::InvalidArgument(
       "\{source.name} requires exactly one argument",
@@ -265,13 +359,28 @@ fn bind_scan_source(from : @sql.FromItem) -> ScanSource raise PlanError {
 }
 
 ///|
+fn join_output_schema(
+  left_schema : @engine.Schema,
+  right_schema : @engine.Schema,
+) -> @engine.Schema {
+  let columns = []
+  for column in left_schema.columns {
+    columns.push(column)
+  }
+  for column in right_schema.columns {
+    columns.push(column)
+  }
+  @engine.Schema::{ columns, }
+}
+
+///|
 fn bind_group_keys(
   group_by : Array[Array[String]],
-  input_schema : @engine.Schema,
+  context : ColumnBindContext,
 ) -> Array[BoundColumnRef] raise PlanError {
   let keys = []
   for path in group_by {
-    keys.push(resolve_column(path, input_schema))
+    keys.push(resolve_column(path, context))
   }
   keys
 }
@@ -279,12 +388,12 @@ fn bind_group_keys(
 ///|
 fn bind_scalar_select_items(
   select_items : Array[@sql.SelectItem],
-  schema : @engine.Schema,
+  context : ColumnBindContext,
 ) -> Array[PlanSelectItem] raise PlanError {
   let projections = []
   for index in 0..<select_items.length() {
     let item = select_items[index]
-    let expr = bind_scalar_expr(item.expr, schema)
+    let expr = bind_scalar_expr(item.expr, context)
     let output_name = match item.output_name {
       Some(name) => name
       None => default_output_name_from_sql_expr(item.expr, expr, index)
@@ -344,11 +453,11 @@ fn build_aggregate_output_schema(
 ///|
 fn bind_scalar_expr(
   expr : @sql.Expr,
-  schema : @engine.Schema,
+  context : ColumnBindContext,
 ) -> PlanExpr raise PlanError {
   match expr {
     @sql.Expr::ColumnRef(path) =>
-      PlanExpr::ColumnRef(resolve_column(path, schema))
+      PlanExpr::ColumnRef(resolve_column(path, context))
     @sql.Expr::StringLiteral(text) => PlanExpr::StringLiteral(text)
     @sql.Expr::IntegerLiteral(text) => PlanExpr::IntegerLiteral(text)
     @sql.Expr::DoubleLiteral(text) => PlanExpr::DoubleLiteral(text)
@@ -358,16 +467,16 @@ fn bind_scalar_expr(
       raise unsupported_or_nested_function(name, false)
     @sql.Expr::FunctionCallStar(name) =>
       raise unsupported_or_nested_function(name, false)
-    @sql.Expr::Unary(op, inner) => bind_unary_expr(op, inner, schema)
+    @sql.Expr::Unary(op, inner) => bind_unary_expr(op, inner, context)
     @sql.Expr::Binary(op, left, right) =>
-      bind_binary_expr(op, left, right, schema)
+      bind_binary_expr(op, left, right, context)
     @sql.Expr::IsNull(inner) =>
-      PlanExpr::IsNull(bind_scalar_expr(inner, schema))
+      PlanExpr::IsNull(bind_scalar_expr(inner, context))
     @sql.Expr::IsNotNull(inner) =>
-      PlanExpr::IsNotNull(bind_scalar_expr(inner, schema))
+      PlanExpr::IsNotNull(bind_scalar_expr(inner, context))
     @sql.Expr::Cast(inner, type_name) =>
       PlanExpr::Cast(
-        bind_scalar_expr(inner, schema),
+        bind_scalar_expr(inner, context),
         type_name_to_logical_type(type_name),
       )
   }
@@ -376,14 +485,14 @@ fn bind_scalar_expr(
 ///|
 fn bind_scalar_expr_disallow_aggregate(
   expr : @sql.Expr,
-  schema : @engine.Schema,
+  context : ColumnBindContext,
 ) -> PlanExpr raise PlanError {
   match expr {
     @sql.Expr::FunctionCall(name, _) =>
       raise unsupported_or_nested_function(name, true)
     @sql.Expr::FunctionCallStar(name) =>
       raise unsupported_or_nested_function(name, true)
-    _ => bind_scalar_expr(expr, schema)
+    _ => bind_scalar_expr(expr, context)
   }
 }
 
@@ -457,7 +566,7 @@ fn bind_aggregate_call(
     }
     let input_expr = bind_scalar_expr_disallow_aggregate(
       args[0],
-      context.input_schema,
+      context.input_context,
     )
     return register_aggregate(kind, Some(input_expr), context)
   }
@@ -466,7 +575,7 @@ fn bind_aggregate_call(
   }
   let input_expr = bind_scalar_expr_disallow_aggregate(
     args[0],
-    context.input_schema,
+    context.input_context,
   )
   register_aggregate(kind, Some(input_expr), context)
 }
@@ -644,9 +753,9 @@ fn bind_post_aggregate_binary_expr(
 fn bind_unary_expr(
   op : @sql.UnaryOp,
   inner : @sql.Expr,
-  schema : @engine.Schema,
+  context : ColumnBindContext,
 ) -> PlanExpr raise PlanError {
-  let bound_inner = bind_scalar_expr(inner, schema)
+  let bound_inner = bind_scalar_expr(inner, context)
   match op {
     @sql.UnaryOp::Not =>
       match plan_expr_type(bound_inner) {
@@ -670,10 +779,10 @@ fn bind_binary_expr(
   op : @sql.BinaryOp,
   left : @sql.Expr,
   right : @sql.Expr,
-  schema : @engine.Schema,
+  context : ColumnBindContext,
 ) -> PlanExpr raise PlanError {
-  let bound_left = bind_scalar_expr(left, schema)
-  let bound_right = bind_scalar_expr(right, schema)
+  let bound_left = bind_scalar_expr(left, context)
+  let bound_right = bind_scalar_expr(right, context)
   match op {
     @sql.BinaryOp::Add
     | @sql.BinaryOp::Subtract
@@ -847,15 +956,152 @@ fn infer_numeric_type(expr : PlanExpr) -> @engine.LogicalType raise PlanError {
 ///|
 fn resolve_column(
   path : Array[String],
-  schema : @engine.Schema,
+  context : ColumnBindContext,
 ) -> BoundColumnRef raise PlanError {
   guard path.length() > 0 else {
     raise PlanError::Bind("empty column reference")
   }
-  let name = path[path.length() - 1]
-  match schema.column_index(name) {
-    Some(index) => BoundColumnRef::{ index, column: schema.columns[index] }
-    None => raise PlanError::Bind("unknown column: \{name}")
+  if path.length() == 1 {
+    let name = path[0]
+    let matches = []
+    for relation in context.relations {
+      match relation.schema.column_index(name) {
+        Some(index) =>
+          matches.push(BoundColumnRef::{
+            index: relation.output_offset + index,
+            column: relation.schema.columns[index],
+          })
+        None => ()
+      }
+    }
+    match matches.length() {
+      0 => raise PlanError::Bind("unknown column: \{name}")
+      1 => matches[0]
+      _ =>
+        raise PlanError::Bind(
+          "ambiguous column reference requires qualification: \{name}",
+        )
+    }
+  } else if path.length() == 2 {
+    let relation_name = path[0]
+    let column_name = path[1]
+    let matches = []
+    for relation in context.relations {
+      let qualified_name = match relation.alias_name {
+        Some(alias_name) => alias_name
+        None => relation.relation_name
+      }
+      if relation_name == qualified_name {
+        match relation.schema.column_index(column_name) {
+          Some(index) =>
+            matches.push(BoundColumnRef::{
+              index: relation.output_offset + index,
+              column: relation.schema.columns[index],
+            })
+          None => ()
+        }
+      }
+    }
+    match matches.length() {
+      0 =>
+        raise PlanError::Bind(
+          "unknown qualified column: \{relation_name}.\{column_name}",
+        )
+      1 => matches[0]
+      _ =>
+        raise PlanError::Bind(
+          "ambiguous qualified column: \{relation_name}.\{column_name}",
+        )
+    }
+  } else {
+    raise PlanError::Bind("column references support at most one qualifier")
+  }
+}
+
+///|
+fn bind_join_predicate(
+  expr : @sql.Expr,
+  context : ColumnBindContext,
+) -> (JoinColumnRef, JoinColumnRef) raise PlanError {
+  guard context.relations.length() == 2 else {
+    raise PlanError::Bind("join binding requires exactly two relations")
+  }
+  let (left_expr, right_expr) = match expr {
+    @sql.Expr::Binary(@sql.BinaryOp::Equal, left, right) => (left, right)
+    _ =>
+      raise PlanError::Bind(
+        "JOIN ON only supports equality between one left column and one right column",
+      )
+  }
+  let left_ref = bind_join_key_expr(left_expr, context)
+  let right_ref = bind_join_key_expr(right_expr, context)
+  if left_ref.relation_index == right_ref.relation_index {
+    raise PlanError::Bind(
+      "JOIN ON must compare one left column with one right column",
+    )
+  }
+  let ordered = if left_ref.relation_index == 0 && right_ref.relation_index == 1 {
+    (left_ref, right_ref)
+  } else if left_ref.relation_index == 1 && right_ref.relation_index == 0 {
+    (right_ref, left_ref)
+  } else {
+    raise PlanError::Bind(
+      "JOIN ON must compare one left column with one right column",
+    )
+  }
+  validate_join_key_types(
+    ordered.0.local_ref.column,
+    ordered.1.local_ref.column,
+  )
+  ordered
+}
+
+///|
+fn bind_join_key_expr(
+  expr : @sql.Expr,
+  context : ColumnBindContext,
+) -> JoinColumnRef raise PlanError {
+  let path = match expr {
+    @sql.Expr::ColumnRef(path) => path
+    _ =>
+      raise PlanError::Bind(
+        "JOIN ON only supports column references on both sides",
+      )
+  }
+  let bound_ref = resolve_column(path, context)
+  for relation_index in 0..<context.relations.length() {
+    let relation = context.relations[relation_index]
+    let start = relation.output_offset
+    let end = start + relation.schema.columns.length()
+    if bound_ref.index >= start && bound_ref.index < end {
+      return JoinColumnRef::{
+        relation_index,
+        local_ref: BoundColumnRef::{
+          index: bound_ref.index - start,
+          column: bound_ref.column,
+        },
+      }
+    }
+  }
+  raise PlanError::Bind("failed to map join key to an input relation")
+}
+
+///|
+fn validate_join_key_types(
+  left : @engine.ColumnDef,
+  right : @engine.ColumnDef,
+) -> Unit raise PlanError {
+  if left.data_type == right.data_type {
+    ()
+  } else {
+    match (left.data_type, right.data_type) {
+      (@engine.LogicalType::BigInt, @engine.LogicalType::Double)
+      | (@engine.LogicalType::Double, @engine.LogicalType::BigInt) => ()
+      _ =>
+        raise PlanError::Bind(
+          "JOIN keys must have matching types or numeric BIGINT/DOUBLE coercion",
+        )
+    }
   }
 }
 
