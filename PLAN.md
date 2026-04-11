@@ -177,6 +177,95 @@
 - Null-behavior tests confirming rows with null join keys do not match.
 - End-to-end public API tests for joined queries with projection and `WHERE`.
 
+## Milestone 3 Breakdown
+
+### Scope
+
+- Deliver the first join-capable query path over exactly two relation sources.
+- Support exactly one explicit `INNER JOIN` per query in this milestone.
+- Support only equality join predicates of the form `left_col = right_col`, with both sides resolving to column references.
+- Keep projection and `WHERE` over the joined result in scope.
+- Keep `LEFT JOIN`, multi-join chains, non-equality joins, `USING`, `NATURAL JOIN`, and aggregate-over-join queries out of scope for this milestone.
+
+### Task 1: SQL Surface Expansion
+
+- Extend the SQL AST so `FROM` can represent either a single table function source or a binary join relation.
+- Add parser support for `source [AS alias] INNER JOIN source [AS alias] ON left_col = right_col`.
+- Accept `JOIN` as `INNER JOIN` shorthand.
+- Keep relation aliases optional, but preserve them in the AST whenever present.
+- Reject unsupported join forms early in parsing or binding with explicit diagnostics rather than silently accepting partial syntax.
+
+### Task 2: Relation and Name Binding
+
+- Replace the current single-source binding path with relation binding that can bind one source or one joined pair of sources.
+- Track per-relation schema, optional alias, and source order so later phases can resolve qualified references consistently.
+- Allow unqualified column references only when the name is unique across both input schemas.
+- Require qualification when a column name appears on both sides of the join.
+- Support qualified references against aliases first, and against raw relation names only when no alias is present.
+
+### Task 3: Join Predicate Validation
+
+- Bind the `ON` predicate separately from `WHERE`.
+- Restrict the first implementation to a single equality predicate between one left-side column reference and one right-side column reference.
+- Reject predicates that compare columns from the same side, literals against columns, computed expressions, or boolean combinations.
+- Define join-key coercion rules now: allow exact type matches and numeric widening between `BIGINT` and `DOUBLE`; reject all other cross-type join keys.
+- Treat nullable join keys as valid inputs, but rows with `NULL` join-key values never match.
+
+### Task 4: Logical Plan Changes
+
+- Add a logical `Join` node with fields for left input, right input, join kind, left key, right key, and output schema.
+- Preserve the current planning order above the join node as `Join -> Filter(where optional) -> Projection`.
+- Build join output schema by concatenating left columns followed by right columns, preserving each side’s original column order.
+- Carry enough bound-column metadata so post-join projection and `WHERE` can still resolve columns without re-binding against raw source schemas.
+- Keep the aggregate plan separate from join planning for now; joined aggregates remain a later milestone.
+
+### Task 5: Physical Join Operator
+
+- Implement an in-memory hash join over `DataChunk`s.
+- Build the hash table from the right input and probe it with left input chunks in scan order.
+- Store right-side matches in encounter order so output remains deterministic within each left-row match set.
+- Skip rows with null join keys on either side when building or probing.
+- Materialize join output as columnar `DataChunk`s, preserving the engine’s fixed vector size and validity-mask conventions.
+
+### Task 6: Join Key Representation
+
+- Introduce a collision-safe internal join-key representation; do not use delimiter-based string concatenation.
+- Use typed key components or a length-prefixed binary/text encoding so `VARCHAR` values cannot merge distinct keys accidentally.
+- Keep the representation internal to the join operator so it can later be reused by grouped aggregation and future multi-key joins.
+- Design the initial implementation for a single join key, but avoid interfaces that would block later extension to composite keys.
+
+### Task 7: Executor Integration
+
+- Extend execution entrypoints so they can execute either a scan-based plan or a join-based plan before applying existing `WHERE` and projection logic.
+- Reuse the current scalar expression evaluator for joined-row filtering and projections after the join output is formed.
+- Preserve deterministic output order: left input scan order first, then right match order for each left row.
+- Keep row materialization only at the public `ResultSet` boundary.
+- Ensure joined result schemas flow through `ResultSet::schema()` with the expected left-then-right column order and nullability.
+
+### Task 8: Public API and CLI Wiring
+
+- Keep the public API shape unchanged: `Connection::query(sql)` still returns `Result[ResultSet, DbError]`.
+- Update CLI examples and manual validation flows to include at least one joined CSV/JSONL query.
+- Document qualification rules clearly in repo docs and examples so ambiguous-column behavior is predictable.
+
+### Task 9: Tests and Fixtures
+
+- Add parser tests for `JOIN`, `INNER JOIN`, aliases, qualified references, and unsupported join syntax.
+- Add binder tests for ambiguous unqualified columns, alias resolution, invalid join predicate shapes, and join-key type mismatches.
+- Add executor tests for CSV/CSV, CSV/JSONL, and JSONL/JSONL inner joins.
+- Add null-key tests to confirm rows with null join keys do not match.
+- Add end-to-end public API tests covering projection plus `WHERE` on joined results.
+- Add fixtures with duplicate keys, unmatched keys, null keys, and overlapping column names across both inputs.
+
+### Acceptance Criteria
+
+- A user can run `SELECT people.name, events.active FROM read_csv('fixtures/csv/people.csv') AS people JOIN read_jsonl('fixtures/jsonl/events.jsonl') AS events ON people.id = events.id`.
+- A user can filter joined output with `WHERE`, and the result rows reflect inner-join semantics only.
+- Ambiguous unqualified column references return structured bind errors.
+- Null join keys do not match, and unmatched rows are excluded from the result.
+- Joined result schemas report columns in left-then-right order through `ResultSet::schema()`.
+- All Milestone 3 tests pass under `moon test`, and the public API generated by `moon info` reflects only the intended surface changes.
+
 ## Milestone 1 Breakdown
 
 ### Scope
