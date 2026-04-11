@@ -98,3 +98,19 @@ test "query executes grouped aggregate with having over read_jsonl" {
   assert_eq(result.next(), Some([Value::Boolean(true), Value::BigInt(2L)]))
   assert_eq(result.next(), None)
 }
+
+///|
+test "query treats division as float division inside aggregates" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT SUM(age / 2) AS half_total FROM read_csv('fixtures/csv/people.csv')",
+    )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "half_total", data_type: LogicalType::Double, nullable: true },
+  ])
+  assert_eq(result.next(), Some([Value::Double(35.5)]))
+  assert_eq(result.next(), None)
+}

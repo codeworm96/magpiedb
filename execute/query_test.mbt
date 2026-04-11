@@ -101,3 +101,25 @@ test "execute plan computes grouped aggregates with having" {
   assert_eq(chunk.columns[0].values, @engine.VectorBuffer::Bool([true]))
   assert_eq(chunk.columns[1].values, @engine.VectorBuffer::Int64([2L]))
 }
+
+///|
+test "execute plan treats division as double in aggregate inputs" {
+  let query = @sql.parse_sql(
+    "SELECT SUM(age / 2) AS half_total FROM read_csv('fixtures/csv/people.csv')",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  assert_eq(output.schema.columns, [
+    {
+      name: "half_total",
+      data_type: @engine.LogicalType::Double,
+      nullable: true,
+    },
+  ])
+  assert_eq(output.chunks.length(), 1)
+  let chunk = output.chunks[0]
+  assert_eq(chunk.len, 1)
+  assert_eq(chunk.columns[0].values, @engine.VectorBuffer::Double([35.5]))
+  assert_eq(chunk.columns[0].validity, @engine.ValidityMask::all_valid(1))
+}

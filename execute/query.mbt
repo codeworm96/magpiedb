@@ -636,10 +636,11 @@ fn infer_binary_type(
 ) -> @engine.LogicalType {
   match op {
     @sql.BinaryOp::And | @sql.BinaryOp::Or => @engine.LogicalType::Boolean
+    @sql.BinaryOp::Divide => @engine.LogicalType::Double
     @sql.BinaryOp::Add
     | @sql.BinaryOp::Subtract
     | @sql.BinaryOp::Multiply
-    | @sql.BinaryOp::Divide =>
+    =>
       match (left_type, right_type) {
         (@engine.LogicalType::Double, _) => @engine.LogicalType::Double
         (_, @engine.LogicalType::Double) => @engine.LogicalType::Double

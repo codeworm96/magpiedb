@@ -812,6 +812,25 @@ fn infer_binary_numeric_type(
 }
 
 ///|
+fn infer_binary_expr_type(
+  op : @sql.BinaryOp,
+  left : PlanExpr,
+  right : PlanExpr,
+) -> @engine.LogicalType raise PlanError {
+  match op {
+    @sql.BinaryOp::Divide => {
+      ignore(infer_numeric_type(left))
+      ignore(infer_numeric_type(right))
+      @engine.LogicalType::Double
+    }
+    @sql.BinaryOp::Add
+    | @sql.BinaryOp::Subtract
+    | @sql.BinaryOp::Multiply => infer_binary_numeric_type(left, right)
+    _ => @engine.LogicalType::Boolean
+  }
+}
+
+///|
 fn infer_numeric_type(expr : PlanExpr) -> @engine.LogicalType raise PlanError {
   match plan_expr_type(expr) {
     @engine.LogicalType::BigInt => @engine.LogicalType::BigInt
@@ -855,7 +874,7 @@ fn plan_expr_type(expr : PlanExpr) -> @engine.LogicalType raise PlanError {
         @sql.BinaryOp::Add
         | @sql.BinaryOp::Subtract
         | @sql.BinaryOp::Multiply
-        | @sql.BinaryOp::Divide => infer_binary_numeric_type(left, right)
+        | @sql.BinaryOp::Divide => infer_binary_expr_type(op, left, right)
         _ => @engine.LogicalType::Boolean
       }
     IsNull(_) | IsNotNull(_) => @engine.LogicalType::Boolean
