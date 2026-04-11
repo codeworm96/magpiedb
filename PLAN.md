@@ -36,8 +36,9 @@
 - Milestone 1: SQL lexer/parser/AST, file scanners, schema inference, public `query()` API, and projection/filter over CSV and JSONL.
 - Milestone 2: typed expression evaluation, null semantics, aggregate execution, grouped aggregation, and stable result materialization.
 - Milestone 3: table joins, multi-source binding, qualified column resolution, and join execution over chunked inputs.
-- Milestone 4: sort/limit, filter pushdown, projection pruning, end-to-end fixtures, and CLI demo package.
-- Milestone 5: internal cleanup for the later roadmap: operator interfaces, vector APIs, and planner boundaries frozen so persistent storage and broader SQL features can be added without reworking the public API.
+- Milestone 4: combining joins and aggregation, including grouped aggregates over joined inputs and `HAVING` on joined aggregate results.
+- Milestone 5: sort/limit, filter pushdown, projection pruning, end-to-end fixtures, and CLI demo package.
+- Milestone 6: internal cleanup for the later roadmap: operator interfaces, vector APIs, and planner boundaries frozen so persistent storage and broader SQL features can be added without reworking the public API.
 
 ## Milestone 2 Breakdown
 
@@ -198,6 +199,42 @@
 - Executor tests for successful inner joins across CSV/CSV, CSV/JSONL, and JSONL/JSONL fixtures.
 - Null-behavior tests confirming rows with null join keys do not match.
 - End-to-end public API tests for joined queries with projection and `WHERE`.
+
+## Join + Aggregate Plan
+
+### Scope
+
+- Add aggregate queries over joined inputs as the next major capability after Milestone 3.
+- Support aggregate and grouped-aggregate queries over exactly one explicit `INNER JOIN`.
+- Allow `GROUP BY` and `HAVING` to reference columns from either side of the join, with qualification required when names are ambiguous.
+- Keep the first combined milestone bounded to the existing aggregate surface:
+  `COUNT(*)`, `COUNT(expr)`, `SUM`, `AVG`, `MIN`, and `MAX`.
+- Keep `LEFT JOIN` aggregates, multi-join chains, window functions, and aggregate `DISTINCT` out of scope for the first combined milestone.
+
+### Planner and Binder Changes
+
+- Unify the current aggregate and join planning paths so the engine can lower:
+  `Join -> Filter(where optional) -> Aggregate(optional) -> Filter(having optional) -> Projection`.
+- Allow aggregate arguments and group keys to bind against the joined output schema while preserving relation/alias-aware name resolution.
+- Keep grouped-column validation and aggregate-shape validation identical to Milestone 2, but applied after join binding.
+- Preserve deterministic output naming for grouped columns and aggregate expressions, with explicit aliases taking precedence.
+
+### Execution Changes
+
+- Reuse the Milestone 3 join executor as the input source for aggregate execution rather than introducing a separate joined-row materialization API.
+- Support global aggregates over joined rows and grouped hash aggregation over joined rows.
+- Keep null semantics unchanged across the combined path:
+  join null keys do not match,
+  aggregate functions ignore null inputs as defined in Milestone 2,
+  and `HAVING` treats `NULL` as not passing.
+- Preserve deterministic group output ordering using first-seen group order over the joined stream.
+
+### Tests
+
+- Add end-to-end tests for aggregate-over-join queries across CSV/CSV, CSV/JSONL, and JSONL/JSONL inputs.
+- Add grouped-aggregate tests where group keys come from the left side, right side, and both sides of the join.
+- Add `HAVING` tests over joined aggregate results.
+- Add binder tests for ambiguous grouped columns and invalid aggregate references over joined inputs.
 
 ## Milestone 3 Breakdown
 
