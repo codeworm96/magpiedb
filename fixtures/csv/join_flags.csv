@@ -1,0 +1,6 @@
+id,team,enabled
+1,alpha,true
+2,beta,false
+2,gamma,true
+4,delta,true
+,missing,false

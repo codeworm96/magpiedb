@@ -116,7 +116,7 @@ test "query treats division as float division inside aggregates" {
 }
 
 ///|
-test "query executes inner join with where over joined rows" {
+test "query executes csv jsonl inner join with where over joined rows" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -134,5 +134,47 @@ test "query executes inner join with where over joined rows" {
     result.next(),
     Some([Value::Varchar("Bobby"), Value::Boolean(true)]),
   )
+  assert_eq(result.next(), None)
+}
+
+///|
+test "query executes csv csv inner join" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT people.name, flags.team FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_csv('fixtures/csv/join_flags.csv') AS flags ON people.id = flags.id",
+    )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "name", data_type: LogicalType::Varchar, nullable: false },
+    { name: "team", data_type: LogicalType::Varchar, nullable: false },
+  ])
+  assert_eq(result.next(), Some([Value::Varchar("Ada"), Value::Varchar("alpha")]))
+  assert_eq(result.next(), Some([Value::Varchar("Bob"), Value::Varchar("beta")]))
+  assert_eq(result.next(), Some([Value::Varchar("Bob"), Value::Varchar("gamma")]))
+  assert_eq(result.next(), Some([Value::Varchar("Bobby"), Value::Varchar("beta")]))
+  assert_eq(result.next(), Some([Value::Varchar("Bobby"), Value::Varchar("gamma")]))
+  assert_eq(result.next(), None)
+}
+
+///|
+test "query executes jsonl jsonl inner join" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT events.name, profiles.city FROM read_jsonl('fixtures/jsonl/join_events.jsonl') AS events JOIN read_jsonl('fixtures/jsonl/join_profiles.jsonl') AS profiles ON events.id = profiles.id",
+    )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "name", data_type: LogicalType::Varchar, nullable: false },
+    { name: "city", data_type: LogicalType::Varchar, nullable: false },
+  ])
+  assert_eq(result.next(), Some([Value::Varchar("Launch"), Value::Varchar("A")]))
+  assert_eq(result.next(), Some([Value::Varchar("Review"), Value::Varchar("B")]))
+  assert_eq(result.next(), Some([Value::Varchar("Review"), Value::Varchar("C")]))
+  assert_eq(result.next(), Some([Value::Varchar("Retry"), Value::Varchar("B")]))
+  assert_eq(result.next(), Some([Value::Varchar("Retry"), Value::Varchar("C")]))
   assert_eq(result.next(), None)
 }
