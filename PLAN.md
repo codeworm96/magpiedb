@@ -103,6 +103,7 @@
 - Preserve deterministic group output order by emitting groups in first-seen input order rather than raw hash-table order.
 - Materialize aggregate output into `DataChunk`s using the same vector and validity-mask conventions as the current executor.
 - Keep row materialization only at the public `ResultSet` boundary.
+- Future follow-up: avoid delimiter-based string serialization for grouped keys; use a collision-safe structured key or length-prefixed encoding so `VARCHAR` group values cannot merge distinct groups accidentally.
 
 ### Task 7: Expression Evaluation Refactor
 
