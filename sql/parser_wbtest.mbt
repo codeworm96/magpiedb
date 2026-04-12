@@ -178,6 +178,78 @@ test "parse explicit inner join with where" {
 }
 
 ///|
+test "parse global aggregate over join" {
+  let query = parse_sql(
+    "SELECT COUNT(*) AS total, SUM(r.amount) FROM read_csv('orders.csv') o JOIN read_jsonl('payments.jsonl') r ON o.id = r.order_id",
+  ).unwrap()
+
+  match query.from {
+    Source(_) => fail("expected join")
+    Join(join) => {
+      assert_eq(join.left.alias_name, Some("o"))
+      assert_eq(join.right.alias_name, Some("r"))
+      assert_eq(
+        join.on,
+        Expr::Binary(
+          BinaryOp::Equal,
+          Expr::ColumnRef(["o", "id"]),
+          Expr::ColumnRef(["r", "order_id"]),
+        ),
+      )
+    }
+  }
+  assert_eq(query.group_by, [])
+  assert_eq(query.having_clause, None)
+  assert_eq(query.select_items[0].expr, Expr::FunctionCallStar("COUNT"))
+  assert_eq(query.select_items[0].output_name, Some("total"))
+  assert_eq(
+    query.select_items[1].expr,
+    Expr::FunctionCall("SUM", [Expr::ColumnRef(["r", "amount"])]),
+  )
+}
+
+///|
+test "parse grouped aggregate over join with where and having" {
+  let query = parse_sql(
+    "SELECT l.city, COUNT(*) total, MAX(r.score) FROM read_csv('left.csv') AS l JOIN read_jsonl('right.jsonl') AS r ON l.id = r.id WHERE r.active = TRUE GROUP BY l.city HAVING COUNT(*) > 1",
+  ).unwrap()
+
+  match query.from {
+    Source(_) => fail("expected join")
+    Join(join) => {
+      assert_eq(join.left.alias_name, Some("l"))
+      assert_eq(join.right.alias_name, Some("r"))
+    }
+  }
+  assert_eq(query.group_by, [["l", "city"]])
+  assert_eq(
+    query.where_clause,
+    Some(
+      Expr::Binary(
+        BinaryOp::Equal,
+        Expr::ColumnRef(["r", "active"]),
+        Expr::BooleanLiteral(true),
+      ),
+    ),
+  )
+  assert_eq(
+    query.having_clause,
+    Some(
+      Expr::Binary(
+        BinaryOp::GreaterThan,
+        Expr::FunctionCallStar("COUNT"),
+        Expr::IntegerLiteral("1"),
+      ),
+    ),
+  )
+  assert_eq(query.select_items[1].output_name, Some("total"))
+  assert_eq(
+    query.select_items[2].expr,
+    Expr::FunctionCall("MAX", [Expr::ColumnRef(["r", "score"])]),
+  )
+}
+
+///|
 test "parse multiple group keys" {
   let query = parse_sql(
     "SELECT country, city, MAX(score) FROM read_csv('scores.csv') GROUP BY country, city",
