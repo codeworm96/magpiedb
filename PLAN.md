@@ -236,6 +236,91 @@
 - Add `HAVING` tests over joined aggregate results.
 - Add binder tests for ambiguous grouped columns and invalid aggregate references over joined inputs.
 
+## Milestone 4 Breakdown
+
+### Scope
+
+- Deliver aggregate queries over exactly one explicit `INNER JOIN`.
+- Support global aggregates and grouped aggregates over joined CSV/CSV, CSV/JSONL, and JSONL/JSONL inputs.
+- Support `WHERE` before aggregation and `HAVING` after aggregation over joined inputs.
+- Reuse the existing aggregate surface: `COUNT(*)`, `COUNT(expr)`, `SUM`, `AVG`, `MIN`, and `MAX`.
+- Keep `LEFT JOIN`, multi-join chains, aggregate `DISTINCT`, window functions, aggregate pushdown, and join reordering out of scope.
+
+### Task 1: SQL Surface Verification
+
+- Verify the existing grammar accepts `FROM <join> WHERE ... GROUP BY ... HAVING ...` in the intended clause order.
+- Add parser tests for aggregate-over-join queries with aliases, qualified columns, `WHERE`, `GROUP BY`, and `HAVING`.
+- Reject unsupported forms cleanly, especially aggregates inside `ON` predicates and unsupported join shapes inside aggregate queries.
+- Keep `GROUP BY` items limited to column references, matching Milestone 2.
+
+### Task 2: Combined Query Classification
+
+- Update query classification so aggregate queries are allowed when the input relation is a join.
+- Preserve the existing non-aggregate join path from Milestone 3.
+- Preserve the existing single-source aggregate path from Milestone 2.
+- Ensure aggregate-over-join planning chooses the combined path only when the query contains aggregate functions, `GROUP BY`, or `HAVING`.
+
+### Task 3: Joined Aggregate Binding
+
+- Bind aggregate arguments, grouped columns, `HAVING`, and final projections against the joined output schema.
+- Preserve Milestone 3 qualification rules: unqualified names are allowed only when unique across both joined inputs.
+- Preserve Milestone 2 aggregate validation rules: no nested aggregates, no aggregates in `WHERE`, and no non-grouped/non-aggregated projection expressions in aggregate queries.
+- Allow group keys and aggregate arguments to reference columns from the left side, right side, or both sides of the join.
+- Return structured bind errors for ambiguous group keys, ambiguous aggregate arguments, and invalid `HAVING` references.
+
+### Task 4: Logical Plan Composition
+
+- Compose plans in the fixed order:
+  `Join -> Filter(where optional) -> Aggregate -> Filter(having optional) -> Projection`.
+- Allow `Aggregate` input to be either a scan/filter subtree or a join/filter subtree.
+- Keep join output schema as left-then-right input columns before aggregate binding.
+- Keep aggregate output schema consistent with Milestone 2, including types, nullability, and alias/default-name rules.
+- Do not introduce aggregate pushdown below the join in this milestone.
+
+### Task 5: Executor Integration
+
+- Reuse the Milestone 3 join executor to produce joined `DataChunk`s as aggregate input.
+- Reuse the Milestone 2 aggregate executor for global and grouped aggregation over those joined chunks.
+- Keep `WHERE` evaluation before aggregation and `HAVING` evaluation after aggregation.
+- Preserve deterministic output order: join output is deterministic first, then grouped aggregate output follows first-seen group order.
+- Keep row materialization only at the public `ResultSet` boundary.
+
+### Task 6: Semantics
+
+- Count joined rows according to inner-join multiplicity, including duplicate key matches.
+- Preserve null semantics across the combined pipeline:
+  null join keys do not match,
+  aggregate inputs ignore nulls as defined in Milestone 2,
+  and `HAVING` treats `NULL` as not passing.
+- Preserve numeric coercion and division behavior from Milestone 2 for aggregate arguments over joined columns.
+- Preserve join-key coercion behavior from Milestone 3 for numeric `BIGINT`/`DOUBLE` keys.
+
+### Task 7: Tests and Fixtures
+
+- Add public API tests for global aggregate-over-join queries across CSV/CSV, CSV/JSONL, and JSONL/JSONL inputs.
+- Add grouped aggregate-over-join tests with group keys from the left side, right side, and both sides.
+- Add `HAVING` tests over joined aggregate results.
+- Add `WHERE`-before-aggregate tests that filter joined rows before grouping.
+- Add binder tests for ambiguous aggregate arguments, ambiguous group keys, aggregates in `ON`, aggregates in `WHERE`, and invalid non-grouped projections.
+- Reuse existing join fixtures where possible and add only the smallest extra fixture data needed for duplicate-match and null-key aggregate cases.
+
+### Task 8: Public API and CLI Wiring
+
+- Keep the public API unchanged: `Connection::query(sql)` returns `Result[ResultSet, DbError]`.
+- Ensure `ResultSet::schema()` reports aggregate-over-join output types and nullability correctly.
+- Add CLI/manual examples for at least one global aggregate-over-join query and one grouped aggregate-over-join query.
+- Document qualification requirements for aggregate-over-join queries in the README or examples.
+
+### Acceptance Criteria
+
+- A user can run `SELECT COUNT(*) AS total FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id`.
+- A user can run `SELECT people.name, COUNT(*) AS total FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id GROUP BY people.name`.
+- A user can run a grouped aggregate-over-join query with `HAVING`, and rows that do not satisfy `HAVING` are excluded.
+- `WHERE` filters joined rows before aggregation.
+- Ambiguous unqualified aggregate arguments and group keys return structured bind errors.
+- Aggregate-over-join result schemas report correct types and nullability through `ResultSet::schema()`.
+- All Milestone 4 tests pass under `moon test`, and the public API generated by `moon info` reflects only intended surface changes.
+
 ## Milestone 3 Breakdown
 
 ### Scope
