@@ -189,13 +189,18 @@ test "execute plan performs jsonl jsonl inner join" {
   assert_eq(chunk.len, 5)
   assert_eq(
     chunk.columns[0].values,
-    @engine.VectorBuffer::Varchar(["Launch", "Review", "Review", "Retry", "Retry"]),
+    @engine.VectorBuffer::Varchar([
+      "Launch", "Review", "Review", "Retry", "Retry",
+    ]),
   )
   assert_eq(
     chunk.columns[1].values,
     @engine.VectorBuffer::Varchar(["A", "B", "C", "B", "C"]),
   )
-  assert_eq(chunk.columns[2].values, @engine.VectorBuffer::Int64([10L, 20L, 30L, 20L, 30L]))
+  assert_eq(
+    chunk.columns[2].values,
+    @engine.VectorBuffer::Int64([10L, 20L, 30L, 20L, 30L]),
+  )
 }
 
 ///|
@@ -207,4 +212,56 @@ test "execute plan does not match null join keys" {
   let output = try! execute_plan(plan)
 
   assert_eq(output.chunks.length(), 0)
+}
+
+///|
+test "execute plan computes global aggregate over csv jsonl join" {
+  let query = @sql.parse_sql(
+    "SELECT COUNT(*) AS total, SUM(events.id) AS total_id FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  assert_eq(output.schema.columns, [
+    { name: "total", data_type: @engine.LogicalType::BigInt, nullable: false },
+    { name: "total_id", data_type: @engine.LogicalType::BigInt, nullable: true },
+  ])
+  assert_eq(output.chunks.length(), 1)
+  let chunk = output.chunks[0]
+  assert_eq(chunk.len, 1)
+  assert_eq(chunk.columns[0].values, @engine.VectorBuffer::Int64([5L]))
+  assert_eq(chunk.columns[1].values, @engine.VectorBuffer::Int64([9L]))
+}
+
+///|
+test "execute plan computes grouped aggregate over csv csv join with having" {
+  let query = @sql.parse_sql(
+    "SELECT people.name, COUNT(*) AS total FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_csv('fixtures/csv/join_flags.csv') AS flags ON people.id = flags.id GROUP BY people.name HAVING COUNT(*) > 1",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  assert_eq(output.chunks.length(), 1)
+  let chunk = output.chunks[0]
+  assert_eq(chunk.len, 2)
+  assert_eq(
+    chunk.columns[0].values,
+    @engine.VectorBuffer::Varchar(["Bob", "Bobby"]),
+  )
+  assert_eq(chunk.columns[1].values, @engine.VectorBuffer::Int64([2L, 2L]))
+}
+
+///|
+test "execute plan computes grouped aggregate over jsonl jsonl join on right key" {
+  let query = @sql.parse_sql(
+    "SELECT profiles.city, COUNT(*) AS total FROM read_jsonl('fixtures/jsonl/join_events.jsonl') AS events JOIN read_jsonl('fixtures/jsonl/join_profiles.jsonl') AS profiles ON events.id = profiles.id GROUP BY profiles.city HAVING COUNT(*) > 1",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  assert_eq(output.chunks.length(), 1)
+  let chunk = output.chunks[0]
+  assert_eq(chunk.len, 2)
+  assert_eq(chunk.columns[0].values, @engine.VectorBuffer::Varchar(["B", "C"]))
+  assert_eq(chunk.columns[1].values, @engine.VectorBuffer::Int64([2L, 2L]))
 }

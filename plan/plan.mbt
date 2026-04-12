@@ -132,7 +132,6 @@ priv struct ColumnBindContext {
 priv struct BoundFrom {
   plan : QueryPlan
   context : ColumnBindContext
-  has_join : Bool
 }
 
 ///|
@@ -153,11 +152,6 @@ pub fn plan_query(query : @sql.Query) -> QueryPlan raise PlanError {
   let bound_from = bind_from_item(query.from)
 
   if contains_aggregate_in_query(query) || query.group_by.length() > 0 {
-    guard !bound_from.has_join else {
-      raise PlanError::Unsupported(
-        "aggregate queries over joins are not supported yet",
-      )
-    }
     plan_aggregate_query(query, bound_from.plan, bound_from.context)
   } else {
     guard query.having_clause is None else {
@@ -282,7 +276,6 @@ fn bind_from_item(from : @sql.FromItem) -> BoundFrom raise PlanError {
       BoundFrom::{
         plan: QueryPlan::Scan(ScanPlan::{ source, }),
         context: ColumnBindContext::{ schema, relations: [relation] },
-        has_join: false,
       }
     }
     @sql.FromItem::Join(join) => bind_join_from_item(join)
@@ -320,7 +313,7 @@ fn bind_join_from_item(join : @sql.JoinRelation) -> BoundFrom raise PlanError {
     right_key: right_key.local_ref,
     output_schema: context.schema,
   })
-  BoundFrom::{ plan, context, has_join: true }
+  BoundFrom::{ plan, context }
 }
 
 ///|
@@ -532,12 +525,10 @@ fn bind_grouped_column_ref(
   path : Array[String],
   context : AggregateBindContext,
 ) -> PlanExpr raise PlanError {
-  guard path.length() > 0 else {
-    raise PlanError::Bind("empty column reference")
-  }
-  let name = path[path.length() - 1]
+  let bound_ref = resolve_column(path, context.input_context)
+  let path_name = path.join(".")
   for index in 0..<context.group_keys.length() {
-    if context.group_keys[index].column.name == name {
+    if context.group_keys[index] == bound_ref {
       return PlanExpr::ColumnRef(BoundColumnRef::{
         index,
         column: context.group_keys[index].column,
@@ -545,7 +536,7 @@ fn bind_grouped_column_ref(
     }
   }
   raise PlanError::Bind(
-    "column must appear in GROUP BY or be used in an aggregate function: \{name}",
+    "column must appear in GROUP BY or be used in an aggregate function: \{path_name}",
   )
 }
 

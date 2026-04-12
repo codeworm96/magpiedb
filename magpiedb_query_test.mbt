@@ -150,11 +150,26 @@ test "query executes csv csv inner join" {
     { name: "name", data_type: LogicalType::Varchar, nullable: false },
     { name: "team", data_type: LogicalType::Varchar, nullable: false },
   ])
-  assert_eq(result.next(), Some([Value::Varchar("Ada"), Value::Varchar("alpha")]))
-  assert_eq(result.next(), Some([Value::Varchar("Bob"), Value::Varchar("beta")]))
-  assert_eq(result.next(), Some([Value::Varchar("Bob"), Value::Varchar("gamma")]))
-  assert_eq(result.next(), Some([Value::Varchar("Bobby"), Value::Varchar("beta")]))
-  assert_eq(result.next(), Some([Value::Varchar("Bobby"), Value::Varchar("gamma")]))
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Ada"), Value::Varchar("alpha")]),
+  )
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Bob"), Value::Varchar("beta")]),
+  )
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Bob"), Value::Varchar("gamma")]),
+  )
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Bobby"), Value::Varchar("beta")]),
+  )
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Bobby"), Value::Varchar("gamma")]),
+  )
   assert_eq(result.next(), None)
 }
 
@@ -171,10 +186,72 @@ test "query executes jsonl jsonl inner join" {
     { name: "name", data_type: LogicalType::Varchar, nullable: false },
     { name: "city", data_type: LogicalType::Varchar, nullable: false },
   ])
-  assert_eq(result.next(), Some([Value::Varchar("Launch"), Value::Varchar("A")]))
-  assert_eq(result.next(), Some([Value::Varchar("Review"), Value::Varchar("B")]))
-  assert_eq(result.next(), Some([Value::Varchar("Review"), Value::Varchar("C")]))
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Launch"), Value::Varchar("A")]),
+  )
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Review"), Value::Varchar("B")]),
+  )
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Review"), Value::Varchar("C")]),
+  )
   assert_eq(result.next(), Some([Value::Varchar("Retry"), Value::Varchar("B")]))
   assert_eq(result.next(), Some([Value::Varchar("Retry"), Value::Varchar("C")]))
+  assert_eq(result.next(), None)
+}
+
+///|
+test "query executes global aggregate over csv jsonl join" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT COUNT(*) AS total, SUM(events.id) AS total_id FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id",
+    )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "total", data_type: LogicalType::BigInt, nullable: false },
+    { name: "total_id", data_type: LogicalType::BigInt, nullable: true },
+  ])
+  assert_eq(result.next(), Some([Value::BigInt(5L), Value::BigInt(9L)]))
+  assert_eq(result.next(), None)
+}
+
+///|
+test "query executes grouped aggregate with having over join" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT people.name, COUNT(*) AS total FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_csv('fixtures/csv/join_flags.csv') AS flags ON people.id = flags.id GROUP BY people.name HAVING COUNT(*) > 1",
+    )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "name", data_type: LogicalType::Varchar, nullable: false },
+    { name: "total", data_type: LogicalType::BigInt, nullable: false },
+  ])
+  assert_eq(result.next(), Some([Value::Varchar("Bob"), Value::BigInt(2L)]))
+  assert_eq(result.next(), Some([Value::Varchar("Bobby"), Value::BigInt(2L)]))
+  assert_eq(result.next(), None)
+}
+
+///|
+test "query executes grouped aggregate over jsonl jsonl join" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT profiles.city, COUNT(*) AS total FROM read_jsonl('fixtures/jsonl/join_events.jsonl') AS events JOIN read_jsonl('fixtures/jsonl/join_profiles.jsonl') AS profiles ON events.id = profiles.id GROUP BY profiles.city HAVING COUNT(*) > 1",
+    )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "city", data_type: LogicalType::Varchar, nullable: false },
+    { name: "total", data_type: LogicalType::BigInt, nullable: false },
+  ])
+  assert_eq(result.next(), Some([Value::Varchar("B"), Value::BigInt(2L)]))
+  assert_eq(result.next(), Some([Value::Varchar("C"), Value::BigInt(2L)]))
   assert_eq(result.next(), None)
 }

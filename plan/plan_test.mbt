@@ -225,3 +225,54 @@ test "planner rejects invalid join predicate shape" {
     _ => fail("expected bind error")
   }
 }
+
+///|
+test "planner lowers grouped aggregate over join with having" {
+  let query = @sql.parse_sql(
+    "SELECT people.name, COUNT(*) AS total FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_csv('fixtures/csv/join_flags.csv') AS flags ON people.id = flags.id GROUP BY people.name HAVING COUNT(*) > 1",
+  ).unwrap()
+  let plan = try! plan_query(query)
+
+  match plan {
+    Projection(projection_plan) => {
+      assert_eq(projection_plan.output_schema.columns, [
+        {
+          name: "name",
+          data_type: @engine.LogicalType::Varchar,
+          nullable: false,
+        },
+        {
+          name: "total",
+          data_type: @engine.LogicalType::BigInt,
+          nullable: false,
+        },
+      ])
+      match projection_plan.input {
+        Filter(filter_plan) =>
+          match filter_plan.input {
+            Aggregate(aggregate_plan) => {
+              assert_eq(aggregate_plan.group_keys.length(), 1)
+              assert_eq(aggregate_plan.group_keys[0].column.name, "name")
+              assert_true(aggregate_plan.input is Join(_))
+            }
+            _ => fail("expected aggregate below having filter")
+          }
+        _ => fail("expected having filter under projection")
+      }
+    }
+    _ => fail("expected projection root")
+  }
+}
+
+///|
+test "planner rejects ambiguous unqualified group key over join" {
+  let query = @sql.parse_sql(
+    "SELECT COUNT(*) FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id GROUP BY id",
+  ).unwrap()
+  let err = (try? plan_query(query)).unwrap_err()
+
+  match err {
+    PlanError::Bind(message) => assert_true(message.contains("ambiguous"))
+    _ => fail("expected bind error")
+  }
+}
