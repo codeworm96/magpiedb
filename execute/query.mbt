@@ -9,12 +9,6 @@ priv enum AggregateState {
 }
 
 ///|
-priv enum ScanChunkSource {
-  Csv(@scan.CsvScanner)
-  Jsonl(@scan.JsonlScanner)
-}
-
-///|
 priv enum ExecuteErrorKind {
   InvalidArgument
   Bind
@@ -75,37 +69,31 @@ fn execute_plan_chunks(
 fn scan_source_chunks(
   source : @plan.ScanSource,
 ) -> Array[@engine.DataChunk] raise ExecuteError {
+  let (kind, path) = planned_source_open_info(source)
+  let scanner = @scan.open_source(kind, path) catch {
+    err => raise map_scan_error(err)
+  }
+  collect_scan_chunks(scanner)
+}
+
+///|
+fn planned_source_open_info(
+  source : @plan.ScanSource,
+) -> (@scan.ScanSourceKind, String) {
   match source {
-    @plan.ScanSource::Csv(scan) => {
-      let scanner = @scan.read_csv(scan.path) catch {
-        err => raise map_scan_error(err)
-      }
-      collect_scan_chunks(ScanChunkSource::Csv(scanner))
-    }
-    @plan.ScanSource::Jsonl(scan) => {
-      let scanner = @scan.read_jsonl(scan.path) catch {
-        err => raise map_scan_error(err)
-      }
-      collect_scan_chunks(ScanChunkSource::Jsonl(scanner))
-    }
+    @plan.ScanSource::Csv(scan) => (@scan.ScanSourceKind::Csv, scan.path)
+    @plan.ScanSource::Jsonl(scan) => (@scan.ScanSourceKind::Jsonl, scan.path)
   }
 }
 
 ///|
 fn collect_scan_chunks(
-  source : ScanChunkSource,
+  source : @scan.Scanner,
 ) -> Array[@engine.DataChunk] raise ExecuteError {
   let chunks = []
   while true {
-    let next_chunk = match source {
-      ScanChunkSource::Csv(scanner) =>
-        scanner.next_chunk() catch {
-          err => raise map_scan_error(err)
-        }
-      ScanChunkSource::Jsonl(scanner) =>
-        scanner.next_chunk() catch {
-          err => raise map_scan_error(err)
-        }
+    let next_chunk = source.next_chunk() catch {
+      err => raise map_scan_error(err)
     }
     match next_chunk {
       Some(chunk) => chunks.push(chunk)

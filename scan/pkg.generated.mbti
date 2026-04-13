@@ -11,6 +11,10 @@ pub fn infer_csv_schema(String) -> @engine.Schema raise ScanError
 
 pub fn infer_jsonl_schema(String) -> @engine.Schema raise ScanError
 
+pub fn infer_source_schema(ScanSourceKind, String) -> @engine.Schema raise ScanError
+
+pub fn open_source(ScanSourceKind, String) -> Scanner raise ScanError
+
 pub fn read_csv(String) -> CsvScanner raise ScanError
 
 pub fn read_jsonl(String) -> JsonlScanner raise ScanError
@@ -18,6 +22,8 @@ pub fn read_jsonl(String) -> JsonlScanner raise ScanError
 pub fn scan_csv(String) -> CsvScanner raise ScanError
 
 pub fn scan_jsonl(String) -> JsonlScanner raise ScanError
+
+pub fn scan_source_kind(String) -> ScanSourceKind?
 
 // Errors
 pub(all) suberror ScanError {
@@ -48,6 +54,18 @@ pub struct JsonlScanner {
 pub fn JsonlScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
 pub fn JsonlScanner::reset(Self) -> Unit
 pub fn JsonlScanner::schema(Self) -> @engine.Schema
+
+pub(all) enum ScanSourceKind {
+  Csv
+  Jsonl
+} derive(Eq, @debug.Debug)
+
+pub(all) enum Scanner {
+  Csv(CsvScanner)
+  Jsonl(JsonlScanner)
+}
+pub fn Scanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
+pub fn Scanner::schema(Self) -> @engine.Schema
 
 // Type aliases
 

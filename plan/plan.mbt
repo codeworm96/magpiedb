@@ -333,23 +333,20 @@ fn bind_source_ref(source_ref : @sql.SourceRef) -> ScanSource raise PlanError {
         "\{source.name} path must be a string literal",
       )
   }
-  match source.name {
-    "read_csv" => {
-      let scanner = @scan.read_csv(path) catch {
-        err => raise map_scan_error(err)
-      }
-      ScanSource::Csv(CsvScan::{ path, schema: scanner.schema() })
-    }
-    "read_jsonl" => {
-      let scanner = @scan.read_jsonl(path) catch {
-        err => raise map_scan_error(err)
-      }
-      ScanSource::Jsonl(JsonlScan::{ path, schema: scanner.schema() })
-    }
-    _ =>
+  let kind = match @scan.scan_source_kind(source.name) {
+    Some(kind) => kind
+    None =>
       raise PlanError::Unsupported(
         "only read_csv(path) and read_jsonl(path) are supported in the current MVP",
       )
+  }
+  let schema = @scan.infer_source_schema(kind, path) catch {
+    err => raise map_scan_error(err)
+  }
+  match kind {
+    @scan.ScanSourceKind::Csv => ScanSource::Csv(CsvScan::{ path, schema })
+    @scan.ScanSourceKind::Jsonl =>
+      ScanSource::Jsonl(JsonlScan::{ path, schema })
   }
 }
 
