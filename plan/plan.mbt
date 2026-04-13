@@ -386,11 +386,7 @@ fn bind_scalar_select_items(
   for index in 0..<select_items.length() {
     let item = select_items[index]
     let expr = bind_scalar_expr(item.expr, context)
-    let output_name = match item.output_name {
-      Some(name) => name
-      None => default_output_name_from_sql_expr(item.expr, expr, index)
-    }
-    projections.push(PlanSelectItem::{ expr, output_name })
+    projections.push(build_bound_select_item(item, expr, index))
   }
   projections
 }
@@ -404,13 +400,22 @@ fn bind_aggregate_select_items(
   for index in 0..<select_items.length() {
     let item = select_items[index]
     let expr = bind_post_aggregate_expr(item.expr, context)
-    let output_name = match item.output_name {
-      Some(name) => name
-      None => default_output_name_from_sql_expr(item.expr, expr, index)
-    }
-    projections.push(PlanSelectItem::{ expr, output_name })
+    projections.push(build_bound_select_item(item, expr, index))
   }
   projections
+}
+
+///|
+fn build_bound_select_item(
+  item : @sql.SelectItem,
+  expr : PlanExpr,
+  index : Int,
+) -> PlanSelectItem {
+  let output_name = match item.output_name {
+    Some(name) => name
+    None => default_output_name_from_sql_expr(item.expr, expr, index)
+  }
+  PlanSelectItem::{ expr, output_name }
 }
 
 ///|
