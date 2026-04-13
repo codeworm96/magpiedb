@@ -475,63 +475,6 @@ fn finalize_aggregate_state(state : AggregateState) -> @engine.Value {
 }
 
 ///|
-fn encode_group_key(values : Array[@engine.Value]) -> String {
-  let parts = []
-  for value in values {
-    parts.push(encode_group_key_part(value))
-  }
-  parts.join("|")
-}
-
-///|
-fn encode_group_key_part(value : @engine.Value) -> String {
-  match value {
-    @engine.Value::Null => "n:"
-    @engine.Value::Boolean(v) => "b:\{v}"
-    @engine.Value::BigInt(v) => "i:\{v}"
-    @engine.Value::Double(v) => "d:\{v}"
-    @engine.Value::Varchar(v) => "s:\{v}"
-  }
-}
-
-///|
-fn encode_join_key(
-  value : @engine.Value,
-  left_type : @engine.LogicalType,
-  right_type : @engine.LogicalType,
-) -> String? raise ExecuteError {
-  guard value != @engine.Value::Null else { return None }
-  if is_mixed_numeric_join(left_type, right_type) {
-    Some("n:\{value_to_double(value)}")
-  } else {
-    Some(encode_join_key_part(value))
-  }
-}
-
-///|
-fn is_mixed_numeric_join(
-  left_type : @engine.LogicalType,
-  right_type : @engine.LogicalType,
-) -> Bool {
-  match (left_type, right_type) {
-    (@engine.LogicalType::BigInt, @engine.LogicalType::Double)
-    | (@engine.LogicalType::Double, @engine.LogicalType::BigInt) => true
-    _ => false
-  }
-}
-
-///|
-fn encode_join_key_part(value : @engine.Value) -> String {
-  match value {
-    @engine.Value::Null => "n"
-    @engine.Value::Boolean(v) => if v { "b:1" } else { "b:0" }
-    @engine.Value::BigInt(v) => "i:\{v}"
-    @engine.Value::Double(v) => "d:\{v}"
-    @engine.Value::Varchar(v) => "s:\{v.length()}:\{v}"
-  }
-}
-
-///|
 fn filter_chunk(
   chunk : @engine.DataChunk,
   predicate : @plan.PlanExpr,
