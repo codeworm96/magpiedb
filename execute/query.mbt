@@ -9,6 +9,21 @@ priv enum AggregateState {
 }
 
 ///|
+priv enum ScanChunkSource {
+  Csv(@scan.CsvScanner)
+  Jsonl(@scan.JsonlScanner)
+}
+
+///|
+priv enum ExecuteErrorKind {
+  InvalidArgument
+  Bind
+  Scan
+  Io
+  Unsupported
+}
+
+///|
 pub struct QueryOutput {
   schema : @engine.Schema
   chunks : Array[@engine.DataChunk]
@@ -65,42 +80,32 @@ fn scan_source_chunks(
       let scanner = @scan.read_csv(scan.path) catch {
         err => raise map_scan_error(err)
       }
-      collect_csv_chunks(scanner)
+      collect_scan_chunks(ScanChunkSource::Csv(scanner))
     }
     @plan.ScanSource::Jsonl(scan) => {
       let scanner = @scan.read_jsonl(scan.path) catch {
         err => raise map_scan_error(err)
       }
-      collect_jsonl_chunks(scanner)
+      collect_scan_chunks(ScanChunkSource::Jsonl(scanner))
     }
   }
 }
 
 ///|
-fn collect_csv_chunks(
-  scanner : @scan.CsvScanner,
+fn collect_scan_chunks(
+  source : ScanChunkSource,
 ) -> Array[@engine.DataChunk] raise ExecuteError {
   let chunks = []
   while true {
-    let next_chunk = scanner.next_chunk() catch {
-      err => raise map_scan_error(err)
-    }
-    match next_chunk {
-      Some(chunk) => chunks.push(chunk)
-      None => break
-    }
-  }
-  chunks
-}
-
-///|
-fn collect_jsonl_chunks(
-  scanner : @scan.JsonlScanner,
-) -> Array[@engine.DataChunk] raise ExecuteError {
-  let chunks = []
-  while true {
-    let next_chunk = scanner.next_chunk() catch {
-      err => raise map_scan_error(err)
+    let next_chunk = match source {
+      ScanChunkSource::Csv(scanner) =>
+        scanner.next_chunk() catch {
+          err => raise map_scan_error(err)
+        }
+      ScanChunkSource::Jsonl(scanner) =>
+        scanner.next_chunk() catch {
+          err => raise map_scan_error(err)
+        }
     }
     match next_chunk {
       Some(chunk) => chunks.push(chunk)
@@ -972,22 +977,7 @@ fn take_vector(
 
 ///|
 fn vector_value_at(vector : @engine.Vector, row_index : Int) -> @engine.Value {
-  let is_valid = match vector.validity.is_valid(row_index) {
-    Some(value) => value
-    None => false
-  }
-  guard is_valid else { return @engine.Value::Null }
-  match vector.values {
-    @engine.VectorBuffer::Nulls(_) => @engine.Value::Null
-    @engine.VectorBuffer::Bool(values) =>
-      @engine.Value::Boolean(values[row_index])
-    @engine.VectorBuffer::Int64(values) =>
-      @engine.Value::BigInt(values[row_index])
-    @engine.VectorBuffer::Double(values) =>
-      @engine.Value::Double(values[row_index])
-    @engine.VectorBuffer::Varchar(values) =>
-      @engine.Value::Varchar(values[row_index])
-  }
+  @engine.vector_value_at(vector, row_index)
 }
 
 ///|
@@ -1224,28 +1214,60 @@ fn cast_to_double(value : @engine.Value) -> @engine.Value raise ExecuteError {
 
 ///|
 fn map_scan_error(err : @scan.ScanError) -> ExecuteError {
+  let (kind, message) = execute_error_parts_from_scan(err)
+  map_execute_error(kind, message)
+}
+
+///|
+fn map_plan_error(err : @plan.PlanError) -> ExecuteError {
+  let (kind, message) = execute_error_parts_from_plan(err)
+  map_execute_error(kind, message)
+}
+
+///|
+fn execute_error_parts_from_scan(
+  err : @scan.ScanError,
+) -> (ExecuteErrorKind, String) {
   match err {
-    @scan.ScanError::Io(message) => ExecuteError::Io(message)
-    @scan.ScanError::CsvMalformed(message) => ExecuteError::Scan(message)
+    @scan.ScanError::Io(message) => (ExecuteErrorKind::Io, message)
+    @scan.ScanError::CsvMalformed(message) => (ExecuteErrorKind::Scan, message)
     @scan.ScanError::JsonParse(line_no, message) =>
-      ExecuteError::Scan("json parse error at line \{line_no}: \{message}")
+      (
+        ExecuteErrorKind::Scan,
+        "json parse error at line \{line_no}: \{message}",
+      )
     @scan.ScanError::JsonRootNotObject(line_no) =>
-      ExecuteError::Scan("expected JSON object at line \{line_no}")
+      (ExecuteErrorKind::Scan, "expected JSON object at line \{line_no}")
     @scan.ScanError::TypeMismatch(column, line_no, message) =>
-      ExecuteError::Scan(
+      (
+        ExecuteErrorKind::Scan,
         "type mismatch for column \{column} at line \{line_no}: \{message}",
       )
   }
 }
 
 ///|
-fn map_plan_error(err : @plan.PlanError) -> ExecuteError {
+fn execute_error_parts_from_plan(
+  err : @plan.PlanError,
+) -> (ExecuteErrorKind, String) {
   match err {
     @plan.PlanError::InvalidArgument(message) =>
-      ExecuteError::InvalidArgument(message)
-    @plan.PlanError::Bind(message) => ExecuteError::Bind(message)
-    @plan.PlanError::Scan(message) => ExecuteError::Scan(message)
-    @plan.PlanError::Io(message) => ExecuteError::Io(message)
-    @plan.PlanError::Unsupported(message) => ExecuteError::Unsupported(message)
+      (ExecuteErrorKind::InvalidArgument, message)
+    @plan.PlanError::Bind(message) => (ExecuteErrorKind::Bind, message)
+    @plan.PlanError::Scan(message) => (ExecuteErrorKind::Scan, message)
+    @plan.PlanError::Io(message) => (ExecuteErrorKind::Io, message)
+    @plan.PlanError::Unsupported(message) =>
+      (ExecuteErrorKind::Unsupported, message)
+  }
+}
+
+///|
+fn map_execute_error(kind : ExecuteErrorKind, message : String) -> ExecuteError {
+  match kind {
+    ExecuteErrorKind::InvalidArgument => ExecuteError::InvalidArgument(message)
+    ExecuteErrorKind::Bind => ExecuteError::Bind(message)
+    ExecuteErrorKind::Scan => ExecuteError::Scan(message)
+    ExecuteErrorKind::Io => ExecuteError::Io(message)
+    ExecuteErrorKind::Unsupported => ExecuteError::Unsupported(message)
   }
 }

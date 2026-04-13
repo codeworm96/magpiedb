@@ -10,6 +10,8 @@ pub fn empty_vector(LogicalType) -> Vector
 
 pub let fixed_vector_size : Int
 
+pub fn vector_value_at(Vector, Int) -> Value
+
 // Errors
 
 // Types and methods

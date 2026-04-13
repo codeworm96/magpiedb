@@ -84,6 +84,22 @@ pub fn Vector::is_empty(self : Vector) -> Bool {
 }
 
 ///|
+pub fn vector_value_at(vector : Vector, row_index : Int) -> Value {
+  let is_valid = match vector.validity.is_valid(row_index) {
+    Some(value) => value
+    None => false
+  }
+  guard is_valid else { return Value::Null }
+  match vector.values {
+    VectorBuffer::Nulls(_) => Value::Null
+    VectorBuffer::Bool(values) => Value::Boolean(values[row_index])
+    VectorBuffer::Int64(values) => Value::BigInt(values[row_index])
+    VectorBuffer::Double(values) => Value::Double(values[row_index])
+    VectorBuffer::Varchar(values) => Value::Varchar(values[row_index])
+  }
+}
+
+///|
 /// Empty vectors still carry a logical type so operators can preserve schemas.
 pub fn empty_vector(logical_type : LogicalType) -> Vector {
   let values = match logical_type {

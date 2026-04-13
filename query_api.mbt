@@ -12,6 +12,16 @@ pub struct ResultSet {
 } derive(Eq, Debug)
 
 ///|
+priv enum DbErrorKind {
+  InvalidArgument
+  Bind
+  Scan
+  Io
+  Execute
+  Unsupported
+}
+
+///|
 pub fn Database::new() -> Database {
   Database::{  }
 }
@@ -67,26 +77,41 @@ fn make_result_set(output : @execute.QueryOutput) -> ResultSet {
 
 ///|
 fn map_execute_error(err : @execute.ExecuteError) -> DbError {
-  match err {
+  let (kind, message) = match err {
     @execute.ExecuteError::InvalidArgument(message) =>
-      DbError::InvalidArgument(message)
-    @execute.ExecuteError::Bind(message) => DbError::Bind(message)
-    @execute.ExecuteError::Scan(message) => DbError::Scan(message)
-    @execute.ExecuteError::Io(message) => DbError::Io(message)
-    @execute.ExecuteError::Execute(message) => DbError::Execute(message)
-    @execute.ExecuteError::Unsupported(message) => DbError::Unsupported(message)
+      (DbErrorKind::InvalidArgument, message)
+    @execute.ExecuteError::Bind(message) => (DbErrorKind::Bind, message)
+    @execute.ExecuteError::Scan(message) => (DbErrorKind::Scan, message)
+    @execute.ExecuteError::Io(message) => (DbErrorKind::Io, message)
+    @execute.ExecuteError::Execute(message) => (DbErrorKind::Execute, message)
+    @execute.ExecuteError::Unsupported(message) =>
+      (DbErrorKind::Unsupported, message)
   }
+  map_db_error(kind, message)
 }
 
 ///|
 fn map_plan_error(err : @plan.PlanError) -> DbError {
-  match err {
+  let (kind, message) = match err {
     @plan.PlanError::InvalidArgument(message) =>
-      DbError::InvalidArgument(message)
-    @plan.PlanError::Bind(message) => DbError::Bind(message)
-    @plan.PlanError::Scan(message) => DbError::Scan(message)
-    @plan.PlanError::Io(message) => DbError::Io(message)
-    @plan.PlanError::Unsupported(message) => DbError::Unsupported(message)
+      (DbErrorKind::InvalidArgument, message)
+    @plan.PlanError::Bind(message) => (DbErrorKind::Bind, message)
+    @plan.PlanError::Scan(message) => (DbErrorKind::Scan, message)
+    @plan.PlanError::Io(message) => (DbErrorKind::Io, message)
+    @plan.PlanError::Unsupported(message) => (DbErrorKind::Unsupported, message)
+  }
+  map_db_error(kind, message)
+}
+
+///|
+fn map_db_error(kind : DbErrorKind, message : String) -> DbError {
+  match kind {
+    DbErrorKind::InvalidArgument => DbError::InvalidArgument(message)
+    DbErrorKind::Bind => DbError::Bind(message)
+    DbErrorKind::Scan => DbError::Scan(message)
+    DbErrorKind::Io => DbError::Io(message)
+    DbErrorKind::Execute => DbError::Execute(message)
+    DbErrorKind::Unsupported => DbError::Unsupported(message)
   }
 }
 
@@ -107,16 +132,5 @@ fn materialize_rows(chunks : Array[@engine.DataChunk]) -> Array[Row] {
 
 ///|
 fn vector_value_at(vector : @engine.Vector, row_index : Int) -> Value {
-  let is_valid = match vector.validity.is_valid(row_index) {
-    Some(value) => value
-    None => false
-  }
-  guard is_valid else { return Value::Null }
-  match vector.values {
-    @engine.VectorBuffer::Nulls(_) => Value::Null
-    @engine.VectorBuffer::Bool(values) => Value::Boolean(values[row_index])
-    @engine.VectorBuffer::Int64(values) => Value::BigInt(values[row_index])
-    @engine.VectorBuffer::Double(values) => Value::Double(values[row_index])
-    @engine.VectorBuffer::Varchar(values) => Value::Varchar(values[row_index])
-  }
+  @engine.vector_value_at(vector, row_index)
 }

@@ -148,6 +148,12 @@ priv struct AggregateBindContext {
 }
 
 ///|
+priv enum PlanErrorKind {
+  Scan
+  Io
+}
+
+///|
 pub fn plan_query(query : @sql.Query) -> QueryPlan raise PlanError {
   let bound_from = bind_from_item(query.from)
 
@@ -178,20 +184,7 @@ fn plan_scalar_query(
   input_plan : QueryPlan,
   context : ColumnBindContext,
 ) -> QueryPlan raise PlanError {
-  guard !contains_aggregate_expr_option(query.where_clause) else {
-    raise PlanError::Bind("aggregate functions are not allowed in WHERE")
-  }
-  let with_filter = match query.where_clause {
-    None => input_plan
-    Some(expr) => {
-      let predicate = bind_scalar_expr(expr, context)
-      match plan_expr_type(predicate) {
-        @engine.LogicalType::Boolean | @engine.LogicalType::Null => ()
-        _ => raise PlanError::Bind("WHERE clause must evaluate to BOOLEAN")
-      }
-      QueryPlan::Filter(FilterPlan::{ input: input_plan, predicate })
-    }
-  }
+  let with_filter = apply_where_filter(query.where_clause, input_plan, context)
   let projections = bind_scalar_select_items(query.select_items, context)
   let output_schema = build_output_schema(projections)
   QueryPlan::Projection(ProjectionPlan::{
@@ -207,20 +200,7 @@ fn plan_aggregate_query(
   input_plan : QueryPlan,
   context : ColumnBindContext,
 ) -> QueryPlan raise PlanError {
-  guard !contains_aggregate_expr_option(query.where_clause) else {
-    raise PlanError::Bind("aggregate functions are not allowed in WHERE")
-  }
-  let with_filter = match query.where_clause {
-    None => input_plan
-    Some(expr) => {
-      let predicate = bind_scalar_expr(expr, context)
-      match plan_expr_type(predicate) {
-        @engine.LogicalType::Boolean | @engine.LogicalType::Null => ()
-        _ => raise PlanError::Bind("WHERE clause must evaluate to BOOLEAN")
-      }
-      QueryPlan::Filter(FilterPlan::{ input: input_plan, predicate })
-    }
-  }
+  let with_filter = apply_where_filter(query.where_clause, input_plan, context)
 
   let group_keys = bind_group_keys(query.group_by, context)
   let context = AggregateBindContext::{
@@ -259,6 +239,28 @@ fn plan_aggregate_query(
     projections,
     output_schema,
   })
+}
+
+///|
+fn apply_where_filter(
+  where_clause : @sql.Expr?,
+  input_plan : QueryPlan,
+  context : ColumnBindContext,
+) -> QueryPlan raise PlanError {
+  guard !contains_aggregate_expr_option(where_clause) else {
+    raise PlanError::Bind("aggregate functions are not allowed in WHERE")
+  }
+  match where_clause {
+    None => input_plan
+    Some(expr) => {
+      let predicate = bind_scalar_expr(expr, context)
+      match plan_expr_type(predicate) {
+        @engine.LogicalType::Boolean | @engine.LogicalType::Null => ()
+        _ => raise PlanError::Bind("WHERE clause must evaluate to BOOLEAN")
+      }
+      QueryPlan::Filter(FilterPlan::{ input: input_plan, predicate })
+    }
+  }
 }
 
 ///|
@@ -1195,16 +1197,31 @@ fn type_name_to_logical_type(type_name : @sql.TypeName) -> @engine.LogicalType {
 
 ///|
 fn map_scan_error(err : @scan.ScanError) -> PlanError {
+  let (kind, message) = plan_error_parts_from_scan(err)
+  map_plan_error(kind, message)
+}
+
+///|
+fn plan_error_parts_from_scan(err : @scan.ScanError) -> (PlanErrorKind, String) {
   match err {
-    @scan.ScanError::Io(message) => PlanError::Io(message)
-    @scan.ScanError::CsvMalformed(message) => PlanError::Scan(message)
+    @scan.ScanError::Io(message) => (PlanErrorKind::Io, message)
+    @scan.ScanError::CsvMalformed(message) => (PlanErrorKind::Scan, message)
     @scan.ScanError::JsonParse(line_no, message) =>
-      PlanError::Scan("json parse error at line \{line_no}: \{message}")
+      (PlanErrorKind::Scan, "json parse error at line \{line_no}: \{message}")
     @scan.ScanError::JsonRootNotObject(line_no) =>
-      PlanError::Scan("expected JSON object at line \{line_no}")
+      (PlanErrorKind::Scan, "expected JSON object at line \{line_no}")
     @scan.ScanError::TypeMismatch(column, line_no, message) =>
-      PlanError::Scan(
+      (
+        PlanErrorKind::Scan,
         "type mismatch for column \{column} at line \{line_no}: \{message}",
       )
+  }
+}
+
+///|
+fn map_plan_error(kind : PlanErrorKind, message : String) -> PlanError {
+  match kind {
+    PlanErrorKind::Scan => PlanError::Scan(message)
+    PlanErrorKind::Io => PlanError::Io(message)
   }
 }
