@@ -1362,25 +1362,11 @@ fn type_name_to_logical_type(type_name : @sql.TypeName) -> @engine.LogicalType {
 
 ///|
 fn map_scan_error(err : @scan.ScanError) -> PlanError {
-  let (kind, message) = plan_error_parts_from_scan(err)
-  map_plan_error(kind, message)
-}
-
-///|
-fn plan_error_parts_from_scan(err : @scan.ScanError) -> (PlanErrorKind, String) {
-  match err {
-    @scan.ScanError::Io(message) => (PlanErrorKind::Io, message)
-    @scan.ScanError::CsvMalformed(message) => (PlanErrorKind::Scan, message)
-    @scan.ScanError::JsonParse(line_no, message) =>
-      (PlanErrorKind::Scan, "json parse error at line \{line_no}: \{message}")
-    @scan.ScanError::JsonRootNotObject(line_no) =>
-      (PlanErrorKind::Scan, "expected JSON object at line \{line_no}")
-    @scan.ScanError::TypeMismatch(column, line_no, message) =>
-      (
-        PlanErrorKind::Scan,
-        "type mismatch for column \{column} at line \{line_no}: \{message}",
-      )
+  let kind = match err {
+    @scan.ScanError::Io(_) => PlanErrorKind::Io
+    _ => PlanErrorKind::Scan
   }
+  map_plan_error(kind, err.message())
 }
 
 ///|

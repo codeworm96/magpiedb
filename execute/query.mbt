@@ -1143,36 +1143,17 @@ fn cast_to_double(value : @engine.Value) -> @engine.Value raise ExecuteError {
 
 ///|
 fn map_scan_error(err : @scan.ScanError) -> ExecuteError {
-  let (kind, message) = execute_error_parts_from_scan(err)
-  map_execute_error(kind, message)
+  let kind = match err {
+    @scan.ScanError::Io(_) => ExecuteErrorKind::Io
+    _ => ExecuteErrorKind::Scan
+  }
+  map_execute_error(kind, err.message())
 }
 
 ///|
 fn map_plan_error(err : @plan.PlanError) -> ExecuteError {
   let (kind, message) = execute_error_parts_from_plan(err)
   map_execute_error(kind, message)
-}
-
-///|
-fn execute_error_parts_from_scan(
-  err : @scan.ScanError,
-) -> (ExecuteErrorKind, String) {
-  match err {
-    @scan.ScanError::Io(message) => (ExecuteErrorKind::Io, message)
-    @scan.ScanError::CsvMalformed(message) => (ExecuteErrorKind::Scan, message)
-    @scan.ScanError::JsonParse(line_no, message) =>
-      (
-        ExecuteErrorKind::Scan,
-        "json parse error at line \{line_no}: \{message}",
-      )
-    @scan.ScanError::JsonRootNotObject(line_no) =>
-      (ExecuteErrorKind::Scan, "expected JSON object at line \{line_no}")
-    @scan.ScanError::TypeMismatch(column, line_no, message) =>
-      (
-        ExecuteErrorKind::Scan,
-        "type mismatch for column \{column} at line \{line_no}: \{message}",
-      )
-  }
 }
 
 ///|

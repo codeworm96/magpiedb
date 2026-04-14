@@ -9,6 +9,18 @@ pub(all) suberror ScanError {
 } derive(Debug)
 
 ///|
+pub fn ScanError::message(self : ScanError) -> String {
+  match self {
+    Io(message) | CsvMalformed(message) => message
+    JsonParse(line_no, message) =>
+      "json parse error at line \{line_no}: \{message}"
+    JsonRootNotObject(line_no) => "expected JSON object at line \{line_no}"
+    TypeMismatch(column, line_no, message) =>
+      "type mismatch for column \{column} at line \{line_no}: \{message}"
+  }
+}
+
+///|
 fn map_io_error(err : @fs.IOError) -> ScanError {
   match err {
     @fs.IOError(message) => ScanError::Io(message)

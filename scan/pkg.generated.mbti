@@ -33,6 +33,7 @@ pub(all) suberror ScanError {
   CsvMalformed(String)
   TypeMismatch(String, Int, String)
 } derive(@debug.Debug)
+pub fn ScanError::message(Self) -> String
 
 // Types and methods
 pub struct CsvScanner {
