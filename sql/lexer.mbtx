@@ -55,9 +55,13 @@ fn make_ident_or_keyword(
     "GROUP" => GROUP
     "BY" => BY
     "HAVING" => HAVING
+    "ORDER" => ORDER
+    "LIMIT" => LIMIT
     "JOIN" => JOIN
     "INNER" => INNER
     "ON" => ON
+    "ASC" => ASC
+    "DESC" => DESC
     "AS" => AS
     "CAST" => CAST
     "IS" => IS

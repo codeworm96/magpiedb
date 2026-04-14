@@ -34,8 +34,10 @@ fn make_query(
   where_clause : Expr?,
   group_by : Array[Array[String]],
   having_clause : Expr?,
+  order_by : Array[OrderByItem],
+  limit : String?,
 ) -> Query {
-  { select_items, from, where_clause, group_by, having_clause }
+  { select_items, from, where_clause, group_by, having_clause, order_by, limit }
 }
 
 ///|
@@ -60,6 +62,21 @@ fn make_join_from_item(
   on : Expr,
 ) -> FromItem {
   FromItem::Join(JoinRelation::{ left, right, join_kind: JoinKind::Inner, on })
+}
+
+///|
+fn make_order_by_item(expr : Expr, direction : SortDirection) -> OrderByItem {
+  { expr, direction }
+}
+
+///|
+fn push_order_by_item(
+  items : Array[OrderByItem],
+  item : OrderByItem,
+) -> Array[OrderByItem] {
+  let next = items.copy()
+  next.push(item)
+  next
 }
 
 ///|

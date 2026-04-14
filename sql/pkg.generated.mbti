@@ -81,6 +81,11 @@ pub struct JoinRelation {
   on : Expr
 } derive(Eq, @debug.Debug)
 
+pub struct OrderByItem {
+  expr : Expr
+  direction : SortDirection
+} derive(Eq, @debug.Debug)
+
 pub struct Position {
   offset : Int
   line : Int
@@ -93,11 +98,18 @@ pub struct Query {
   where_clause : Expr?
   group_by : Array[Array[String]]
   having_clause : Expr?
+  order_by : Array[OrderByItem]
+  limit : String?
 } derive(Eq, @debug.Debug)
 
 pub struct SelectItem {
   expr : Expr
   output_name : String?
+} derive(Eq, @debug.Debug)
+
+pub(all) enum SortDirection {
+  Asc
+  Desc
 } derive(Eq, @debug.Debug)
 
 pub struct SourceRef {
@@ -126,9 +138,13 @@ pub(all) enum Token {
   GROUP
   BY
   HAVING
+  ORDER
+  LIMIT
   JOIN
   INNER
   ON
+  ASC
+  DESC
   AS
   CAST
   IS
@@ -171,9 +187,13 @@ pub(all) enum TokenKind {
   TK_GROUP
   TK_BY
   TK_HAVING
+  TK_ORDER
+  TK_LIMIT
   TK_JOIN
   TK_INNER
   TK_ON
+  TK_ASC
+  TK_DESC
   TK_AS
   TK_CAST
   TK_IS

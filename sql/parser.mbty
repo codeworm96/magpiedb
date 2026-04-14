@@ -13,9 +13,13 @@
 %token GROUP      "GROUP"
 %token BY         "BY"
 %token HAVING     "HAVING"
+%token ORDER      "ORDER"
+%token LIMIT      "LIMIT"
 %token JOIN       "JOIN"
 %token INNER      "INNER"
 %token ON         "ON"
+%token ASC        "ASC"
+%token DESC       "DESC"
 %token AS         "AS"
 %token CAST       "CAST"
 %token IS         "IS"
@@ -59,6 +63,11 @@
 %type<Array[Array[String]]> opt_group_by
 %type<Array[Array[String]]> group_key_list
 %type<Expr?> opt_having
+%type<Array[OrderByItem]> opt_order_by
+%type<Array[OrderByItem]> order_by_list
+%type<OrderByItem> order_by_item
+%type<SortDirection> opt_sort_direction
+%type<String?> opt_limit
 %type<Expr> expr
 %type<Expr> or_expr
 %type<Expr> and_expr
@@ -75,8 +84,8 @@
 %%
 
 query
-  : "SELECT" select_list "FROM" from_item opt_where opt_group_by opt_having opt_semicolon
-      { make_query($2, $4, $5, $6, $7) }
+  : "SELECT" select_list "FROM" from_item opt_where opt_group_by opt_having opt_order_by opt_limit opt_semicolon
+      { make_query($2, $4, $5, $6, $7, $8, $9) }
   ;
 
 opt_semicolon
@@ -169,6 +178,41 @@ opt_having
   :
       { None }
   | "HAVING" expr
+      { Some($2) }
+  ;
+
+opt_order_by
+  :
+      { [] }
+  | "ORDER" "BY" order_by_list
+      { $3 }
+  ;
+
+order_by_list
+  : order_by_item
+      { [$1] }
+  | order_by_list "," order_by_item
+      { push_order_by_item($1, $3) }
+  ;
+
+order_by_item
+  : expr opt_sort_direction
+      { make_order_by_item($1, $2) }
+  ;
+
+opt_sort_direction
+  :
+      { SortDirection::Asc }
+  | "ASC"
+      { SortDirection::Asc }
+  | "DESC"
+      { SortDirection::Desc }
+  ;
+
+opt_limit
+  :
+      { None }
+  | "LIMIT" INTEGER_LITERAL
       { Some($2) }
   ;
 

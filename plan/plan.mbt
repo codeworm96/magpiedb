@@ -155,6 +155,12 @@ priv enum PlanErrorKind {
 
 ///|
 pub fn plan_query(query : @sql.Query) -> QueryPlan raise PlanError {
+  guard query.order_by.length() == 0 else {
+    raise PlanError::Unsupported("ORDER BY is not planned yet")
+  }
+  guard query.limit is None else {
+    raise PlanError::Unsupported("LIMIT is not planned yet")
+  }
   let bound_from = bind_from_item(query.from)
 
   if contains_aggregate_in_query(query) || query.group_by.length() > 0 {

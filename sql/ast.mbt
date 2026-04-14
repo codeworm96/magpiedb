@@ -85,6 +85,18 @@ pub(all) enum FromItem {
 } derive(Eq, Debug)
 
 ///|
+pub(all) enum SortDirection {
+  Asc
+  Desc
+} derive(Eq, Debug)
+
+///|
+pub struct OrderByItem {
+  expr : Expr
+  direction : SortDirection
+} derive(Eq, Debug)
+
+///|
 pub struct Query {
   select_items : Array[SelectItem]
   from : FromItem
@@ -92,4 +104,6 @@ pub struct Query {
   // Each GROUP BY item is a column-reference path like ["active"] or ["people", "active"].
   group_by : Array[Array[String]]
   having_clause : Expr?
+  order_by : Array[OrderByItem]
+  limit : String?
 } derive(Eq, Debug)
