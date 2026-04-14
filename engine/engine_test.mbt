@@ -38,3 +38,35 @@ test "empty data chunk mirrors schema shape" {
   assert_eq(chunk.columns[1].logical_type, LogicalType::Double)
   assert_true(!chunk.is_full())
 }
+
+///|
+test "chunk row helpers materialize rows in column order" {
+  let schema : Schema = {
+    columns: [
+      { name: "id", data_type: LogicalType::BigInt, nullable: false },
+      { name: "name", data_type: LogicalType::Varchar, nullable: true },
+    ],
+  }
+  let chunk : DataChunk = {
+    schema,
+    columns: [
+      {
+        logical_type: LogicalType::BigInt,
+        values: VectorBuffer::Int64([1L, 2L]),
+        validity: ValidityMask::all_valid(2),
+      },
+      {
+        logical_type: LogicalType::Varchar,
+        values: VectorBuffer::Varchar(["Ada", ""]),
+        validity: ValidityMask::new([true, false]),
+      },
+    ],
+    len: 2,
+  }
+
+  assert_eq(chunk_row_at(chunk, 0), [Value::BigInt(1L), Value::Varchar("Ada")])
+  assert_eq(chunks_to_rows([chunk]), [
+    [Value::BigInt(1L), Value::Varchar("Ada")],
+    [Value::BigInt(2L), Value::Null],
+  ])
+}

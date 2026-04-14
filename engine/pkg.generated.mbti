@@ -6,6 +6,10 @@ import {
 }
 
 // Values
+pub fn chunk_row_at(DataChunk, Int) -> Array[Value]
+
+pub fn chunks_to_rows(Array[DataChunk]) -> Array[Array[Value]]
+
 pub fn empty_vector(LogicalType) -> Vector
 
 pub let fixed_vector_size : Int

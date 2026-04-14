@@ -100,6 +100,26 @@ pub fn vector_value_at(vector : Vector, row_index : Int) -> Value {
 }
 
 ///|
+pub fn chunk_row_at(chunk : DataChunk, row_index : Int) -> Row {
+  let row = []
+  for column in chunk.columns {
+    row.push(vector_value_at(column, row_index))
+  }
+  row
+}
+
+///|
+pub fn chunks_to_rows(chunks : Array[DataChunk]) -> Array[Row] {
+  let rows = []
+  for chunk in chunks {
+    for row_index in 0..<chunk.len {
+      rows.push(chunk_row_at(chunk, row_index))
+    }
+  }
+  rows
+}
+
+///|
 /// Empty vectors still carry a logical type so operators can preserve schemas.
 pub fn empty_vector(logical_type : LogicalType) -> Vector {
   let values = match logical_type {

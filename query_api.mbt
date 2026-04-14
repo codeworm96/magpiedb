@@ -70,7 +70,7 @@ pub fn ResultSet::next(self : ResultSet) -> Row? {
 fn make_result_set(output : @execute.QueryOutput) -> ResultSet {
   ResultSet::{
     schema: output.schema,
-    rows: materialize_rows(output.chunks),
+    rows: @engine.chunks_to_rows(output.chunks),
     next_row: 0,
   }
 }
@@ -113,24 +113,4 @@ fn map_db_error(kind : DbErrorKind, message : String) -> DbError {
     DbErrorKind::Execute => DbError::Execute(message)
     DbErrorKind::Unsupported => DbError::Unsupported(message)
   }
-}
-
-///|
-fn materialize_rows(chunks : Array[@engine.DataChunk]) -> Array[Row] {
-  let rows = []
-  for chunk in chunks {
-    for row_index in 0..<chunk.len {
-      let row = []
-      for column in chunk.columns {
-        row.push(vector_value_at(column, row_index))
-      }
-      rows.push(row)
-    }
-  }
-  rows
-}
-
-///|
-fn vector_value_at(vector : @engine.Vector, row_index : Int) -> Value {
-  @engine.vector_value_at(vector, row_index)
 }

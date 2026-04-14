@@ -2,13 +2,7 @@
 fn chunks_to_rows(
   chunks : Array[@engine.DataChunk],
 ) -> Array[Array[@engine.Value]] {
-  let rows = []
-  for chunk in chunks {
-    for row_index in 0..<chunk.len {
-      rows.push(chunk_row_at(chunk, row_index))
-    }
-  }
-  rows
+  @engine.chunks_to_rows(chunks)
 }
 
 ///|
@@ -16,11 +10,7 @@ fn chunk_row_at(
   chunk : @engine.DataChunk,
   row_index : Int,
 ) -> Array[@engine.Value] {
-  let row = []
-  for column in chunk.columns {
-    row.push(vector_value_at(column, row_index))
-  }
-  row
+  @engine.chunk_row_at(chunk, row_index)
 }
 
 ///|
@@ -186,7 +176,7 @@ fn take_vector(
 ) -> @engine.Vector raise ExecuteError {
   let values = []
   for index in indices {
-    values.push(vector_value_at(vector, index))
+    values.push(@engine.vector_value_at(vector, index))
   }
   build_vector_from_values(vector.logical_type, values)
 }
