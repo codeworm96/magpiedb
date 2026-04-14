@@ -116,6 +116,27 @@ test "query treats division as float division inside aggregates" {
 }
 
 ///|
+test "query applies SQL three-valued logic for boolean operators" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT false AND NULL AS and_result, true OR NULL AS or_result, true AND NULL AS and_unknown, false OR NULL AS or_unknown FROM read_csv('fixtures/csv/people.csv')",
+    )
+    .unwrap()
+
+  let expected_row = [
+    Value::Boolean(false),
+    Value::Boolean(true),
+    Value::Null,
+    Value::Null,
+  ]
+  assert_eq(result.next(), Some(expected_row))
+  assert_eq(result.next(), Some(expected_row))
+  assert_eq(result.next(), Some(expected_row))
+  assert_eq(result.next(), None)
+}
+
+///|
 test "query executes csv jsonl inner join with where over joined rows" {
   let conn = Database::new().connect()
   let result = conn

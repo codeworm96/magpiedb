@@ -760,17 +760,44 @@ fn eval_boolean_binary(
   left : @engine.Value,
   right : @engine.Value,
 ) -> @engine.Value raise ExecuteError {
+  match op {
+    @sql.BinaryOp::And => eval_boolean_and(left, right)
+    @sql.BinaryOp::Or => eval_boolean_or(left, right)
+    _ => raise ExecuteError::Execute("invalid boolean operator")
+  }
+}
+
+///|
+fn eval_boolean_and(
+  left : @engine.Value,
+  right : @engine.Value,
+) -> @engine.Value raise ExecuteError {
   match (left, right) {
-    (@engine.Value::Null, _) => @engine.Value::Null
-    (_, @engine.Value::Null) => @engine.Value::Null
-    (@engine.Value::Boolean(l), @engine.Value::Boolean(r)) =>
-      @engine.Value::Boolean(
-        match op {
-          @sql.BinaryOp::And => l && r
-          @sql.BinaryOp::Or => l || r
-          _ => false
-        },
-      )
+    (@engine.Value::Boolean(false), _) | (_, @engine.Value::Boolean(false)) =>
+      @engine.Value::Boolean(false)
+    (@engine.Value::Boolean(true), @engine.Value::Boolean(true)) =>
+      @engine.Value::Boolean(true)
+    (@engine.Value::Boolean(true), @engine.Value::Null)
+    | (@engine.Value::Null, @engine.Value::Boolean(true))
+    | (@engine.Value::Null, @engine.Value::Null) => @engine.Value::Null
+    _ =>
+      raise ExecuteError::Execute("boolean operator requires BOOLEAN operands")
+  }
+}
+
+///|
+fn eval_boolean_or(
+  left : @engine.Value,
+  right : @engine.Value,
+) -> @engine.Value raise ExecuteError {
+  match (left, right) {
+    (@engine.Value::Boolean(true), _) | (_, @engine.Value::Boolean(true)) =>
+      @engine.Value::Boolean(true)
+    (@engine.Value::Boolean(false), @engine.Value::Boolean(false)) =>
+      @engine.Value::Boolean(false)
+    (@engine.Value::Boolean(false), @engine.Value::Null)
+    | (@engine.Value::Null, @engine.Value::Boolean(false))
+    | (@engine.Value::Null, @engine.Value::Null) => @engine.Value::Null
     _ =>
       raise ExecuteError::Execute("boolean operator requires BOOLEAN operands")
   }

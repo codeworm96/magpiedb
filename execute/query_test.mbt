@@ -125,6 +125,39 @@ test "execute plan treats division as double in aggregate inputs" {
 }
 
 ///|
+test "execute plan applies SQL three-valued logic for boolean operators" {
+  let query = @sql.parse_sql(
+    "SELECT false AND NULL AS and_result, true OR NULL AS or_result, true AND NULL AS and_unknown, false OR NULL AS or_unknown FROM read_csv('fixtures/csv/people.csv')",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  assert_eq(output.chunks.length(), 1)
+  let chunk = output.chunks[0]
+  assert_eq(chunk.len, 3)
+  assert_eq(
+    chunk.columns[0].values,
+    @engine.VectorBuffer::Bool([false, false, false]),
+  )
+  assert_eq(chunk.columns[0].validity, @engine.ValidityMask::all_valid(3))
+  assert_eq(
+    chunk.columns[1].values,
+    @engine.VectorBuffer::Bool([true, true, true]),
+  )
+  assert_eq(chunk.columns[1].validity, @engine.ValidityMask::all_valid(3))
+  assert_eq(
+    chunk.columns[2].values,
+    @engine.VectorBuffer::Bool([false, false, false]),
+  )
+  assert_eq(chunk.columns[2].validity, @engine.ValidityMask::all_null(3))
+  assert_eq(
+    chunk.columns[3].values,
+    @engine.VectorBuffer::Bool([false, false, false]),
+  )
+  assert_eq(chunk.columns[3].validity, @engine.ValidityMask::all_null(3))
+}
+
+///|
 test "execute plan performs csv jsonl inner join with deterministic output order" {
   let query = @sql.parse_sql(
     "SELECT people.name, events.name, events.active FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id",
