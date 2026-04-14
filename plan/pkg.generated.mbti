@@ -73,6 +73,11 @@ pub(all) struct JsonlScan {
   schema : @engine.Schema
 } derive(Eq, @debug.Debug)
 
+pub(all) struct LimitPlan {
+  input : QueryPlan
+  limit : Int
+} derive(Eq, @debug.Debug)
+
 pub(all) enum PlanExpr {
   ColumnRef(BoundColumnRef)
   StringLiteral(String)
@@ -85,6 +90,11 @@ pub(all) enum PlanExpr {
   IsNull(PlanExpr)
   IsNotNull(PlanExpr)
   Cast(PlanExpr, @engine.LogicalType)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct PlanOrderByItem {
+  expr : PlanExpr
+  direction : @sql.SortDirection
 } derive(Eq, @debug.Debug)
 
 pub(all) struct PlanSelectItem {
@@ -104,6 +114,8 @@ pub(all) enum QueryPlan {
   Filter(FilterPlan)
   Aggregate(AggregatePlan)
   Projection(ProjectionPlan)
+  Sort(SortPlan)
+  Limit(LimitPlan)
 } derive(Eq, @debug.Debug)
 
 pub(all) struct ScanPlan {
@@ -113,6 +125,12 @@ pub(all) struct ScanPlan {
 pub(all) enum ScanSource {
   Csv(CsvScan)
   Jsonl(JsonlScan)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SortPlan {
+  input : QueryPlan
+  items : Array[PlanOrderByItem]
+  output_schema : @engine.Schema
 } derive(Eq, @debug.Debug)
 
 // Type aliases

@@ -106,12 +106,33 @@ pub(all) struct ProjectionPlan {
 } derive(Eq, Debug)
 
 ///|
+pub(all) struct PlanOrderByItem {
+  expr : PlanExpr
+  direction : @sql.SortDirection
+} derive(Eq, Debug)
+
+///|
+pub(all) struct SortPlan {
+  input : QueryPlan
+  items : Array[PlanOrderByItem]
+  output_schema : @engine.Schema
+} derive(Eq, Debug)
+
+///|
+pub(all) struct LimitPlan {
+  input : QueryPlan
+  limit : Int
+} derive(Eq, Debug)
+
+///|
 pub(all) enum QueryPlan {
   Scan(ScanPlan)
   Join(JoinPlan)
   Filter(FilterPlan)
   Aggregate(AggregatePlan)
   Projection(ProjectionPlan)
+  Sort(SortPlan)
+  Limit(LimitPlan)
 } derive(Eq, Debug)
 
 ///|
@@ -155,12 +176,6 @@ priv enum PlanErrorKind {
 
 ///|
 pub fn plan_query(query : @sql.Query) -> QueryPlan raise PlanError {
-  guard query.order_by.length() == 0 else {
-    raise PlanError::Unsupported("ORDER BY is not planned yet")
-  }
-  guard query.limit is None else {
-    raise PlanError::Unsupported("LIMIT is not planned yet")
-  }
   let bound_from = bind_from_item(query.from)
 
   if contains_aggregate_in_query(query) || query.group_by.length() > 0 {
@@ -181,6 +196,8 @@ pub fn query_plan_schema(plan : QueryPlan) -> @engine.Schema {
     Filter(filter_plan) => query_plan_schema(filter_plan.input)
     Aggregate(aggregate_plan) => aggregate_plan.output_schema
     Projection(projection_plan) => projection_plan.output_schema
+    Sort(sort_plan) => sort_plan.output_schema
+    Limit(limit_plan) => query_plan_schema(limit_plan.input)
   }
 }
 
@@ -193,11 +210,12 @@ fn plan_scalar_query(
   let with_filter = apply_where_filter(query.where_clause, input_plan, context)
   let projections = bind_scalar_select_items(query.select_items, context)
   let output_schema = build_output_schema(projections)
-  QueryPlan::Projection(ProjectionPlan::{
+  let projection_plan = QueryPlan::Projection(ProjectionPlan::{
     input: with_filter,
     projections,
     output_schema,
   })
+  apply_order_by_and_limit(query, projection_plan)
 }
 
 ///|
@@ -240,11 +258,150 @@ fn plan_aggregate_query(
     None => aggregate_plan
   }
   let output_schema = build_output_schema(projections)
-  QueryPlan::Projection(ProjectionPlan::{
+  let projection_plan = QueryPlan::Projection(ProjectionPlan::{
     input: with_having,
     projections,
     output_schema,
   })
+  apply_order_by_and_limit(query, projection_plan)
+}
+
+///|
+fn apply_order_by_and_limit(
+  query : @sql.Query,
+  projection_plan : QueryPlan,
+) -> QueryPlan raise PlanError {
+  let with_sort = if query.order_by.length() == 0 {
+    projection_plan
+  } else {
+    let projection_output_schema = query_plan_schema(projection_plan)
+    let order_by_items = bind_order_by_items(
+      query.order_by,
+      query.select_items,
+      projection_output_schema,
+    )
+    QueryPlan::Sort(SortPlan::{
+      input: projection_plan,
+      items: order_by_items,
+      output_schema: projection_output_schema,
+    })
+  }
+  match query.limit {
+    Some(text) =>
+      QueryPlan::Limit(LimitPlan::{ input: with_sort, limit: bind_limit(text) })
+    None => with_sort
+  }
+}
+
+///|
+fn bind_order_by_items(
+  order_by : Array[@sql.OrderByItem],
+  select_items : Array[@sql.SelectItem],
+  output_schema : @engine.Schema,
+) -> Array[PlanOrderByItem] raise PlanError {
+  let items = []
+  for item in order_by {
+    items.push(bind_order_by_item(item, select_items, output_schema))
+  }
+  items
+}
+
+///|
+fn bind_order_by_item(
+  item : @sql.OrderByItem,
+  select_items : Array[@sql.SelectItem],
+  output_schema : @engine.Schema,
+) -> PlanOrderByItem raise PlanError {
+  let expr = bind_order_by_expr(item.expr, select_items, output_schema)
+  PlanOrderByItem::{ expr, direction: item.direction }
+}
+
+///|
+fn bind_order_by_expr(
+  expr : @sql.Expr,
+  select_items : Array[@sql.SelectItem],
+  output_schema : @engine.Schema,
+) -> PlanExpr raise PlanError {
+  let output_context = output_schema_bind_context(output_schema)
+  match
+    try_bind_order_by_expr_to_projection(expr, select_items, output_schema) {
+    Some(bound_expr) => bound_expr
+    None => bind_scalar_expr(expr, output_context)
+  }
+}
+
+///|
+fn try_bind_order_by_expr_to_projection(
+  expr : @sql.Expr,
+  select_items : Array[@sql.SelectItem],
+  output_schema : @engine.Schema,
+) -> PlanExpr? raise PlanError {
+  let matches = []
+  match expr {
+    @sql.Expr::ColumnRef(path) => {
+      if path.length() == 1 {
+        let output_name = path[0]
+        match output_schema.column_index(output_name) {
+          Some(index) =>
+            push_unique_order_by_match(matches, output_schema, index)
+          None => ()
+        }
+      }
+      for index in 0..<select_items.length() {
+        if select_items[index].expr == expr {
+          push_unique_order_by_match(matches, output_schema, index)
+        }
+      }
+    }
+    _ =>
+      for index in 0..<select_items.length() {
+        if select_items[index].expr == expr {
+          push_unique_order_by_match(matches, output_schema, index)
+        }
+      }
+  }
+  match matches.length() {
+    0 => None
+    1 => Some(PlanExpr::ColumnRef(matches[0]))
+    _ => raise PlanError::Bind("ambiguous ORDER BY expression")
+  }
+}
+
+///|
+fn push_unique_order_by_match(
+  matches : Array[BoundColumnRef],
+  output_schema : @engine.Schema,
+  index : Int,
+) -> Unit {
+  for existing in matches {
+    if existing.index == index {
+      return
+    }
+  }
+  matches.push(BoundColumnRef::{ index, column: output_schema.columns[index] })
+}
+
+///|
+fn output_schema_bind_context(schema : @engine.Schema) -> ColumnBindContext {
+  let relation = BoundRelation::{
+    schema,
+    alias_name: None,
+    relation_name: "",
+    output_offset: 0,
+  }
+  ColumnBindContext::{ schema, relations: [relation] }
+}
+
+///|
+fn bind_limit(text : String) -> Int raise PlanError {
+  let value = @string.parse_int64(text[:]) catch {
+    _ =>
+      raise PlanError::InvalidArgument("LIMIT must be a non-negative integer")
+  }
+  guard value >= 0L else {
+    raise PlanError::InvalidArgument("LIMIT must be a non-negative integer")
+  }
+  value.to_int()
 }
 
 ///|

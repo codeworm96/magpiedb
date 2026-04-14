@@ -276,3 +276,43 @@ test "planner rejects ambiguous unqualified group key over join" {
     _ => fail("expected bind error")
   }
 }
+
+///|
+test "planner places sort and limit after projection" {
+  let query = @sql.parse_sql(
+    "SELECT age AS years FROM read_csv('fixtures/csv/people.csv') ORDER BY years LIMIT 2",
+  ).unwrap()
+  let plan = try! plan_query(query)
+
+  match plan {
+    Limit(limit_plan) => {
+      assert_eq(limit_plan.limit, 2)
+      match limit_plan.input {
+        Sort(sort_plan) => {
+          assert_eq(sort_plan.items.length(), 1)
+          match sort_plan.items[0].expr {
+            ColumnRef(column_ref) => assert_eq(column_ref.column.name, "years")
+            _ => fail("expected ORDER BY to bind to projected alias")
+          }
+          assert_true(sort_plan.input is Projection(_))
+        }
+        _ => fail("expected sort under limit")
+      }
+    }
+    _ => fail("expected limit root")
+  }
+}
+
+///|
+test "planner rejects unavailable order by column" {
+  let query = @sql.parse_sql(
+    "SELECT name FROM read_csv('fixtures/csv/people.csv') ORDER BY age",
+  ).unwrap()
+  let err = (try? plan_query(query)).unwrap_err()
+
+  match err {
+    PlanError::Bind(message) =>
+      assert_true(message.contains("unknown") || message.contains("ORDER BY"))
+    _ => fail("expected bind error")
+  }
+}

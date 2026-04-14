@@ -62,6 +62,8 @@ fn execute_plan_chunks(
         projection_plan.projections,
         projection_plan.output_schema,
       )
+    @plan.QueryPlan::Sort(sort_plan) => sort_plan_chunks(sort_plan)
+    @plan.QueryPlan::Limit(limit_plan) => limit_plan_chunks(limit_plan)
   }
 }
 
@@ -129,6 +131,40 @@ fn project_plan_chunks(
     output.push(project_chunk(chunk, projections, output_schema))
   }
   output
+}
+
+///|
+fn sort_plan_chunks(
+  sort_plan : @plan.SortPlan,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let rows = chunks_to_rows(execute_plan_chunks(sort_plan.input))
+  let indices = []
+  for index in 0..<rows.length() {
+    indices.push(index)
+  }
+  stable_sort_row_indices(indices, rows, sort_plan.items)
+  let sorted_rows = []
+  for index in indices {
+    sorted_rows.push(rows[index])
+  }
+  rows_to_chunks(sort_plan.output_schema, sorted_rows)
+}
+
+///|
+fn limit_plan_chunks(
+  limit_plan : @plan.LimitPlan,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let rows = chunks_to_rows(execute_plan_chunks(limit_plan.input))
+  let limited_rows = []
+  let take_count = if limit_plan.limit < rows.length() {
+    limit_plan.limit
+  } else {
+    rows.length()
+  }
+  for index in 0..<take_count {
+    limited_rows.push(rows[index])
+  }
+  rows_to_chunks(@plan.query_plan_schema(limit_plan.input), limited_rows)
 }
 
 ///|
@@ -285,6 +321,139 @@ fn inner_join_plan_chunks(
   }
 
   rows_to_chunks(join_plan.output_schema, output_rows)
+}
+
+///|
+fn stable_sort_row_indices(
+  indices : Array[Int],
+  rows : Array[Array[@engine.Value]],
+  items : Array[@plan.PlanOrderByItem],
+) -> Unit raise ExecuteError {
+  let len = indices.length()
+  if len <= 1 {
+    return
+  }
+  let mut i = 1
+  while i < len {
+    let current = indices[i]
+    let mut j = i
+    while j > 0 &&
+          compare_sorted_rows(rows[current], rows[indices[j - 1]], items) < 0 {
+      indices[j] = indices[j - 1]
+      j -= 1
+    }
+    indices[j] = current
+    i += 1
+  }
+}
+
+///|
+fn compare_sorted_rows(
+  left_row : Array[@engine.Value],
+  right_row : Array[@engine.Value],
+  items : Array[@plan.PlanOrderByItem],
+) -> Int raise ExecuteError {
+  for item in items {
+    let left_value = eval_sort_expr_on_row(item.expr, left_row)
+    let right_value = eval_sort_expr_on_row(item.expr, right_row)
+    let ordering = compare_sort_values(left_value, right_value, item.direction)
+    if ordering != 0 {
+      return ordering
+    }
+  }
+  0
+}
+
+///|
+fn eval_sort_expr_on_row(
+  expr : @plan.PlanExpr,
+  row : Array[@engine.Value],
+) -> @engine.Value raise ExecuteError {
+  match expr {
+    @plan.PlanExpr::ColumnRef(column_ref) => row[column_ref.index]
+    _ => eval_expr_scalar(expr, row)
+  }
+}
+
+///|
+fn compare_sort_values(
+  left : @engine.Value,
+  right : @engine.Value,
+  direction : @sql.SortDirection,
+) -> Int raise ExecuteError {
+  match (left, right) {
+    (@engine.Value::Null, @engine.Value::Null) => 0
+    (@engine.Value::Null, _) => 1
+    (_, @engine.Value::Null) => -1
+    (@engine.Value::BigInt(_), @engine.Value::Double(_))
+    | (@engine.Value::Double(_), @engine.Value::BigInt(_)) => {
+      let left_value = value_to_double(left)
+      let right_value = value_to_double(right)
+      let ordering = if left_value < right_value {
+        -1
+      } else if left_value > right_value {
+        1
+      } else {
+        0
+      }
+      match direction {
+        @sql.SortDirection::Asc => ordering
+        @sql.SortDirection::Desc => -ordering
+      }
+    }
+    _ => {
+      let ordering = compare_values(left, right)
+      match direction {
+        @sql.SortDirection::Asc => ordering
+        @sql.SortDirection::Desc => -ordering
+      }
+    }
+  }
+}
+
+///|
+fn eval_expr_scalar(
+  expr : @plan.PlanExpr,
+  row : Array[@engine.Value],
+) -> @engine.Value raise ExecuteError {
+  match expr {
+    @plan.PlanExpr::ColumnRef(column_ref) => row[column_ref.index]
+    @plan.PlanExpr::StringLiteral(text) => @engine.Value::Varchar(text)
+    @plan.PlanExpr::IntegerLiteral(text) =>
+      @engine.Value::BigInt(
+        @string.parse_int64(text[:]) catch {
+          _ => raise ExecuteError::Execute("invalid integer literal: \{text}")
+        },
+      )
+    @plan.PlanExpr::DoubleLiteral(text) =>
+      @engine.Value::Double(
+        @string.parse_double(text[:]) catch {
+          _ => raise ExecuteError::Execute("invalid double literal: \{text}")
+        },
+      )
+    @plan.PlanExpr::BooleanLiteral(value) => @engine.Value::Boolean(value)
+    @plan.PlanExpr::NullLiteral => @engine.Value::Null
+    @plan.PlanExpr::Unary(op, inner) =>
+      eval_unary(op, eval_expr_scalar(inner, row))
+    @plan.PlanExpr::Binary(op, left, right) =>
+      eval_binary(op, eval_expr_scalar(left, row), eval_expr_scalar(right, row))
+    @plan.PlanExpr::IsNull(inner) =>
+      @engine.Value::Boolean(
+        match eval_expr_scalar(inner, row) {
+          @engine.Value::Null => true
+          _ => false
+        },
+      )
+    @plan.PlanExpr::IsNotNull(inner) =>
+      @engine.Value::Boolean(
+        match eval_expr_scalar(inner, row) {
+          @engine.Value::Null => false
+          _ => true
+        },
+      )
+    @plan.PlanExpr::Cast(inner, logical_type) =>
+      cast_value(eval_expr_scalar(inner, row), logical_type)
+  }
 }
 
 ///|

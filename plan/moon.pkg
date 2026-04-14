@@ -1,4 +1,5 @@
 import {
+  "moonbitlang/core/string",
   "codeworm96/magpiedb/engine",
   "codeworm96/magpiedb/scan",
   "codeworm96/magpiedb/sql",

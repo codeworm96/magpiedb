@@ -298,3 +298,93 @@ test "execute plan computes grouped aggregate over jsonl jsonl join on right key
   assert_eq(chunk.columns[0].values, @engine.VectorBuffer::Varchar(["B", "C"]))
   assert_eq(chunk.columns[1].values, @engine.VectorBuffer::Int64([2L, 2L]))
 }
+
+///|
+test "execute plan sorts with nulls last and limit" {
+  let query = @sql.parse_sql(
+    "SELECT name, age FROM read_csv('fixtures/csv/people.csv') ORDER BY age DESC LIMIT 2",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  assert_eq(output.chunks.length(), 1)
+  let chunk = output.chunks[0]
+  assert_eq(chunk.len, 2)
+  assert_eq(
+    chunk.columns[0].values,
+    @engine.VectorBuffer::Varchar(["Carla", "Ada"]),
+  )
+  assert_eq(chunk.columns[1].values, @engine.VectorBuffer::Int64([41L, 30L]))
+}
+
+///|
+test "execute plan sorts stable on duplicate keys" {
+  let query = @sql.parse_sql(
+    "SELECT name, id FROM read_csv('fixtures/csv/join_people.csv') ORDER BY id ASC",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  let chunk = output.chunks[0]
+  assert_eq(
+    chunk.columns[0].values,
+    @engine.VectorBuffer::Varchar(["Ada", "Bob", "Bobby", "Carla", "NoId"]),
+  )
+  assert_eq(chunk.columns[0].validity, @engine.ValidityMask::all_valid(5))
+  assert_eq(
+    chunk.columns[1].validity,
+    @engine.ValidityMask::new([true, true, true, true, false]),
+  )
+}
+
+///|
+test "execute plan sorts join results and limits them" {
+  let query = @sql.parse_sql(
+    "SELECT people.name, events.name AS event_name FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id ORDER BY event_name DESC, people.name LIMIT 3",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  let chunk = output.chunks[0]
+  assert_eq(chunk.len, 3)
+  assert_eq(
+    chunk.columns[0].values,
+    @engine.VectorBuffer::Varchar(["Bob", "Bobby", "Bob"]),
+  )
+  assert_eq(
+    chunk.columns[1].values,
+    @engine.VectorBuffer::Varchar(["Review", "Review", "Retry"]),
+  )
+}
+
+///|
+test "execute plan sorts aggregate over join results" {
+  let query = @sql.parse_sql(
+    "SELECT people.name, COUNT(*) AS total FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_csv('fixtures/csv/join_flags.csv') AS flags ON people.id = flags.id GROUP BY people.name ORDER BY total DESC, people.name LIMIT 2",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  let chunk = output.chunks[0]
+  assert_eq(chunk.len, 2)
+  assert_eq(
+    chunk.columns[0].values,
+    @engine.VectorBuffer::Varchar(["Bob", "Bobby"]),
+  )
+  assert_eq(chunk.columns[1].values, @engine.VectorBuffer::Int64([2L, 2L]))
+}
+
+///|
+test "execute plan limit zero returns empty result with schema" {
+  let query = @sql.parse_sql(
+    "SELECT name, age FROM read_csv('fixtures/csv/people.csv') LIMIT 0",
+  ).unwrap()
+  let plan = try! @plan.plan_query(query)
+  let output = try! execute_plan(plan)
+
+  assert_eq(output.schema.columns, [
+    { name: "name", data_type: @engine.LogicalType::Varchar, nullable: false },
+    { name: "age", data_type: @engine.LogicalType::BigInt, nullable: true },
+  ])
+  assert_eq(output.chunks.length(), 0)
+}

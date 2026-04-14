@@ -276,3 +276,83 @@ test "query executes grouped aggregate over jsonl jsonl join" {
   assert_eq(result.next(), Some([Value::Varchar("C"), Value::BigInt(2L)]))
   assert_eq(result.next(), None)
 }
+
+///|
+test "query executes order by and limit over scan" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT name, age FROM read_csv('fixtures/csv/people.csv') ORDER BY age DESC LIMIT 2",
+    )
+    .unwrap()
+
+  assert_eq(result.next(), Some([Value::Varchar("Carla"), Value::BigInt(41L)]))
+  assert_eq(result.next(), Some([Value::Varchar("Ada"), Value::BigInt(30L)]))
+  assert_eq(result.next(), None)
+}
+
+///|
+test "query executes order by alias" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT age AS years FROM read_csv('fixtures/csv/people.csv') ORDER BY years LIMIT 2",
+    )
+    .unwrap()
+
+  assert_eq(result.next(), Some([Value::BigInt(30L)]))
+  assert_eq(result.next(), Some([Value::BigInt(41L)]))
+  assert_eq(result.next(), None)
+}
+
+///|
+test "query executes order by and limit over join" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT people.name, events.name AS event_name FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id ORDER BY event_name DESC, people.name LIMIT 3",
+    )
+    .unwrap()
+
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Bob"), Value::Varchar("Review")]),
+  )
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Bobby"), Value::Varchar("Review")]),
+  )
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Bob"), Value::Varchar("Retry")]),
+  )
+  assert_eq(result.next(), None)
+}
+
+///|
+test "query executes order by and limit over aggregate join" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT people.name, COUNT(*) AS total FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_csv('fixtures/csv/join_flags.csv') AS flags ON people.id = flags.id GROUP BY people.name ORDER BY total DESC, people.name LIMIT 2",
+    )
+    .unwrap()
+
+  assert_eq(result.next(), Some([Value::Varchar("Bob"), Value::BigInt(2L)]))
+  assert_eq(result.next(), Some([Value::Varchar("Bobby"), Value::BigInt(2L)]))
+  assert_eq(result.next(), None)
+}
+
+///|
+test "query limit zero preserves schema and returns no rows" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query("SELECT name, age FROM read_csv('fixtures/csv/people.csv') LIMIT 0")
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "name", data_type: LogicalType::Varchar, nullable: false },
+    { name: "age", data_type: LogicalType::BigInt, nullable: true },
+  ])
+  assert_eq(result.next(), None)
+}
