@@ -61,6 +61,15 @@ priv struct AggregateOperator {
 }
 
 ///|
+priv struct SortOperator {
+  input : ChunkOperator
+  sort_plan : @plan.SortPlan
+  mut build_ready : Bool
+  mut output_chunks : Array[@engine.DataChunk]
+  mut next_index : Int
+}
+
+///|
 priv struct JoinOperator {
   left : ChunkOperator
   right : ChunkOperator
@@ -82,20 +91,14 @@ priv struct LimitOperator {
 }
 
 ///|
-priv struct MaterializedOperator {
-  chunks : Array[@engine.DataChunk]
-  mut next_index : Int
-}
-
-///|
 priv enum ChunkOperator {
   Scan(ScanOperator)
   Filter(FilterOperator)
   Projection(ProjectionOperator)
   Aggregate(AggregateOperator)
+  Sort(SortOperator)
   Join(JoinOperator)
   Limit(LimitOperator)
-  Materialized(MaterializedOperator)
 }
 
 ///|
@@ -135,8 +138,7 @@ fn build_operator(plan : @plan.QueryPlan) -> ChunkOperator raise ExecuteError {
         projections: projection_plan.projections,
         output_schema: projection_plan.output_schema,
       })
-    @plan.QueryPlan::Sort(sort_plan) =>
-      sort_plan_chunks(sort_plan).to_materialized_operator()
+    @plan.QueryPlan::Sort(sort_plan) => build_sort_operator(sort_plan)
     @plan.QueryPlan::Limit(limit_plan) =>
       ChunkOperator::Limit(LimitOperator::{
         input: build_operator(limit_plan.input),
@@ -189,11 +191,14 @@ fn build_aggregate_operator(
 }
 
 ///|
-fn Array::to_materialized_operator(
-  self : Array[@engine.DataChunk],
-) -> ChunkOperator {
-  ChunkOperator::Materialized(MaterializedOperator::{
-    chunks: self,
+fn build_sort_operator(
+  sort_plan : @plan.SortPlan,
+) -> ChunkOperator raise ExecuteError {
+  ChunkOperator::Sort(SortOperator::{
+    input: build_operator(sort_plan.input),
+    sort_plan,
+    build_ready: false,
+    output_chunks: [],
     next_index: 0,
   })
 }
@@ -221,9 +226,9 @@ fn ChunkOperator::next_chunk(
     Filter(operator) => operator.next_chunk()
     Projection(operator) => operator.next_chunk()
     Aggregate(operator) => operator.next_chunk()
+    Sort(operator) => operator.next_chunk()
     Join(operator) => operator.next_chunk()
     Limit(operator) => operator.next_chunk()
-    Materialized(operator) => operator.next_chunk()
   }
 }
 
@@ -383,6 +388,54 @@ fn AggregateOperator::build_output_chunks(
     rows.push(row)
   }
   rows_to_chunks(self.aggregate_plan.output_schema, rows)
+}
+
+///|
+fn SortOperator::next_chunk(
+  self : SortOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  self.ensure_build_ready()
+  guard self.next_index < self.output_chunks.length() else { return None }
+  let chunk = self.output_chunks[self.next_index]
+  self.next_index += 1
+  Some(chunk)
+}
+
+///|
+fn SortOperator::ensure_build_ready(
+  self : SortOperator,
+) -> Unit raise ExecuteError {
+  guard !self.build_ready else { return }
+  self.output_chunks = self.build_output_chunks()
+  self.build_ready = true
+}
+
+///|
+fn SortOperator::build_output_chunks(
+  self : SortOperator,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let rows = []
+  while true {
+    match self.input.next_chunk() {
+      Some(chunk) =>
+        for row_index in 0..<chunk.len {
+          rows.push(chunk_row_at(chunk, row_index))
+        }
+      None => break
+    }
+  } nobreak {
+    ()
+  }
+  let indices = []
+  for index in 0..<rows.length() {
+    indices.push(index)
+  }
+  stable_sort_row_indices(indices, rows, self.sort_plan.items)
+  let sorted_rows = []
+  for index in indices {
+    sorted_rows.push(rows[index])
+  }
+  rows_to_chunks(self.sort_plan.output_schema, sorted_rows)
 }
 
 ///|
@@ -554,16 +607,6 @@ fn LimitOperator::next_chunk(
 }
 
 ///|
-fn MaterializedOperator::next_chunk(
-  self : MaterializedOperator,
-) -> @engine.DataChunk? {
-  guard self.next_index < self.chunks.length() else { return None }
-  let chunk = self.chunks[self.next_index]
-  self.next_index += 1
-  Some(chunk)
-}
-
-///|
 fn take_chunk_prefix(
   chunk : @engine.DataChunk,
   len : Int,
@@ -587,23 +630,6 @@ fn planned_source_open_info(
     @plan.ScanSource::Csv(scan) => (@scan.ScanSourceKind::Csv, scan.path)
     @plan.ScanSource::Jsonl(scan) => (@scan.ScanSourceKind::Jsonl, scan.path)
   }
-}
-
-///|
-fn sort_plan_chunks(
-  sort_plan : @plan.SortPlan,
-) -> Array[@engine.DataChunk] raise ExecuteError {
-  let rows = chunks_to_rows(execute_plan_chunks(sort_plan.input))
-  let indices = []
-  for index in 0..<rows.length() {
-    indices.push(index)
-  }
-  stable_sort_row_indices(indices, rows, sort_plan.items)
-  let sorted_rows = []
-  for index in indices {
-    sorted_rows.push(rows[index])
-  }
-  rows_to_chunks(sort_plan.output_schema, sorted_rows)
 }
 
 ///|

@@ -1,11 +1,4 @@
 ///|
-fn chunks_to_rows(
-  chunks : Array[@engine.DataChunk],
-) -> Array[Array[@engine.Value]] {
-  @engine.chunks_to_rows(chunks)
-}
-
-///|
 fn chunk_row_at(
   chunk : @engine.DataChunk,
   row_index : Int,
