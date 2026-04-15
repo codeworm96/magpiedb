@@ -113,7 +113,7 @@ LIMIT 2
 
 At the API level, usage is intentionally small:
 
-```moonbit
+```moonbit nocheck
 import {
   "codeworm96/magpiedb" @db
 }

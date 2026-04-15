@@ -34,6 +34,45 @@ pub suberror ExecuteError {
 } derive(Debug)
 
 ///|
+priv struct ScanOperator {
+  scanner : @scan.Scanner
+}
+
+///|
+priv struct FilterOperator {
+  input : ChunkOperator
+  predicate : @plan.PlanExpr
+}
+
+///|
+priv struct ProjectionOperator {
+  input : ChunkOperator
+  projections : Array[@plan.PlanSelectItem]
+  output_schema : @engine.Schema
+}
+
+///|
+priv struct LimitOperator {
+  input : ChunkOperator
+  mut remaining : Int
+}
+
+///|
+priv struct MaterializedOperator {
+  chunks : Array[@engine.DataChunk]
+  mut next_index : Int
+}
+
+///|
+priv enum ChunkOperator {
+  Scan(ScanOperator)
+  Filter(FilterOperator)
+  Projection(ProjectionOperator)
+  Limit(LimitOperator)
+  Materialized(MaterializedOperator)
+}
+
+///|
 pub fn execute_query(query : @sql.Query) -> QueryOutput raise ExecuteError {
   let plan = @plan.plan_query(query) catch { err => raise map_plan_error(err) }
   execute_plan(plan)
@@ -49,33 +88,175 @@ pub fn execute_plan(plan : @plan.QueryPlan) -> QueryOutput raise ExecuteError {
 fn execute_plan_chunks(
   plan : @plan.QueryPlan,
 ) -> Array[@engine.DataChunk] raise ExecuteError {
+  collect_operator_chunks(build_operator(plan))
+}
+
+///|
+fn build_operator(plan : @plan.QueryPlan) -> ChunkOperator raise ExecuteError {
   match plan {
-    @plan.QueryPlan::Scan(scan_plan) => scan_source_chunks(scan_plan.source)
-    @plan.QueryPlan::Join(join_plan) => join_plan_chunks(join_plan)
+    @plan.QueryPlan::Scan(scan_plan) => build_scan_operator(scan_plan.source)
+    @plan.QueryPlan::Join(join_plan) =>
+      join_plan_chunks(join_plan).to_materialized_operator()
     @plan.QueryPlan::Filter(filter_plan) =>
-      filter_plan_chunks(filter_plan.input, filter_plan.predicate)
+      ChunkOperator::Filter(FilterOperator::{
+        input: build_operator(filter_plan.input),
+        predicate: filter_plan.predicate,
+      })
     @plan.QueryPlan::Aggregate(aggregate_plan) =>
-      aggregate_plan_chunks(aggregate_plan)
+      aggregate_plan_chunks(aggregate_plan).to_materialized_operator()
     @plan.QueryPlan::Projection(projection_plan) =>
-      project_plan_chunks(
-        projection_plan.input,
-        projection_plan.projections,
-        projection_plan.output_schema,
-      )
-    @plan.QueryPlan::Sort(sort_plan) => sort_plan_chunks(sort_plan)
-    @plan.QueryPlan::Limit(limit_plan) => limit_plan_chunks(limit_plan)
+      ChunkOperator::Projection(ProjectionOperator::{
+        input: build_operator(projection_plan.input),
+        projections: projection_plan.projections,
+        output_schema: projection_plan.output_schema,
+      })
+    @plan.QueryPlan::Sort(sort_plan) =>
+      sort_plan_chunks(sort_plan).to_materialized_operator()
+    @plan.QueryPlan::Limit(limit_plan) =>
+      ChunkOperator::Limit(LimitOperator::{
+        input: build_operator(limit_plan.input),
+        remaining: limit_plan.limit,
+      })
   }
 }
 
 ///|
-fn scan_source_chunks(
+fn build_scan_operator(
   source : @plan.ScanSource,
-) -> Array[@engine.DataChunk] raise ExecuteError {
+) -> ChunkOperator raise ExecuteError {
   let (kind, path) = planned_source_open_info(source)
   let scanner = @scan.open_source(kind, path) catch {
     err => raise map_scan_error(err)
   }
-  collect_scan_chunks(scanner)
+  ChunkOperator::Scan(ScanOperator::{ scanner, })
+}
+
+///|
+fn Array::to_materialized_operator(
+  self : Array[@engine.DataChunk],
+) -> ChunkOperator {
+  ChunkOperator::Materialized(MaterializedOperator::{
+    chunks: self,
+    next_index: 0,
+  })
+}
+
+///|
+fn collect_operator_chunks(
+  operator : ChunkOperator,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let chunks = []
+  while true {
+    match operator.next_chunk() {
+      Some(chunk) => chunks.push(chunk)
+      None => break
+    }
+  }
+  chunks
+}
+
+///|
+fn ChunkOperator::next_chunk(
+  self : ChunkOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  match self {
+    Scan(operator) => operator.next_chunk()
+    Filter(operator) => operator.next_chunk()
+    Projection(operator) => operator.next_chunk()
+    Limit(operator) => operator.next_chunk()
+    Materialized(operator) => operator.next_chunk()
+  }
+}
+
+///|
+fn ScanOperator::next_chunk(
+  self : ScanOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  self.scanner.next_chunk() catch {
+    err => raise map_scan_error(err)
+  }
+}
+
+///|
+fn FilterOperator::next_chunk(
+  self : FilterOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  while true {
+    match self.input.next_chunk() {
+      Some(chunk) => {
+        let filtered = filter_chunk(chunk, self.predicate)
+        if !filtered.is_empty() {
+          return Some(filtered)
+        }
+      }
+      None => return None
+    }
+  } nobreak {
+    None
+  }
+}
+
+///|
+fn ProjectionOperator::next_chunk(
+  self : ProjectionOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  match self.input.next_chunk() {
+    Some(chunk) =>
+      Some(project_chunk(chunk, self.projections, self.output_schema))
+    None => None
+  }
+}
+
+///|
+fn LimitOperator::next_chunk(
+  self : LimitOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  guard self.remaining > 0 else { return None }
+  while true {
+    match self.input.next_chunk() {
+      Some(chunk) => {
+        if chunk.is_empty() {
+          continue
+        }
+        if chunk.len <= self.remaining {
+          self.remaining -= chunk.len
+          return Some(chunk)
+        }
+        let limited = take_chunk_prefix(chunk, self.remaining)
+        self.remaining = 0
+        return Some(limited)
+      }
+      None => return None
+    }
+  } nobreak {
+    None
+  }
+}
+
+///|
+fn MaterializedOperator::next_chunk(
+  self : MaterializedOperator,
+) -> @engine.DataChunk? {
+  guard self.next_index < self.chunks.length() else { return None }
+  let chunk = self.chunks[self.next_index]
+  self.next_index += 1
+  Some(chunk)
+}
+
+///|
+fn take_chunk_prefix(
+  chunk : @engine.DataChunk,
+  len : Int,
+) -> @engine.DataChunk raise ExecuteError {
+  let indices = []
+  for index in 0..<len {
+    indices.push(index)
+  }
+  let columns = []
+  for column in chunk.columns {
+    columns.push(take_vector(column, indices))
+  }
+  @engine.DataChunk::{ schema: chunk.schema, columns, len }
 }
 
 ///|
@@ -86,51 +267,6 @@ fn planned_source_open_info(
     @plan.ScanSource::Csv(scan) => (@scan.ScanSourceKind::Csv, scan.path)
     @plan.ScanSource::Jsonl(scan) => (@scan.ScanSourceKind::Jsonl, scan.path)
   }
-}
-
-///|
-fn collect_scan_chunks(
-  source : @scan.Scanner,
-) -> Array[@engine.DataChunk] raise ExecuteError {
-  let chunks = []
-  while true {
-    let next_chunk = source.next_chunk() catch {
-      err => raise map_scan_error(err)
-    }
-    match next_chunk {
-      Some(chunk) => chunks.push(chunk)
-      None => break
-    }
-  }
-  chunks
-}
-
-///|
-fn filter_plan_chunks(
-  input : @plan.QueryPlan,
-  predicate : @plan.PlanExpr,
-) -> Array[@engine.DataChunk] raise ExecuteError {
-  let output = []
-  for chunk in execute_plan_chunks(input) {
-    let filtered = filter_chunk(chunk, predicate)
-    if !filtered.is_empty() {
-      output.push(filtered)
-    }
-  }
-  output
-}
-
-///|
-fn project_plan_chunks(
-  input : @plan.QueryPlan,
-  projections : Array[@plan.PlanSelectItem],
-  output_schema : @engine.Schema,
-) -> Array[@engine.DataChunk] raise ExecuteError {
-  let output = []
-  for chunk in execute_plan_chunks(input) {
-    output.push(project_chunk(chunk, projections, output_schema))
-  }
-  output
 }
 
 ///|
@@ -148,23 +284,6 @@ fn sort_plan_chunks(
     sorted_rows.push(rows[index])
   }
   rows_to_chunks(sort_plan.output_schema, sorted_rows)
-}
-
-///|
-fn limit_plan_chunks(
-  limit_plan : @plan.LimitPlan,
-) -> Array[@engine.DataChunk] raise ExecuteError {
-  let rows = chunks_to_rows(execute_plan_chunks(limit_plan.input))
-  let limited_rows = []
-  let take_count = if limit_plan.limit < rows.length() {
-    limit_plan.limit
-  } else {
-    rows.length()
-  }
-  for index in 0..<take_count {
-    limited_rows.push(rows[index])
-  }
-  rows_to_chunks(@plan.query_plan_schema(limit_plan.input), limited_rows)
 }
 
 ///|
