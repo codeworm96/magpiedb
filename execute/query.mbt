@@ -52,6 +52,15 @@ priv struct ProjectionOperator {
 }
 
 ///|
+priv struct AggregateOperator {
+  input : ChunkOperator
+  aggregate_plan : @plan.AggregatePlan
+  mut build_ready : Bool
+  mut output_chunks : Array[@engine.DataChunk]
+  mut next_index : Int
+}
+
+///|
 priv struct JoinOperator {
   left : ChunkOperator
   right : ChunkOperator
@@ -83,6 +92,7 @@ priv enum ChunkOperator {
   Scan(ScanOperator)
   Filter(FilterOperator)
   Projection(ProjectionOperator)
+  Aggregate(AggregateOperator)
   Join(JoinOperator)
   Limit(LimitOperator)
   Materialized(MaterializedOperator)
@@ -118,7 +128,7 @@ fn build_operator(plan : @plan.QueryPlan) -> ChunkOperator raise ExecuteError {
         predicate: filter_plan.predicate,
       })
     @plan.QueryPlan::Aggregate(aggregate_plan) =>
-      aggregate_plan_chunks(aggregate_plan).to_materialized_operator()
+      build_aggregate_operator(aggregate_plan)
     @plan.QueryPlan::Projection(projection_plan) =>
       ChunkOperator::Projection(ProjectionOperator::{
         input: build_operator(projection_plan.input),
@@ -166,6 +176,19 @@ fn build_join_operator(
 }
 
 ///|
+fn build_aggregate_operator(
+  aggregate_plan : @plan.AggregatePlan,
+) -> ChunkOperator raise ExecuteError {
+  ChunkOperator::Aggregate(AggregateOperator::{
+    input: build_operator(aggregate_plan.input),
+    aggregate_plan,
+    build_ready: false,
+    output_chunks: [],
+    next_index: 0,
+  })
+}
+
+///|
 fn Array::to_materialized_operator(
   self : Array[@engine.DataChunk],
 ) -> ChunkOperator {
@@ -197,6 +220,7 @@ fn ChunkOperator::next_chunk(
     Scan(operator) => operator.next_chunk()
     Filter(operator) => operator.next_chunk()
     Projection(operator) => operator.next_chunk()
+    Aggregate(operator) => operator.next_chunk()
     Join(operator) => operator.next_chunk()
     Limit(operator) => operator.next_chunk()
     Materialized(operator) => operator.next_chunk()
@@ -240,6 +264,125 @@ fn ProjectionOperator::next_chunk(
       Some(project_chunk(chunk, self.projections, self.output_schema))
     None => None
   }
+}
+
+///|
+fn AggregateOperator::next_chunk(
+  self : AggregateOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  self.ensure_build_ready()
+  guard self.next_index < self.output_chunks.length() else { return None }
+  let chunk = self.output_chunks[self.next_index]
+  self.next_index += 1
+  Some(chunk)
+}
+
+///|
+fn AggregateOperator::ensure_build_ready(
+  self : AggregateOperator,
+) -> Unit raise ExecuteError {
+  guard !self.build_ready else { return }
+  self.output_chunks = self.build_output_chunks()
+  self.build_ready = true
+}
+
+///|
+fn AggregateOperator::build_output_chunks(
+  self : AggregateOperator,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let group_indices : Map[String, Int] = {}
+  let group_values = []
+  let group_states = []
+
+  if self.aggregate_plan.group_keys.length() == 0 {
+    group_indices[""] = 0
+    group_values.push([])
+    group_states.push(init_aggregate_states(self.aggregate_plan.aggregates))
+  }
+
+  while true {
+    match self.input.next_chunk() {
+      Some(chunk) => {
+        let group_vectors = []
+        for group_key in self.aggregate_plan.group_keys {
+          group_vectors.push(chunk.columns[group_key.index])
+        }
+        let aggregate_input_vectors = []
+        for aggregate in self.aggregate_plan.aggregates {
+          match aggregate.input_expr {
+            Some(expr) =>
+              aggregate_input_vectors.push(
+                Some(eval_expr_to_vector(expr, chunk)),
+              )
+            None => aggregate_input_vectors.push(None)
+          }
+        }
+
+        for row_index in 0..<chunk.len {
+          let group_index = if self.aggregate_plan.group_keys.length() == 0 {
+            0
+          } else {
+            let key_values = []
+            for vector in group_vectors {
+              key_values.push(vector_value_at(vector, row_index))
+            }
+            let key = encode_group_key(key_values)
+            match group_indices.get(key) {
+              Some(index) => index
+              None => {
+                let index = group_values.length()
+                group_indices[key] = index
+                group_values.push(key_values)
+                group_states.push(
+                  init_aggregate_states(self.aggregate_plan.aggregates),
+                )
+                index
+              }
+            }
+          }
+          let states = group_states[group_index]
+          for aggregate_index in 0..<self.aggregate_plan.aggregates.length() {
+            let aggregate = self.aggregate_plan.aggregates[aggregate_index]
+            let next_state = match aggregate_input_vectors[aggregate_index] {
+              Some(vector) =>
+                update_aggregate_state(
+                  states[aggregate_index],
+                  aggregate.kind,
+                  Some(vector_value_at(vector, row_index)),
+                )
+              None =>
+                update_aggregate_state(
+                  states[aggregate_index],
+                  aggregate.kind,
+                  None,
+                )
+            }
+            states[aggregate_index] = next_state
+          }
+        }
+      }
+      None => break
+    }
+  } nobreak {
+    ()
+  }
+
+  if self.aggregate_plan.group_keys.length() > 0 && group_values.length() == 0 {
+    return []
+  }
+
+  let rows = []
+  for group_index in 0..<group_values.length() {
+    let row = []
+    for value in group_values[group_index] {
+      row.push(value)
+    }
+    for state in group_states[group_index] {
+      row.push(finalize_aggregate_state(state))
+    }
+    rows.push(row)
+  }
+  rows_to_chunks(self.aggregate_plan.output_schema, rows)
 }
 
 ///|
@@ -461,95 +604,6 @@ fn sort_plan_chunks(
     sorted_rows.push(rows[index])
   }
   rows_to_chunks(sort_plan.output_schema, sorted_rows)
-}
-
-///|
-fn aggregate_plan_chunks(
-  aggregate_plan : @plan.AggregatePlan,
-) -> Array[@engine.DataChunk] raise ExecuteError {
-  let input_chunks = execute_plan_chunks(aggregate_plan.input)
-  let group_indices : Map[String, Int] = {}
-  let group_values = []
-  let group_states = []
-
-  if aggregate_plan.group_keys.length() == 0 {
-    group_indices[""] = 0
-    group_values.push([])
-    group_states.push(init_aggregate_states(aggregate_plan.aggregates))
-  }
-
-  for chunk in input_chunks {
-    let group_vectors = []
-    for group_key in aggregate_plan.group_keys {
-      group_vectors.push(chunk.columns[group_key.index])
-    }
-    let aggregate_input_vectors = []
-    for aggregate in aggregate_plan.aggregates {
-      match aggregate.input_expr {
-        Some(expr) =>
-          aggregate_input_vectors.push(Some(eval_expr_to_vector(expr, chunk)))
-        None => aggregate_input_vectors.push(None)
-      }
-    }
-
-    for row_index in 0..<chunk.len {
-      let group_index = if aggregate_plan.group_keys.length() == 0 {
-        0
-      } else {
-        let key_values = []
-        for vector in group_vectors {
-          key_values.push(vector_value_at(vector, row_index))
-        }
-        let key = encode_group_key(key_values)
-        match group_indices.get(key) {
-          Some(index) => index
-          None => {
-            let index = group_values.length()
-            group_indices[key] = index
-            group_values.push(key_values)
-            group_states.push(init_aggregate_states(aggregate_plan.aggregates))
-            index
-          }
-        }
-      }
-      let states = group_states[group_index]
-      for aggregate_index in 0..<aggregate_plan.aggregates.length() {
-        let aggregate = aggregate_plan.aggregates[aggregate_index]
-        let next_state = match aggregate_input_vectors[aggregate_index] {
-          Some(vector) =>
-            update_aggregate_state(
-              states[aggregate_index],
-              aggregate.kind,
-              Some(vector_value_at(vector, row_index)),
-            )
-          None =>
-            update_aggregate_state(
-              states[aggregate_index],
-              aggregate.kind,
-              None,
-            )
-        }
-        states[aggregate_index] = next_state
-      }
-    }
-  }
-
-  if aggregate_plan.group_keys.length() > 0 && group_values.length() == 0 {
-    return []
-  }
-
-  let rows = []
-  for group_index in 0..<group_values.length() {
-    let row = []
-    for value in group_values[group_index] {
-      row.push(value)
-    }
-    for state in group_states[group_index] {
-      row.push(finalize_aggregate_state(state))
-    }
-    rows.push(row)
-  }
-  rows_to_chunks(aggregate_plan.output_schema, rows)
 }
 
 ///|
