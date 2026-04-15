@@ -1,0 +1,130 @@
+///|
+fn build_scan_operator(
+  source : @plan.ScanSource,
+) -> ChunkOperator raise ExecuteError {
+  let (kind, path) = planned_source_open_info(source)
+  let scanner = @scan.open_source(kind, path) catch {
+    err => raise map_scan_error(err)
+  }
+  ChunkOperator::Scan(ScanOperator::{ scanner, })
+}
+
+///|
+fn collect_operator_chunks(
+  operator : ChunkOperator,
+) -> Array[@engine.DataChunk] raise ExecuteError {
+  let chunks = []
+  while true {
+    match operator.next_chunk() {
+      Some(chunk) => chunks.push(chunk)
+      None => break
+    }
+  }
+  chunks
+}
+
+///|
+fn ChunkOperator::next_chunk(
+  self : ChunkOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  match self {
+    Scan(operator) => operator.next_chunk()
+    Filter(operator) => operator.next_chunk()
+    Projection(operator) => operator.next_chunk()
+    Aggregate(operator) => operator.next_chunk()
+    Sort(operator) => operator.next_chunk()
+    Join(operator) => operator.next_chunk()
+    Limit(operator) => operator.next_chunk()
+  }
+}
+
+///|
+fn ScanOperator::next_chunk(
+  self : ScanOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  self.scanner.next_chunk() catch {
+    err => raise map_scan_error(err)
+  }
+}
+
+///|
+fn FilterOperator::next_chunk(
+  self : FilterOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  while true {
+    match self.input.next_chunk() {
+      Some(chunk) => {
+        let filtered = filter_chunk(chunk, self.predicate)
+        if !filtered.is_empty() {
+          return Some(filtered)
+        }
+      }
+      None => return None
+    }
+  } nobreak {
+    None
+  }
+}
+
+///|
+fn ProjectionOperator::next_chunk(
+  self : ProjectionOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  match self.input.next_chunk() {
+    Some(chunk) =>
+      Some(project_chunk(chunk, self.projections, self.output_schema))
+    None => None
+  }
+}
+
+///|
+fn LimitOperator::next_chunk(
+  self : LimitOperator,
+) -> @engine.DataChunk? raise ExecuteError {
+  guard self.remaining > 0 else { return None }
+  while true {
+    match self.input.next_chunk() {
+      Some(chunk) => {
+        if chunk.is_empty() {
+          continue
+        }
+        if chunk.len <= self.remaining {
+          self.remaining -= chunk.len
+          return Some(chunk)
+        }
+        let limited = take_chunk_prefix(chunk, self.remaining)
+        self.remaining = 0
+        return Some(limited)
+      }
+      None => return None
+    }
+  } nobreak {
+    None
+  }
+}
+
+///|
+fn take_chunk_prefix(
+  chunk : @engine.DataChunk,
+  len : Int,
+) -> @engine.DataChunk raise ExecuteError {
+  let indices = []
+  for index in 0..<len {
+    indices.push(index)
+  }
+  let columns = []
+  for column in chunk.columns {
+    columns.push(take_vector(column, indices))
+  }
+  @engine.DataChunk::{ schema: chunk.schema, columns, len }
+}
+
+///|
+fn planned_source_open_info(
+  source : @plan.ScanSource,
+) -> (@scan.ScanSourceKind, String) {
+  match source {
+    @plan.ScanSource::Csv(scan) => (@scan.ScanSourceKind::Csv, scan.path)
+    @plan.ScanSource::Jsonl(scan) => (@scan.ScanSourceKind::Jsonl, scan.path)
+  }
+}
