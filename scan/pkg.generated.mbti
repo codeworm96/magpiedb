@@ -9,9 +9,9 @@ import {
 // Values
 pub fn infer_csv_schema(String) -> @engine.Schema raise ScanError
 
-pub fn infer_jsonl_schema(String) -> @engine.Schema raise ScanError
+pub async fn infer_jsonl_schema(String) -> @engine.Schema raise ScanError
 
-pub fn infer_source_schema(ScanSourceKind, String) -> @engine.Schema raise ScanError
+pub async fn infer_source_schema(ScanSourceKind, String) -> @engine.Schema raise ScanError
 
 pub async fn open_source(ScanSourceKind, String) -> Scanner raise ScanError
 

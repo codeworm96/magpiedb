@@ -1,5 +1,5 @@
 ///|
-test "planner binds jsonl scan, filter, and projections" {
+async test "planner binds jsonl scan, filter, and projections" {
   let query = @sql.parse_sql(
     "SELECT id, name AS person_name FROM read_jsonl('fixtures/jsonl/events.jsonl') WHERE active = true",
   ).unwrap()
@@ -55,7 +55,7 @@ test "planner binds jsonl scan, filter, and projections" {
 }
 
 ///|
-test "planner binds csv scan, filter, and projections" {
+async test "planner binds csv scan, filter, and projections" {
   let query = @sql.parse_sql(
     "SELECT name, age FROM read_csv('fixtures/csv/people.csv') WHERE age > 18",
   ).unwrap()
@@ -93,7 +93,7 @@ test "planner binds csv scan, filter, and projections" {
 }
 
 ///|
-test "planner rejects non boolean where clause" {
+async test "planner rejects non boolean where clause" {
   let query = @sql.parse_sql(
     "SELECT id FROM read_jsonl('fixtures/jsonl/events.jsonl') WHERE id",
   ).unwrap()
@@ -107,7 +107,7 @@ test "planner rejects non boolean where clause" {
 }
 
 ///|
-test "planner lowers grouped aggregate with having" {
+async test "planner lowers grouped aggregate with having" {
   let query = @sql.parse_sql(
     "SELECT active, COUNT(*) AS total FROM read_jsonl('fixtures/jsonl/events.jsonl') GROUP BY active HAVING COUNT(*) > 1",
   ).unwrap()
@@ -145,7 +145,7 @@ test "planner lowers grouped aggregate with having" {
 }
 
 ///|
-test "planner rejects non grouped column in aggregate query" {
+async test "planner rejects non grouped column in aggregate query" {
   let query = @sql.parse_sql(
     "SELECT name, COUNT(*) FROM read_csv('fixtures/csv/people.csv') GROUP BY active",
   ).unwrap()
@@ -159,7 +159,7 @@ test "planner rejects non grouped column in aggregate query" {
 }
 
 ///|
-test "planner lowers inner join with qualified columns" {
+async test "planner lowers inner join with qualified columns" {
   let query = @sql.parse_sql(
     "SELECT people.name, events.active FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id WHERE events.active = true",
   ).unwrap()
@@ -198,7 +198,7 @@ test "planner lowers inner join with qualified columns" {
 }
 
 ///|
-test "planner rejects ambiguous unqualified join columns" {
+async test "planner rejects ambiguous unqualified join columns" {
   let query = @sql.parse_sql(
     "SELECT name FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id",
   ).unwrap()
@@ -211,7 +211,7 @@ test "planner rejects ambiguous unqualified join columns" {
 }
 
 ///|
-test "planner rejects invalid join predicate shape" {
+async test "planner rejects invalid join predicate shape" {
   let query = @sql.parse_sql(
     "SELECT people.name FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = 1",
   ).unwrap()
@@ -227,7 +227,7 @@ test "planner rejects invalid join predicate shape" {
 }
 
 ///|
-test "planner lowers grouped aggregate over join with having" {
+async test "planner lowers grouped aggregate over join with having" {
   let query = @sql.parse_sql(
     "SELECT people.name, COUNT(*) AS total FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_csv('fixtures/csv/join_flags.csv') AS flags ON people.id = flags.id GROUP BY people.name HAVING COUNT(*) > 1",
   ).unwrap()
@@ -265,7 +265,7 @@ test "planner lowers grouped aggregate over join with having" {
 }
 
 ///|
-test "planner rejects ambiguous unqualified group key over join" {
+async test "planner rejects ambiguous unqualified group key over join" {
   let query = @sql.parse_sql(
     "SELECT COUNT(*) FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id GROUP BY id",
   ).unwrap()
@@ -278,7 +278,7 @@ test "planner rejects ambiguous unqualified group key over join" {
 }
 
 ///|
-test "planner places sort and limit after projection" {
+async test "planner places sort and limit after projection" {
   let query = @sql.parse_sql(
     "SELECT age AS years FROM read_csv('fixtures/csv/people.csv') ORDER BY years LIMIT 2",
   ).unwrap()
@@ -304,7 +304,7 @@ test "planner places sort and limit after projection" {
 }
 
 ///|
-test "planner rejects unavailable order by column" {
+async test "planner rejects unavailable order by column" {
   let query = @sql.parse_sql(
     "SELECT name FROM read_csv('fixtures/csv/people.csv') ORDER BY age",
   ).unwrap()

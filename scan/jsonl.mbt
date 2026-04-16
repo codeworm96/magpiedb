@@ -27,6 +27,14 @@ priv struct ParsedJsonlRow {
 }
 
 ///|
+/// Per-column inference state tracks observed non-null types and whether any row leaves the column nullable.
+priv struct JsonlColumnState {
+  present_count : Int
+  data_type : LogicalType
+  nullable : Bool
+}
+
+///|
 /// Full JSONL scan entrypoint used by later planning/execution stages.
 pub async fn read_jsonl(path : String) -> JsonlScanner raise ScanError {
   let schema = infer_jsonl_schema(path)
@@ -45,8 +53,29 @@ pub async fn read_jsonl_with_schema(
 
 ///|
 /// Schema inference is a separate phase so the executor can stay chunk-oriented.
-pub fn infer_jsonl_schema(path : String) -> Schema raise ScanError {
-  parse_jsonl_rows(path) |> infer_schema_from_rows
+pub async fn infer_jsonl_schema(path : String) -> Schema raise ScanError {
+  let file = open_jsonl_file(path)
+  defer file.close()
+  let mut next_line_no = 1
+  let mut finished = false
+  let mut row_count = 0
+  let column_states : Map[String, JsonlColumnState] = {}
+  let column_names = []
+  while !finished {
+    let (next_row, next_line_no_, finished_) = read_next_jsonl_row(
+      file, next_line_no,
+    )
+    next_line_no = next_line_no_
+    finished = finished_
+    match next_row {
+      Some(row) => {
+        row_count += 1
+        update_schema_state(column_states, column_names, row)
+      }
+      None => ()
+    }
+  }
+  finalize_inferred_schema(column_states, column_names, row_count)
 }
 
 ///|
@@ -63,7 +92,13 @@ pub async fn JsonlScanner::next_chunk(
   guard !self.finished else { return None }
   let rows = []
   while rows.length() < fixed_vector_size {
-    match self.read_next_row() {
+    let (next_row, next_line_no, finished) = read_next_jsonl_row(
+      self.file,
+      self.next_line_no,
+    )
+    self.next_line_no = next_line_no
+    self.finished = finished
+    match next_row {
       Some(row) => rows.push(row)
       None => break
     }
@@ -102,30 +137,33 @@ async fn open_jsonl_file(path : String) -> @async_fs.File raise ScanError {
 
 ///|
 /// Read and parse the next non-empty JSONL object from the async file stream.
-async fn JsonlScanner::read_next_row(
-  self : JsonlScanner,
-) -> ParsedJsonlRow? raise ScanError {
+async fn read_next_jsonl_row(
+  file : @async_fs.File,
+  next_line_no : Int,
+) -> (ParsedJsonlRow?, Int, Bool) raise ScanError {
+  let mut line_no = next_line_no
   while true {
-    let next_line = self.file.read_until("\n") catch {
+    let next_line = file.read_until("\n") catch {
       err => raise ScanError::Io(err.to_string())
     }
     match next_line {
       Some(raw_line) => {
-        let line_no = self.next_line_no
-        self.next_line_no += 1
+        let current_line_no = line_no
+        line_no += 1
         let line = raw_line.trim(chars="\r")
         if line.trim() == "" {
           continue
         }
-        return Some(parse_jsonl_line(line.to_string(), line_no))
+        return (
+          Some(parse_jsonl_line(line.to_string(), current_line_no)),
+          line_no,
+          false,
+        )
       }
-      None => {
-        self.finished = true
-        return None
-      }
+      None => return (None, line_no, true)
     }
   } nobreak {
-    None
+    (None, line_no, true)
   }
 }
 
@@ -145,65 +183,70 @@ fn parse_jsonl_line(
 }
 
 ///|
-/// Parse the JSONL file into object rows for schema inference and MVP chunk materialization.
-fn parse_jsonl_rows(path : String) -> Array[ParsedJsonlRow] raise ScanError {
-  let content = @fs.read_file_to_string(path) catch {
-    err => raise map_io_error(err)
-  }
-  let rows = []
-  let lines = content.split("\n").map(StringView::to_string).collect()
-  for index in 0..<lines.length() {
-    let line_no = index + 1
-    let line = lines[index].trim(chars="\r")
-    if line.trim() == "" {
-      continue
-    }
-    rows.push(parse_jsonl_line(line.to_string(), line_no))
-  }
-  rows
-}
-
-///|
-/// Infer a deterministic schema across all observed JSONL object rows.
-fn infer_schema_from_rows(rows : Array[ParsedJsonlRow]) -> Schema {
-  let column_names = collect_column_names(rows)
-  let columns = []
-  for name in column_names {
-    let mut data_type = LogicalType::Null
-    let mut nullable = false
-    for row in rows {
-      match row.object.get(name) {
-        None => nullable = true
-        Some(value) => {
-          let value_type = infer_json_logical_type(value)
-          if value_type == LogicalType::Null {
-            nullable = true
-          } else {
-            data_type = merge_logical_types(data_type, value_type)
+/// Update streaming inference state with one parsed JSONL object row.
+fn update_schema_state(
+  column_states : Map[String, JsonlColumnState],
+  column_names : Array[String],
+  row : ParsedJsonlRow,
+) -> Unit {
+  row.object.each((name, value) => {
+    match column_states.get(name) {
+      Some(state) => {
+        let present_count = state.present_count + 1
+        let value_type = infer_json_logical_type(value)
+        if value_type == LogicalType::Null {
+          column_states[name] = JsonlColumnState::{
+            present_count,
+            data_type: state.data_type,
+            nullable: true,
+          }
+        } else {
+          column_states[name] = JsonlColumnState::{
+            present_count,
+            data_type: merge_logical_types(state.data_type, value_type),
+            nullable: state.nullable,
+          }
+        }
+      }
+      None => {
+        column_names.push(name)
+        let value_type = infer_json_logical_type(value)
+        if value_type == LogicalType::Null {
+          column_states[name] = JsonlColumnState::{
+            present_count: 1,
+            data_type: LogicalType::Null,
+            nullable: true,
+          }
+        } else {
+          column_states[name] = JsonlColumnState::{
+            present_count: 1,
+            data_type: value_type,
+            nullable: false,
           }
         }
       }
     }
-    columns.push(ColumnDef::{ name, data_type, nullable })
-  }
-  Schema::{ columns, }
+  })
 }
 
 ///|
-/// Collect column names from all rows and sort them lexically for stable schemas.
-fn collect_column_names(rows : Array[ParsedJsonlRow]) -> Array[String] {
-  let seen : Map[String, Bool] = {}
-  let names = []
-  for row in rows {
-    row.object.each((name, _) => {
-      if !seen.contains(name) {
-        seen[name] = true
-        names.push(name)
-      }
+/// Finalize the inferred schema after the full JSONL stream has been observed once.
+fn finalize_inferred_schema(
+  column_states : Map[String, JsonlColumnState],
+  column_names : Array[String],
+  row_count : Int,
+) -> Schema {
+  let columns = []
+  column_names.sort_by((left, right) => left.lexical_compare(right))
+  for name in column_names {
+    let state = column_states[name]
+    columns.push(ColumnDef::{
+      name,
+      data_type: state.data_type,
+      nullable: state.nullable || state.present_count < row_count,
     })
   }
-  names.sort_by((left, right) => left.lexical_compare(right))
-  names
+  Schema::{ columns, }
 }
 
 ///|

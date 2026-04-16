@@ -20,7 +20,7 @@ pub fn scan_source_kind(name : String) -> ScanSourceKind? {
 }
 
 ///|
-pub fn infer_source_schema(
+pub async fn infer_source_schema(
   kind : ScanSourceKind,
   path : String,
 ) -> Schema raise ScanError {

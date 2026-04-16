@@ -8,7 +8,7 @@ import {
 }
 
 // Values
-pub fn plan_query(@sql.Query) -> QueryPlan raise PlanError
+pub async fn plan_query(@sql.Query) -> QueryPlan raise PlanError
 
 pub fn query_plan_schema(QueryPlan) -> @engine.Schema
 

@@ -175,7 +175,7 @@ priv enum PlanErrorKind {
 }
 
 ///|
-pub fn plan_query(query : @sql.Query) -> QueryPlan raise PlanError {
+pub async fn plan_query(query : @sql.Query) -> QueryPlan raise PlanError {
   let bound_from = bind_from_item(query.from)
 
   if contains_aggregate_in_query(query) || query.group_by.length() > 0 {
@@ -427,7 +427,7 @@ fn apply_where_filter(
 }
 
 ///|
-fn bind_from_item(from : @sql.FromItem) -> BoundFrom raise PlanError {
+async fn bind_from_item(from : @sql.FromItem) -> BoundFrom raise PlanError {
   match from {
     @sql.FromItem::Source(source_ref) => {
       let source = bind_source_ref(source_ref)
@@ -448,7 +448,9 @@ fn bind_from_item(from : @sql.FromItem) -> BoundFrom raise PlanError {
 }
 
 ///|
-fn bind_join_from_item(join : @sql.JoinRelation) -> BoundFrom raise PlanError {
+async fn bind_join_from_item(
+  join : @sql.JoinRelation,
+) -> BoundFrom raise PlanError {
   let left_source = bind_source_ref(join.left)
   let right_source = bind_source_ref(join.right)
   let left_schema = scan_source_schema(left_source)
@@ -482,7 +484,9 @@ fn bind_join_from_item(join : @sql.JoinRelation) -> BoundFrom raise PlanError {
 }
 
 ///|
-fn bind_source_ref(source_ref : @sql.SourceRef) -> ScanSource raise PlanError {
+async fn bind_source_ref(
+  source_ref : @sql.SourceRef,
+) -> ScanSource raise PlanError {
   let source = source_ref.source
   guard source.arguments.length() == 1 else {
     raise PlanError::InvalidArgument(
