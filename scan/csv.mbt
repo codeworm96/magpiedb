@@ -1,37 +1,95 @@
 ///|
+/// The CSV scan interface is pull-based so execution can consume one chunk at a time.
 pub struct CsvScanner {
   path : String
   schema : Schema
-  priv rows : Array[Array[String]]
-  mut next_row : Int
-} derive(Eq, Debug)
-
-///|
-/// Full CSV scan entrypoint used by later planning/execution stages.
-pub fn read_csv(path : String) -> CsvScanner raise ScanError {
-  // TODO(MVP follow-up): keep this pull-based interface, but replace the current
-  // full-file buffering with a true streaming implementation so large CSV files
-  // do not need to fit in memory.
-  let (headers, rows) = parse_csv_rows(path)
-  let schema = infer_schema_from_csv(headers, rows)
-  CsvScanner::{ path, schema, rows, next_row: 0 }
+  priv mut file : @async_fs.File
+  priv width : Int
+  mut next_row_no : Int
+  mut finished : Bool
 }
 
 ///|
-/// Execution can reuse a planned schema so scan opening does not need a second inference pass.
-pub fn read_csv_with_schema(
+/// Parsed CSV rows carry their logical row number so later type errors remain stable across chunking.
+priv struct ParsedCsvRow {
+  row_no : Int
+  fields : Array[String]
+}
+
+///|
+/// Per-column inference state tracks the narrowest observed type plus nullability.
+priv struct CsvColumnState {
+  data_type : LogicalType
+  nullable : Bool
+}
+
+///|
+/// The CSV parser tracks whether it is entering, consuming, or closing a field.
+priv enum CsvFieldState {
+  StartField
+  InUnquoted
+  InQuoted
+  AfterQuoted
+}
+
+///|
+/// Full CSV scan entrypoint infers schema first, then reopens the file for chunked execution.
+pub async fn read_csv(path : String) -> CsvScanner raise ScanError {
+  let schema = infer_csv_schema(path)
+  read_csv_with_schema(path, schema)
+}
+
+///|
+/// Execution can reuse a planned schema and reopen the CSV stream directly at the first data row.
+pub async fn read_csv_with_schema(
   path : String,
   schema : Schema,
 ) -> CsvScanner raise ScanError {
-  let (_headers, rows) = parse_csv_rows(path)
-  CsvScanner::{ path, schema, rows, next_row: 0 }
+  let file = open_csv_file(path)
+  let finished = initialize_csv_scan(file, schema)
+  CsvScanner::{
+    path,
+    schema,
+    file,
+    width: schema.columns.length(),
+    next_row_no: 1,
+    finished,
+  }
 }
 
 ///|
-/// Schema inference is a separate phase so the executor can stay chunk-oriented.
-pub fn infer_csv_schema(path : String) -> Schema raise ScanError {
-  let (headers, rows) = parse_csv_rows(path)
-  infer_schema_from_csv(headers, rows)
+/// Schema inference streams through the CSV file once so large inputs do not need full buffering.
+pub async fn infer_csv_schema(path : String) -> Schema raise ScanError {
+  let file = open_csv_file(path)
+  defer file.close()
+  let raw_headers = read_next_csv_record(file)
+  match raw_headers {
+    None => Schema::{ columns: [] }
+    Some(raw_headers) => {
+      let headers = normalize_headers(raw_headers)
+      let states = []
+      for _ in 0..<headers.length() {
+        states.push(CsvColumnState::{
+          data_type: LogicalType::Null,
+          nullable: false,
+        })
+      }
+      let mut row_no = 1
+      while true {
+        match read_next_csv_record(file) {
+          Some(fields) => {
+            validate_csv_row_width(headers.length(), fields, row_no)
+            update_csv_schema_states(states, fields)
+            row_no += 1
+          }
+          None => break
+        }
+      } nobreak {
+        ()
+      }
+      finalize_csv_schema(headers, states)
+    }
+  }
 }
 
 ///|
@@ -42,51 +100,198 @@ pub fn CsvScanner::schema(self : CsvScanner) -> Schema {
 
 ///|
 /// Chunks are produced lazily so the executor does not need an in-memory chunk array.
-pub fn CsvScanner::next_chunk(self : CsvScanner) -> DataChunk? raise ScanError {
-  guard self.next_row < self.rows.length() else { return None }
-  let remaining = self.rows.length() - self.next_row
-  let len = if remaining > fixed_vector_size {
-    fixed_vector_size
-  } else {
-    remaining
+pub async fn CsvScanner::next_chunk(
+  self : CsvScanner,
+) -> DataChunk? raise ScanError {
+  guard !self.finished else { return None }
+  let rows = []
+  while rows.length() < fixed_vector_size {
+    match read_next_csv_record(self.file) {
+      Some(fields) => {
+        let row_no = self.next_row_no
+        validate_csv_row_width(self.width, fields, row_no)
+        rows.push(ParsedCsvRow::{ row_no, fields })
+        self.next_row_no += 1
+      }
+      None => {
+        self.finished = true
+        break
+      }
+    }
+  } nobreak {
+    ()
   }
-  let chunk = materialize_csv_chunk(self.schema, self.rows, self.next_row, len)
-  self.next_row += len
-  Some(chunk)
+  if rows.length() == 0 {
+    None
+  } else {
+    Some(materialize_csv_chunk(self.schema, rows))
+  }
 }
 
 ///|
-/// Reset allows repeated scans after schema inference/binding has already happened.
-pub fn CsvScanner::reset(self : CsvScanner) -> Unit {
-  self.next_row = 0
+/// Reset allows repeated scans after schema inference and binding have already happened.
+pub async fn CsvScanner::reset(self : CsvScanner) -> Unit raise ScanError {
+  self.file.close()
+  self.file = open_csv_file(self.path)
+  self.finished = initialize_csv_scan(self.file, self.schema)
+  self.next_row_no = 1
 }
 
 ///|
 /// `scan_csv` is the scanner constructor used by execution code.
-pub fn scan_csv(path : String) -> CsvScanner raise ScanError {
+pub async fn scan_csv(path : String) -> CsvScanner raise ScanError {
   read_csv(path)
 }
 
 ///|
-/// Parse the CSV file into headers and row arrays for schema inference and MVP chunk materialization.
-fn parse_csv_rows(
-  path : String,
-) -> (Array[String], Array[Array[String]]) raise ScanError {
-  let content = @fs.read_file_to_string(path) catch {
-    err => raise map_io_error(err)
+/// Open the CSV file as an async stream for schema inference and chunked execution.
+async fn open_csv_file(path : String) -> @async_fs.File raise ScanError {
+  @async_fs.open(path, mode=ReadOnly) catch {
+    err => raise ScanError::Io(err.to_string())
   }
-  let csv = @NyaCSV.CSV::parse_string(content, options={
-    delimiter: ',',
-    allow_newlines_in_quotes: true,
-    quote_char: '"',
-    skip_empty_lines: true,
-    trim_spaces: false,
-  })
-  let raw_headers = csv.header()
-  let rows = csv.data()
-  let headers = normalize_headers(raw_headers)
-  validate_csv_rows(headers, rows)
-  (headers, rows)
+}
+
+///|
+/// Initialize a streaming CSV scan by consuming and validating the header row once.
+async fn initialize_csv_scan(
+  file : @async_fs.File,
+  schema : Schema,
+) -> Bool raise ScanError {
+  match read_next_csv_record(file) {
+    None => {
+      guard schema.columns.length() == 0 else {
+        raise ScanError::CsvMalformed("missing CSV header row")
+      }
+      true
+    }
+    Some(raw_headers) => {
+      validate_csv_header(schema, normalize_headers(raw_headers))
+      false
+    }
+  }
+}
+
+///|
+/// Read the next logical CSV record, allowing quoted fields to span multiple physical lines.
+async fn read_next_csv_record(
+  file : @async_fs.File,
+) -> Array[String]? raise ScanError {
+  let fields = []
+  let field_chars : Array[Char] = []
+  let mut state = CsvFieldState::StartField
+  let mut started = false
+  let mut pending_quoted_newline = false
+  while true {
+    let next_line = file.read_until("\n") catch {
+      err => raise ScanError::Io(err.to_string())
+    }
+    match next_line {
+      None => {
+        guard started else { return None }
+        match state {
+          CsvFieldState::InQuoted =>
+            raise ScanError::CsvMalformed("unterminated quoted field")
+          CsvFieldState::StartField => {
+            fields.push(chars_to_string(field_chars))
+            return Some(fields)
+          }
+          CsvFieldState::InUnquoted | CsvFieldState::AfterQuoted => {
+            fields.push(chars_to_string(field_chars))
+            return Some(fields)
+          }
+        }
+      }
+      Some(raw_line) => {
+        let line = raw_line.trim_end(chars="\r").to_string()
+        if !started && line == "" {
+          continue
+        }
+        if pending_quoted_newline {
+          field_chars.push('\n')
+          pending_quoted_newline = false
+        }
+        started = true
+        for ch in line {
+          state = consume_csv_char(state, fields, field_chars, ch)
+        }
+        match state {
+          CsvFieldState::InQuoted => {
+            pending_quoted_newline = true
+            continue
+          }
+          CsvFieldState::StartField => {
+            fields.push(chars_to_string(field_chars))
+            return Some(fields)
+          }
+          CsvFieldState::InUnquoted | CsvFieldState::AfterQuoted => {
+            fields.push(chars_to_string(field_chars))
+            return Some(fields)
+          }
+        }
+      }
+    }
+  } nobreak {
+    None
+  }
+}
+
+///|
+/// Consume one CSV character and update parser state without materializing full-file buffers.
+fn consume_csv_char(
+  state : CsvFieldState,
+  fields : Array[String],
+  field_chars : Array[Char],
+  ch : Char,
+) -> CsvFieldState raise ScanError {
+  match state {
+    CsvFieldState::StartField =>
+      if ch == ',' {
+        fields.push(chars_to_string(field_chars))
+        CsvFieldState::StartField
+      } else if ch == '"' {
+        CsvFieldState::InQuoted
+      } else {
+        field_chars.push(ch)
+        CsvFieldState::InUnquoted
+      }
+    CsvFieldState::InUnquoted =>
+      if ch == ',' {
+        fields.push(chars_to_string(field_chars))
+        CsvFieldState::StartField
+      } else if ch == '"' {
+        raise ScanError::CsvMalformed("unexpected quote in unquoted field")
+      } else {
+        field_chars.push(ch)
+        CsvFieldState::InUnquoted
+      }
+    CsvFieldState::InQuoted =>
+      if ch == '"' {
+        CsvFieldState::AfterQuoted
+      } else {
+        field_chars.push(ch)
+        CsvFieldState::InQuoted
+      }
+    CsvFieldState::AfterQuoted =>
+      if ch == '"' {
+        field_chars.push('"')
+        CsvFieldState::InQuoted
+      } else if ch == ',' {
+        fields.push(chars_to_string(field_chars))
+        CsvFieldState::StartField
+      } else {
+        raise ScanError::CsvMalformed(
+          "unexpected character after closing quote",
+        )
+      }
+  }
+}
+
+///|
+/// Convert the current field buffer into a string and clear it for the next field.
+fn chars_to_string(chars : Array[Char]) -> String {
+  let text = String::from_array(chars)
+  chars.clear()
+  text
 }
 
 ///|
@@ -113,41 +318,77 @@ fn normalize_headers(raw_headers : Array[String]) -> Array[String] {
 }
 
 ///|
-/// Validate row widths up front so execution can assume schema/row arity alignment.
-fn validate_csv_rows(
+/// Validate that the runtime header still matches the planned CSV schema when reopening the file.
+fn validate_csv_header(
+  schema : Schema,
   headers : Array[String],
-  rows : Array[Array[String]],
 ) -> Unit raise ScanError {
-  let width = headers.length()
-  for row_index in 0..<rows.length() {
-    if rows[row_index].length() != width {
-      raise ScanError::CsvMalformed(
-        "row \{row_index + 1} has \{rows[row_index].length()} fields, expected \{width}",
-      )
+  guard headers.length() == schema.columns.length() else {
+    raise ScanError::CsvMalformed(
+      "header has \{headers.length()} fields, expected \{schema.columns.length()}",
+    )
+  }
+  for index in 0..<headers.length() {
+    guard headers[index] == schema.columns[index].name else {
+      raise ScanError::CsvMalformed("header does not match planned schema")
     }
   }
 }
 
 ///|
-/// Infer a deterministic schema across all observed CSV rows.
-fn infer_schema_from_csv(
+/// Validate one data row width so execution and inference can assume schema/row arity alignment.
+fn validate_csv_row_width(
+  width : Int,
+  fields : Array[String],
+  row_no : Int,
+) -> Unit raise ScanError {
+  if fields.length() != width {
+    raise ScanError::CsvMalformed(
+      "row \{row_no} has \{fields.length()} fields, expected \{width}",
+    )
+  }
+}
+
+///|
+/// Update streaming inference state with one validated CSV row.
+fn update_csv_schema_states(
+  states : Array[CsvColumnState],
+  fields : Array[String],
+) -> Unit {
+  for column_index in 0..<fields.length() {
+    let field = fields[column_index]
+    let state = states[column_index]
+    if field == "" {
+      states[column_index] = CsvColumnState::{
+        data_type: state.data_type,
+        nullable: true,
+      }
+    } else {
+      states[column_index] = CsvColumnState::{
+        data_type: merge_csv_logical_types(
+          state.data_type,
+          infer_csv_field_type(field),
+        ),
+        nullable: state.nullable,
+      }
+    }
+  }
+}
+
+///|
+/// Finalize the inferred CSV schema after the full row stream has been observed once.
+fn finalize_csv_schema(
   headers : Array[String],
-  rows : Array[Array[String]],
+  states : Array[CsvColumnState],
 ) -> Schema {
   let columns = []
   for column_index in 0..<headers.length() {
-    let mut data_type = LogicalType::Null
-    let mut nullable = false
-    for row in rows {
-      let field = row[column_index]
-      if field == "" {
-        nullable = true
-      } else {
-        let value_type = infer_csv_field_type(field)
-        data_type = merge_csv_logical_types(data_type, value_type)
-      }
-    }
-    columns.push(ColumnDef::{ name: headers[column_index], data_type, nullable })
+    let state = states[column_index]
+    columns.push(ColumnDef::{
+      name: headers[column_index],
+      data_type: state.data_type,
+      nullable: state.nullable,
+    })
   }
   Schema::{ columns, }
 }
@@ -183,6 +424,7 @@ fn merge_csv_logical_types(
 }
 
 ///|
+/// Parse an integer CSV field if it fits the v1 `BIGINT` type.
 fn parse_csv_int64(field : String) -> Int64? {
   Some(@string.parse_int64(field[:])) catch {
     _ => None
@@ -190,6 +432,7 @@ fn parse_csv_int64(field : String) -> Int64? {
 }
 
 ///|
+/// Parse a floating-point CSV field if it fits the v1 `DOUBLE` type.
 fn parse_csv_double(field : String) -> Double? {
   Some(@string.parse_double(field[:])) catch {
     _ => None
@@ -197,59 +440,46 @@ fn parse_csv_double(field : String) -> Double? {
 }
 
 ///|
+/// Recognize the CSV boolean literals accepted by the v1 type inference path.
 fn is_csv_bool(field : String) -> Bool {
   field == "true" || field == "false"
 }
 
 ///|
-/// Convert one row slice into a single columnar `DataChunk`.
+/// Convert one streamed row slice into a single columnar `DataChunk`.
 fn materialize_csv_chunk(
   schema : Schema,
-  rows : Array[Array[String]],
-  start : Int,
-  len : Int,
+  rows : Array[ParsedCsvRow],
 ) -> DataChunk raise ScanError {
   let columns = []
   for column_index in 0..<schema.columns.length() {
     columns.push(
-      build_csv_vector(
-        schema.columns[column_index],
-        column_index,
-        rows,
-        start,
-        len,
-      ),
+      build_csv_vector(schema.columns[column_index], column_index, rows),
     )
   }
-  DataChunk::{ schema, columns, len }
+  DataChunk::{ schema, columns, len: rows.length() }
 }
 
 ///|
-/// Dispatch chunk materialization to the typed vector builder for one CSV column.
+/// Dispatch chunk materialization to the typed vector builder for one streamed CSV column.
 fn build_csv_vector(
   column : ColumnDef,
   column_index : Int,
-  rows : Array[Array[String]],
-  start : Int,
-  len : Int,
+  rows : Array[ParsedCsvRow],
 ) -> Vector raise ScanError {
   match column.data_type {
     LogicalType::Null => {
-      let validity = ValidityMask::all_null(len)
+      let validity = ValidityMask::all_null(rows.length())
       {
         logical_type: LogicalType::Null,
-        values: VectorBuffer::Nulls(len),
+        values: VectorBuffer::Nulls(rows.length()),
         validity,
       }
     }
-    LogicalType::Boolean =>
-      build_csv_bool_vector(column, column_index, rows, start, len)
-    LogicalType::BigInt =>
-      build_csv_int64_vector(column, column_index, rows, start, len)
-    LogicalType::Double =>
-      build_csv_double_vector(column, column_index, rows, start, len)
-    LogicalType::Varchar =>
-      build_csv_varchar_vector(column_index, rows, start, len)
+    LogicalType::Boolean => build_csv_bool_vector(column, column_index, rows)
+    LogicalType::BigInt => build_csv_int64_vector(column, column_index, rows)
+    LogicalType::Double => build_csv_double_vector(column, column_index, rows)
+    LogicalType::Varchar => build_csv_varchar_vector(column_index, rows)
   }
 }
 
@@ -258,14 +488,12 @@ fn build_csv_vector(
 fn build_csv_bool_vector(
   column : ColumnDef,
   column_index : Int,
-  rows : Array[Array[String]],
-  start : Int,
-  len : Int,
+  rows : Array[ParsedCsvRow],
 ) -> Vector raise ScanError {
   let values = []
   let validity = []
-  for row_index in start..<(start + len) {
-    let field = rows[row_index][column_index]
+  for row in rows {
+    let field = row.fields[column_index]
     if field == "" {
       values.push(false)
       validity.push(false)
@@ -278,7 +506,7 @@ fn build_csv_bool_vector(
     } else {
       raise ScanError::TypeMismatch(
         column.name,
-        row_index + 1,
+        row.row_no,
         "expected boolean or null",
       )
     }
@@ -295,14 +523,12 @@ fn build_csv_bool_vector(
 fn build_csv_int64_vector(
   column : ColumnDef,
   column_index : Int,
-  rows : Array[Array[String]],
-  start : Int,
-  len : Int,
+  rows : Array[ParsedCsvRow],
 ) -> Vector raise ScanError {
   let values = []
   let validity = []
-  for row_index in start..<(start + len) {
-    let field = rows[row_index][column_index]
+  for row in rows {
+    let field = row.fields[column_index]
     if field == "" {
       values.push(0L)
       validity.push(false)
@@ -312,7 +538,7 @@ fn build_csv_int64_vector(
     } else {
       raise ScanError::TypeMismatch(
         column.name,
-        row_index + 1,
+        row.row_no,
         "expected bigint-compatible number or null",
       )
     }
@@ -329,14 +555,12 @@ fn build_csv_int64_vector(
 fn build_csv_double_vector(
   column : ColumnDef,
   column_index : Int,
-  rows : Array[Array[String]],
-  start : Int,
-  len : Int,
+  rows : Array[ParsedCsvRow],
 ) -> Vector raise ScanError {
   let values = []
   let validity = []
-  for row_index in start..<(start + len) {
-    let field = rows[row_index][column_index]
+  for row in rows {
+    let field = row.fields[column_index]
     if field == "" {
       values.push(0.0)
       validity.push(false)
@@ -346,7 +570,7 @@ fn build_csv_double_vector(
     } else {
       raise ScanError::TypeMismatch(
         column.name,
-        row_index + 1,
+        row.row_no,
         "expected numeric value or null",
       )
     }
@@ -359,17 +583,15 @@ fn build_csv_double_vector(
 }
 
 ///|
-/// Materialize a varchar vector directly from CSV text fields.
+/// Materialize a varchar vector directly from streamed CSV text fields.
 fn build_csv_varchar_vector(
   column_index : Int,
-  rows : Array[Array[String]],
-  start : Int,
-  len : Int,
+  rows : Array[ParsedCsvRow],
 ) -> Vector {
   let values = []
   let validity = []
-  for row_index in start..<(start + len) {
-    let field = rows[row_index][column_index]
+  for row in rows {
+    let field = row.fields[column_index]
     if field == "" {
       values.push("")
       validity.push(false)

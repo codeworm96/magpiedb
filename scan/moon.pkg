@@ -2,9 +2,7 @@ import {
   "moonbitlang/async/fs" @async_fs,
   "moonbitlang/core/json",
   "moonbitlang/core/string",
-  "moonbitlang/x/fs",
   "codeworm96/magpiedb/engine",
-  "xunyoyo/NyaCSV",
 }
 
 import {

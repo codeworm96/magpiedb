@@ -40,6 +40,22 @@ async test "csv preserves quoted commas and escaped quotes" {
 }
 
 ///|
+async test "csv preserves embedded newlines inside quoted fields" {
+  let scan = read_csv("fixtures/csv/multiline_quoted.csv")
+  assert_eq(scan.schema().columns, [
+    { name: "id", data_type: LogicalType::BigInt, nullable: false },
+    { name: "note", data_type: LogicalType::Varchar, nullable: false },
+  ])
+
+  let chunk = scan.next_chunk().unwrap()
+  assert_eq(chunk.columns[0].values, VectorBuffer::Int64([1L, 2L]))
+  assert_eq(
+    chunk.columns[1].values,
+    VectorBuffer::Varchar(["hello\nworld", "say\n\"hi\""]),
+  )
+}
+
+///|
 async test "csv widens mixed numeric columns to double" {
   let schema = infer_csv_schema("fixtures/csv/mixed_numeric.csv")
   assert_eq(schema.columns, [

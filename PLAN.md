@@ -655,7 +655,6 @@
 
 ### Accepted Deviations
 
-- The CSV scanner currently uses `xunyoyo/NyaCSV` in the production scan path instead of a fully owned parser implementation.
 - JSONL numeric inference still depends on current `moonbitlang/core/json` behavior for preserving integral values accurately enough for the current fixtures.
 - The SQL build path currently uses `moonlex` and `moonyacc`, with the licensing checkpoint tracked as follow-up rather than a blocker for Milestone 1 acceptance.
 

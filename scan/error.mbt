@@ -21,13 +21,6 @@ pub fn ScanError::message(self : ScanError) -> String {
 }
 
 ///|
-fn map_io_error(err : @fs.IOError) -> ScanError {
-  match err {
-    @fs.IOError(message) => ScanError::Io(message)
-  }
-}
-
-///|
 fn json_parse_message(err : @json.ParseError) -> String {
   match err {
     InvalidChar(position, char) =>
