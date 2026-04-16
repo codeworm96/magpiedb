@@ -1,12 +1,12 @@
 ///|
 /// The CSV scan interface is pull-based so execution can consume one chunk at a time.
 pub struct CsvScanner {
-  path : String
-  schema : Schema
+  priv path : String
+  priv schema : Schema
   priv mut file : @async_fs.File
   priv width : Int
-  mut next_row_no : Int
-  mut finished : Bool
+  priv mut next_row_no : Int
+  priv mut finished : Bool
 }
 
 ///|

@@ -43,10 +43,6 @@ pub fn ScanError::message(Self) -> String
 
 // Types and methods
 pub struct CsvScanner {
-  path : String
-  schema : @engine.Schema
-  mut next_row_no : Int
-  mut finished : Bool
   // private fields
 }
 pub async fn CsvScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
@@ -54,10 +50,6 @@ pub async fn CsvScanner::reset(Self) -> Unit raise ScanError
 pub fn CsvScanner::schema(Self) -> @engine.Schema
 
 pub struct JsonlScanner {
-  path : String
-  schema : @engine.Schema
-  mut next_line_no : Int
-  mut finished : Bool
   // private fields
 }
 pub async fn JsonlScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
