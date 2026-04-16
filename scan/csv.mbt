@@ -342,7 +342,7 @@ fn normalize_headers(
   raw_headers : Array[String],
 ) -> Array[String] raise ScanError {
   let headers = []
-  let seen : Map[String, Bool] = {}
+  let seen : Set[String] = Set::new()
   for index in 0..<raw_headers.length() {
     let trimmed = raw_headers[index].trim()
     let name = if trimmed == "" {
@@ -350,10 +350,9 @@ fn normalize_headers(
     } else {
       trimmed.to_string()
     }
-    guard seen.get(name) is None else {
+    guard seen.add_and_check(name) else {
       raise ScanError::CsvMalformed("duplicate column name: \{name}")
     }
-    seen[name] = true
     headers.push(name)
   }
   headers
