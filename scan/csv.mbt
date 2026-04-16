@@ -338,23 +338,23 @@ fn chars_to_string(chars : Array[Char]) -> String {
 
 ///|
 /// Normalize header names so downstream binding sees stable non-empty column names.
-fn normalize_headers(raw_headers : Array[String]) -> Array[String] {
+fn normalize_headers(
+  raw_headers : Array[String],
+) -> Array[String] raise ScanError {
   let headers = []
-  let seen : Map[String, Int] = {}
+  let seen : Map[String, Bool] = {}
   for index in 0..<raw_headers.length() {
     let trimmed = raw_headers[index].trim()
-    let base = if trimmed == "" {
+    let name = if trimmed == "" {
       "column\{index + 1}"
     } else {
       trimmed.to_string()
     }
-    let count = seen.get(base).unwrap_or(0)
-    seen[base] = count + 1
-    if count == 0 {
-      headers.push(base)
-    } else {
-      headers.push("\{base}_\{count + 1}")
+    guard seen.get(name) is None else {
+      raise ScanError::CsvMalformed("duplicate column name: \{name}")
     }
+    seen[name] = true
+    headers.push(name)
   }
   headers
 }

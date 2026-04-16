@@ -68,13 +68,23 @@ async test "csv widens mixed numeric columns to double" {
 }
 
 ///|
-async test "csv normalizes invalid or duplicate headers" {
-  let schema = infer_csv_schema("fixtures/csv/bad_headers.csv")
+async test "csv normalizes empty headers" {
+  let schema = infer_csv_schema("fixtures/csv/empty_header.csv")
   assert_eq(schema.columns, [
     { name: "column1", data_type: LogicalType::Varchar, nullable: false },
     { name: "name", data_type: LogicalType::Varchar, nullable: false },
-    { name: "name_2", data_type: LogicalType::Varchar, nullable: false },
+    { name: "city", data_type: LogicalType::Varchar, nullable: false },
   ])
+}
+
+///|
+async test "csv rejects duplicate column names early" {
+  let result = try? infer_csv_schema("fixtures/csv/bad_headers.csv")
+  match result {
+    Err(CsvMalformed(message)) =>
+      assert_eq(message, "duplicate column name: name")
+    _ => fail("expected duplicate CSV header failure")
+  }
 }
 
 ///|
