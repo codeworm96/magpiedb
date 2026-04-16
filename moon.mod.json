@@ -3,11 +3,9 @@
   "version": "0.1.0",
   "deps": {
     "moonbitlang/ulex-runtime": "0.4.3",
-    "moonbitlang/x": "0.4.43",
-    "sennenki/pretty_prompt": "0.1.1",
-    "moonbitlang/async": "0.17.0",
-    "hustcer/tabular": "0.5.2",
-    "xunyoyo/NyaCSV": "0.3.3"
+    "sennenki/pretty_prompt": "0.1.2",
+    "moonbitlang/async": "0.18.0",
+    "hustcer/tabular": "0.5.2"
   },
   "bin-deps": {
     "moonbitlang/ulex": "0.3.27",
