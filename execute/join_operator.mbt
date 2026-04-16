@@ -2,9 +2,16 @@
 async fn build_join_operator(
   join_plan : @plan.JoinPlan,
 ) -> ChunkOperator raise ExecuteError {
+  let left = build_operator(join_plan.left)
+  let right = build_operator(join_plan.right) catch {
+    err => {
+      left.close()
+      raise err
+    }
+  }
   ChunkOperator::Join(JoinOperator::{
-    left: build_operator(join_plan.left),
-    right: build_operator(join_plan.right),
+    left,
+    right,
     join_plan,
     build_ready: false,
     right_rows: [],

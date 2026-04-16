@@ -85,3 +85,14 @@ async test "csv rejects malformed row widths" {
     _ => fail("expected CsvMalformed")
   }
 }
+
+///|
+async test "csv scanner can close early and reset" {
+  let scan = read_csv("fixtures/csv/people.csv")
+  scan.close()
+  assert_eq(scan.next_chunk(), None)
+
+  scan.reset()
+  let chunk = scan.next_chunk().unwrap()
+  assert_eq(chunk.len, 3)
+}

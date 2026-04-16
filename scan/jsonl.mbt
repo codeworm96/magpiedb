@@ -18,6 +18,7 @@ pub struct JsonlScanner {
   priv mut file : @async_fs.File
   priv mut next_line_no : Int
   priv mut finished : Bool
+  priv mut closed : Bool
 }
 
 ///|
@@ -48,7 +49,14 @@ pub async fn read_jsonl_with_schema(
   schema : Schema,
 ) -> JsonlScanner raise ScanError {
   let file = open_jsonl_file(path)
-  JsonlScanner::{ path, schema, file, next_line_no: 1, finished: false }
+  JsonlScanner::{
+    path,
+    schema,
+    file,
+    next_line_no: 1,
+    finished: false,
+    closed: false,
+  }
 }
 
 ///|
@@ -85,8 +93,28 @@ pub fn JsonlScanner::schema(self : JsonlScanner) -> Schema {
 }
 
 ///|
+pub fn JsonlScanner::close(self : JsonlScanner) -> Unit {
+  guard !self.closed else { return }
+  self.file.close()
+  self.finished = true
+  self.closed = true
+}
+
+///|
 /// Chunks are produced lazily so the executor does not need an in-memory chunk array.
 pub async fn JsonlScanner::next_chunk(
+  self : JsonlScanner,
+) -> DataChunk? raise ScanError {
+  self.next_jsonl_chunk() catch {
+    err => {
+      self.close()
+      raise err
+    }
+  }
+}
+
+///|
+async fn JsonlScanner::next_jsonl_chunk(
   self : JsonlScanner,
 ) -> DataChunk? raise ScanError {
   guard !self.finished else { return None }
@@ -98,6 +126,9 @@ pub async fn JsonlScanner::next_chunk(
     )
     self.next_line_no = next_line_no
     self.finished = finished
+    if finished {
+      self.close()
+    }
     match next_row {
       Some(row) => rows.push(row)
       None => break
@@ -115,10 +146,11 @@ pub async fn JsonlScanner::next_chunk(
 ///|
 /// Reset allows repeated scans after schema inference/binding has already happened.
 pub async fn JsonlScanner::reset(self : JsonlScanner) -> Unit raise ScanError {
-  self.file.close()
+  self.close()
   self.file = open_jsonl_file(self.path)
   self.next_line_no = 1
   self.finished = false
+  self.closed = false
 }
 
 ///|

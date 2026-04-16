@@ -7,6 +7,7 @@ pub struct CsvScanner {
   priv width : Int
   priv mut next_row_no : Int
   priv mut finished : Bool
+  priv mut closed : Bool
 }
 
 ///|
@@ -46,15 +47,25 @@ pub async fn read_csv_with_schema(
   schema : Schema,
 ) -> CsvScanner raise ScanError {
   let file = open_csv_file(path)
-  let finished = initialize_csv_scan(file, schema)
-  CsvScanner::{
+  let finished = initialize_csv_scan(file, schema) catch {
+    err => {
+      file.close()
+      raise err
+    }
+  }
+  let scanner = CsvScanner::{
     path,
     schema,
     file,
     width: schema.columns.length(),
     next_row_no: 1,
     finished,
+    closed: false,
   }
+  if finished {
+    scanner.close()
+  }
+  scanner
 }
 
 ///|
@@ -99,8 +110,28 @@ pub fn CsvScanner::schema(self : CsvScanner) -> Schema {
 }
 
 ///|
+pub fn CsvScanner::close(self : CsvScanner) -> Unit {
+  guard !self.closed else { return }
+  self.file.close()
+  self.finished = true
+  self.closed = true
+}
+
+///|
 /// Chunks are produced lazily so the executor does not need an in-memory chunk array.
 pub async fn CsvScanner::next_chunk(
+  self : CsvScanner,
+) -> DataChunk? raise ScanError {
+  self.next_csv_chunk() catch {
+    err => {
+      self.close()
+      raise err
+    }
+  }
+}
+
+///|
+async fn CsvScanner::next_csv_chunk(
   self : CsvScanner,
 ) -> DataChunk? raise ScanError {
   guard !self.finished else { return None }
@@ -114,7 +145,7 @@ pub async fn CsvScanner::next_chunk(
         self.next_row_no += 1
       }
       None => {
-        self.finished = true
+        self.close()
         break
       }
     }
@@ -131,10 +162,21 @@ pub async fn CsvScanner::next_chunk(
 ///|
 /// Reset allows repeated scans after schema inference and binding have already happened.
 pub async fn CsvScanner::reset(self : CsvScanner) -> Unit raise ScanError {
-  self.file.close()
-  self.file = open_csv_file(self.path)
-  self.finished = initialize_csv_scan(self.file, self.schema)
+  self.close()
+  let file = open_csv_file(self.path)
+  let finished = initialize_csv_scan(file, self.schema) catch {
+    err => {
+      file.close()
+      raise err
+    }
+  }
+  self.file = file
+  self.finished = finished
   self.next_row_no = 1
+  self.closed = false
+  if finished {
+    self.close()
+  }
 }
 
 ///|

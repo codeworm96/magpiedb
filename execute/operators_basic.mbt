@@ -13,6 +13,7 @@ async fn build_scan_operator(
 async fn collect_operator_chunks(
   operator : ChunkOperator,
 ) -> Array[@engine.DataChunk] raise ExecuteError {
+  defer operator.close()
   let chunks = []
   while true {
     match operator.next_chunk() {
@@ -44,6 +45,22 @@ async fn ScanOperator::next_chunk(
 ) -> @engine.DataChunk? raise ExecuteError {
   self.scanner.next_chunk() catch {
     err => raise map_scan_error(err)
+  }
+}
+
+///|
+fn ChunkOperator::close(self : ChunkOperator) -> Unit {
+  match self {
+    Scan(operator) => operator.scanner.close()
+    Filter(operator) => operator.input.close()
+    Projection(operator) => operator.input.close()
+    Aggregate(operator) => operator.input.close()
+    Sort(operator) => operator.input.close()
+    Join(operator) => {
+      operator.left.close()
+      operator.right.close()
+    }
+    Limit(operator) => operator.input.close()
   }
 }
 

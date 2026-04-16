@@ -45,6 +45,7 @@ pub fn ScanError::message(Self) -> String
 pub struct CsvScanner {
   // private fields
 }
+pub fn CsvScanner::close(Self) -> Unit
 pub async fn CsvScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
 pub async fn CsvScanner::reset(Self) -> Unit raise ScanError
 pub fn CsvScanner::schema(Self) -> @engine.Schema
@@ -52,6 +53,7 @@ pub fn CsvScanner::schema(Self) -> @engine.Schema
 pub struct JsonlScanner {
   // private fields
 }
+pub fn JsonlScanner::close(Self) -> Unit
 pub async fn JsonlScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
 pub async fn JsonlScanner::reset(Self) -> Unit raise ScanError
 pub fn JsonlScanner::schema(Self) -> @engine.Schema
@@ -65,6 +67,7 @@ pub(all) enum Scanner {
   Csv(CsvScanner)
   Jsonl(JsonlScanner)
 }
+pub fn Scanner::close(Self) -> Unit
 pub async fn Scanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
 pub fn Scanner::schema(Self) -> @engine.Schema
 

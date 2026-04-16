@@ -69,3 +69,11 @@ pub async fn Scanner::next_chunk(self : Scanner) -> DataChunk? raise ScanError {
     Jsonl(scanner) => scanner.next_chunk()
   }
 }
+
+///|
+pub fn Scanner::close(self : Scanner) -> Unit {
+  match self {
+    Csv(scanner) => scanner.close()
+    Jsonl(scanner) => scanner.close()
+  }
+}

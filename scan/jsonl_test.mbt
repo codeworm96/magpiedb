@@ -74,3 +74,14 @@ async test "jsonl rejects non-object rows" {
     _ => fail("expected JsonRootNotObject on line 1")
   }
 }
+
+///|
+async test "jsonl scanner can close early and reset" {
+  let scan = read_jsonl("fixtures/jsonl/events.jsonl")
+  scan.close()
+  assert_eq(scan.next_chunk(), None)
+
+  scan.reset()
+  let chunk = scan.next_chunk().unwrap()
+  assert_eq(chunk.len, 3)
+}
