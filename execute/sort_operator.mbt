@@ -1,5 +1,5 @@
 ///|
-fn build_sort_operator(
+async fn build_sort_operator(
   sort_plan : @plan.SortPlan,
 ) -> ChunkOperator raise ExecuteError {
   ChunkOperator::Sort(SortOperator::{
@@ -12,7 +12,7 @@ fn build_sort_operator(
 }
 
 ///|
-fn SortOperator::next_chunk(
+async fn SortOperator::next_chunk(
   self : SortOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   self.ensure_build_ready()
@@ -23,7 +23,7 @@ fn SortOperator::next_chunk(
 }
 
 ///|
-fn SortOperator::ensure_build_ready(
+async fn SortOperator::ensure_build_ready(
   self : SortOperator,
 ) -> Unit raise ExecuteError {
   guard !self.build_ready else { return }
@@ -32,7 +32,7 @@ fn SortOperator::ensure_build_ready(
 }
 
 ///|
-fn SortOperator::build_output_chunks(
+async fn SortOperator::build_output_chunks(
   self : SortOperator,
 ) -> Array[@engine.DataChunk] raise ExecuteError {
   let rows = []

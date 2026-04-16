@@ -31,7 +31,7 @@ async fn main {
 }
 
 ///|
-fn run_query(conn : @lib.Connection, sql : String) -> Unit {
+async fn run_query(conn : @lib.Connection, sql : String) -> Unit {
   match conn.query(sql) {
     Ok(result) => {
       let rows = [result.schema().columns.map(col => col.name)]

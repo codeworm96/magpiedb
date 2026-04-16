@@ -13,15 +13,21 @@ pub fn infer_jsonl_schema(String) -> @engine.Schema raise ScanError
 
 pub fn infer_source_schema(ScanSourceKind, String) -> @engine.Schema raise ScanError
 
-pub fn open_source(ScanSourceKind, String) -> Scanner raise ScanError
+pub async fn open_source(ScanSourceKind, String) -> Scanner raise ScanError
+
+pub async fn open_source_with_schema(ScanSourceKind, String, @engine.Schema) -> Scanner raise ScanError
 
 pub fn read_csv(String) -> CsvScanner raise ScanError
 
-pub fn read_jsonl(String) -> JsonlScanner raise ScanError
+pub fn read_csv_with_schema(String, @engine.Schema) -> CsvScanner raise ScanError
+
+pub async fn read_jsonl(String) -> JsonlScanner raise ScanError
+
+pub async fn read_jsonl_with_schema(String, @engine.Schema) -> JsonlScanner raise ScanError
 
 pub fn scan_csv(String) -> CsvScanner raise ScanError
 
-pub fn scan_jsonl(String) -> JsonlScanner raise ScanError
+pub async fn scan_jsonl(String) -> JsonlScanner raise ScanError
 
 pub fn scan_source_kind(String) -> ScanSourceKind?
 
@@ -49,11 +55,12 @@ pub fn CsvScanner::schema(Self) -> @engine.Schema
 pub struct JsonlScanner {
   path : String
   schema : @engine.Schema
-  mut next_row : Int
+  mut next_line_no : Int
+  mut finished : Bool
   // private fields
 }
-pub fn JsonlScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
-pub fn JsonlScanner::reset(Self) -> Unit
+pub async fn JsonlScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
+pub async fn JsonlScanner::reset(Self) -> Unit raise ScanError
 pub fn JsonlScanner::schema(Self) -> @engine.Schema
 
 pub(all) enum ScanSourceKind {
@@ -65,7 +72,7 @@ pub(all) enum Scanner {
   Csv(CsvScanner)
   Jsonl(JsonlScanner)
 }
-pub fn Scanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
+pub async fn Scanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
 pub fn Scanner::schema(Self) -> @engine.Schema
 
 // Type aliases

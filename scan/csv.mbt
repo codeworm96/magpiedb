@@ -18,6 +18,16 @@ pub fn read_csv(path : String) -> CsvScanner raise ScanError {
 }
 
 ///|
+/// Execution can reuse a planned schema so scan opening does not need a second inference pass.
+pub fn read_csv_with_schema(
+  path : String,
+  schema : Schema,
+) -> CsvScanner raise ScanError {
+  let (_headers, rows) = parse_csv_rows(path)
+  CsvScanner::{ path, schema, rows, next_row: 0 }
+}
+
+///|
 /// Schema inference is a separate phase so the executor can stay chunk-oriented.
 pub fn infer_csv_schema(path : String) -> Schema raise ScanError {
   let (headers, rows) = parse_csv_rows(path)

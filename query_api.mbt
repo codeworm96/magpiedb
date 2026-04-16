@@ -33,7 +33,7 @@ pub fn Database::connect(self : Database) -> Connection {
 }
 
 ///|
-pub fn Connection::query(
+pub async fn Connection::query(
   self : Connection,
   sql : String,
 ) -> Result[ResultSet, DbError] {

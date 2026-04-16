@@ -10,7 +10,7 @@
 ## Public API
 
 - Expose a library-first API: `Database`, `Connection`, `ResultSet`, `Schema`, `Row`, `Value`, and `DbError`.
-- Public entrypoints are `Database::new()`, `Database::connect()`, `Connection::query(sql)`, `ResultSet::schema()`, and `ResultSet::next()`.
+- Public entrypoints are `Database::new()`, `Database::connect()`, async `Connection::query(sql)`, `ResultSet::schema()`, and `ResultSet::next()`.
 - Keep result consumption row-oriented in the public API for simplicity, but keep internal execution chunk-oriented.
 - SQL v1 supports `SELECT`, projection aliases, literals, arithmetic, comparisons, `AND`/`OR`/`NOT`, `IS NULL`, `CAST`, `WHERE`, `GROUP BY`, `HAVING`, `ORDER BY`, `LIMIT`, and aggregates `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`.
 - Type system in v1 is `NULL`, `BOOLEAN`, `BIGINT`, `DOUBLE`, and `VARCHAR`.
@@ -115,7 +115,7 @@
 
 ### Task 8: Public API and CLI Wiring
 
-- Keep the public API shape unchanged: `Connection::query(sql)` still returns `Result[ResultSet, DbError]`.
+- Keep the public API small: async `Connection::query(sql)` resolves to `Result[ResultSet, DbError]`.
 - Ensure `ResultSet::schema()` reports aggregate output columns with correct types and nullability.
 - Keep `ResultSet::next()` row-oriented even though grouped execution stays chunked internally.
 - Update the CLI path and any inline documentation/examples to demonstrate at least one global aggregate and one grouped aggregate query.
@@ -306,7 +306,7 @@
 
 ### Task 8: Public API and CLI Wiring
 
-- Keep the public API unchanged: `Connection::query(sql)` returns `Result[ResultSet, DbError]`.
+- Keep the public API small: async `Connection::query(sql)` resolves to `Result[ResultSet, DbError]`.
 - Ensure `ResultSet::schema()` reports aggregate-over-join output types and nullability correctly.
 - Add CLI/manual examples for at least one global aggregate-over-join query and one grouped aggregate-over-join query.
 - Document qualification requirements for aggregate-over-join queries in the README or examples.
@@ -483,7 +483,7 @@
 
 ### Task 8: Public API and CLI Wiring
 
-- Keep the public API shape unchanged: `Connection::query(sql)` still returns `Result[ResultSet, DbError]`.
+- Keep the public API small: async `Connection::query(sql)` resolves to `Result[ResultSet, DbError]`.
 - Update CLI examples and manual validation flows to include at least one joined CSV/JSONL query.
 - Document qualification rules clearly in repo docs and examples so ambiguous-column behavior is predictable.
 

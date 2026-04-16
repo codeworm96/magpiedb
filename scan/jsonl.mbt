@@ -15,8 +15,9 @@ using @engine {
 pub struct JsonlScanner {
   path : String
   schema : Schema
-  priv rows : Array[ParsedJsonlRow]
-  mut next_row : Int
+  priv mut file : @async_fs.File
+  mut next_line_no : Int
+  mut finished : Bool
 }
 
 ///|
@@ -27,13 +28,19 @@ priv struct ParsedJsonlRow {
 
 ///|
 /// Full JSONL scan entrypoint used by later planning/execution stages.
-pub fn read_jsonl(path : String) -> JsonlScanner raise ScanError {
-  // TODO(MVP follow-up): keep this pull-based interface, but replace the current
-  // full-file/full-row buffering with a true streaming implementation so large
-  // JSONL files do not need to fit in memory.
-  let rows = parse_jsonl_rows(path)
-  let schema = infer_schema_from_rows(rows)
-  JsonlScanner::{ path, schema, rows, next_row: 0 }
+pub async fn read_jsonl(path : String) -> JsonlScanner raise ScanError {
+  let schema = infer_jsonl_schema(path)
+  read_jsonl_with_schema(path, schema)
+}
+
+///|
+/// Execution can reuse a planned schema and stream rows from the beginning of the file.
+pub async fn read_jsonl_with_schema(
+  path : String,
+  schema : Schema,
+) -> JsonlScanner raise ScanError {
+  let file = open_jsonl_file(path)
+  JsonlScanner::{ path, schema, file, next_line_no: 1, finished: false }
 }
 
 ///|
@@ -50,31 +57,91 @@ pub fn JsonlScanner::schema(self : JsonlScanner) -> Schema {
 
 ///|
 /// Chunks are produced lazily so the executor does not need an in-memory chunk array.
-pub fn JsonlScanner::next_chunk(
+pub async fn JsonlScanner::next_chunk(
   self : JsonlScanner,
 ) -> DataChunk? raise ScanError {
-  guard self.next_row < self.rows.length() else { return None }
-  let remaining = self.rows.length() - self.next_row
-  let len = if remaining > fixed_vector_size {
-    fixed_vector_size
-  } else {
-    remaining
+  guard !self.finished else { return None }
+  let rows = []
+  while rows.length() < fixed_vector_size {
+    match self.read_next_row() {
+      Some(row) => rows.push(row)
+      None => break
+    }
+  } nobreak {
+    ()
   }
-  let chunk = materialize_chunk(self.schema, self.rows, self.next_row, len)
-  self.next_row += len
-  Some(chunk)
+  if rows.length() == 0 {
+    None
+  } else {
+    Some(materialize_chunk(self.schema, rows, 0, rows.length()))
+  }
 }
 
 ///|
 /// Reset allows repeated scans after schema inference/binding has already happened.
-pub fn JsonlScanner::reset(self : JsonlScanner) -> Unit {
-  self.next_row = 0
+pub async fn JsonlScanner::reset(self : JsonlScanner) -> Unit raise ScanError {
+  self.file.close()
+  self.file = open_jsonl_file(self.path)
+  self.next_line_no = 1
+  self.finished = false
 }
 
 ///|
 /// `scan_jsonl` is the scanner constructor used by execution code.
-pub fn scan_jsonl(path : String) -> JsonlScanner raise ScanError {
+pub async fn scan_jsonl(path : String) -> JsonlScanner raise ScanError {
   read_jsonl(path)
+}
+
+///|
+/// Open the JSONL file as an async stream for chunk-by-chunk execution.
+async fn open_jsonl_file(path : String) -> @async_fs.File raise ScanError {
+  @async_fs.open(path, mode=ReadOnly) catch {
+    err => raise ScanError::Io(err.to_string())
+  }
+}
+
+///|
+/// Read and parse the next non-empty JSONL object from the async file stream.
+async fn JsonlScanner::read_next_row(
+  self : JsonlScanner,
+) -> ParsedJsonlRow? raise ScanError {
+  while true {
+    let next_line = self.file.read_until("\n") catch {
+      err => raise ScanError::Io(err.to_string())
+    }
+    match next_line {
+      Some(raw_line) => {
+        let line_no = self.next_line_no
+        self.next_line_no += 1
+        let line = raw_line.trim(chars="\r")
+        if line.trim() == "" {
+          continue
+        }
+        return Some(parse_jsonl_line(line.to_string(), line_no))
+      }
+      None => {
+        self.finished = true
+        return None
+      }
+    }
+  } nobreak {
+    None
+  }
+}
+
+///|
+/// Parse one JSONL text line and enforce the v1 object-per-line contract.
+fn parse_jsonl_line(
+  line : String,
+  line_no : Int,
+) -> ParsedJsonlRow raise ScanError {
+  let parsed = @json.parse(line) catch {
+    err => raise ScanError::JsonParse(line_no, json_parse_message(err))
+  }
+  match parsed {
+    Object(object) => { line_no, object }
+    _ => raise ScanError::JsonRootNotObject(line_no)
+  }
 }
 
 ///|
@@ -91,13 +158,7 @@ fn parse_jsonl_rows(path : String) -> Array[ParsedJsonlRow] raise ScanError {
     if line.trim() == "" {
       continue
     }
-    let parsed = @json.parse(line) catch {
-      err => raise ScanError::JsonParse(line_no, json_parse_message(err))
-    }
-    match parsed {
-      Object(object) => rows.push({ line_no, object })
-      _ => raise ScanError::JsonRootNotObject(line_no)
-    }
+    rows.push(parse_jsonl_line(line.to_string(), line_no))
   }
   rows
 }

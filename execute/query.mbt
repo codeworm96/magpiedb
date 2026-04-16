@@ -15,26 +15,32 @@ pub suberror ExecuteError {
 } derive(Debug)
 
 ///|
-pub fn execute_query(query : @sql.Query) -> QueryOutput raise ExecuteError {
+pub async fn execute_query(
+  query : @sql.Query,
+) -> QueryOutput raise ExecuteError {
   let plan = @plan.plan_query(query) catch { err => raise map_plan_error(err) }
   execute_plan(plan)
 }
 
 ///|
-pub fn execute_plan(plan : @plan.QueryPlan) -> QueryOutput raise ExecuteError {
+pub async fn execute_plan(
+  plan : @plan.QueryPlan,
+) -> QueryOutput raise ExecuteError {
   let chunks = execute_plan_chunks(plan)
   QueryOutput::{ schema: @plan.query_plan_schema(plan), chunks }
 }
 
 ///|
-fn execute_plan_chunks(
+async fn execute_plan_chunks(
   plan : @plan.QueryPlan,
 ) -> Array[@engine.DataChunk] raise ExecuteError {
   collect_operator_chunks(build_operator(plan))
 }
 
 ///|
-fn build_operator(plan : @plan.QueryPlan) -> ChunkOperator raise ExecuteError {
+async fn build_operator(
+  plan : @plan.QueryPlan,
+) -> ChunkOperator raise ExecuteError {
   match plan {
     @plan.QueryPlan::Scan(scan_plan) => build_scan_operator(scan_plan.source)
     @plan.QueryPlan::Join(join_plan) => build_join_operator(join_plan)

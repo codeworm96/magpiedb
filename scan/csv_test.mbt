@@ -1,5 +1,5 @@
 ///|
-test "csv infers schema and materializes a columnar chunk" {
+async test "csv infers schema and materializes a columnar chunk" {
   let scan = read_csv("fixtures/csv/people.csv")
 
   assert_eq(scan.schema().columns, [
@@ -24,7 +24,7 @@ test "csv infers schema and materializes a columnar chunk" {
 }
 
 ///|
-test "csv preserves quoted commas and escaped quotes" {
+async test "csv preserves quoted commas and escaped quotes" {
   let scan = read_csv("fixtures/csv/quoted.csv")
   assert_eq(scan.schema().columns, [
     { name: "id", data_type: LogicalType::BigInt, nullable: false },
@@ -40,7 +40,7 @@ test "csv preserves quoted commas and escaped quotes" {
 }
 
 ///|
-test "csv widens mixed numeric columns to double" {
+async test "csv widens mixed numeric columns to double" {
   let schema = infer_csv_schema("fixtures/csv/mixed_numeric.csv")
   assert_eq(schema.columns, [
     { name: "score", data_type: LogicalType::Double, nullable: false },
@@ -52,7 +52,7 @@ test "csv widens mixed numeric columns to double" {
 }
 
 ///|
-test "csv normalizes invalid or duplicate headers" {
+async test "csv normalizes invalid or duplicate headers" {
   let schema = infer_csv_schema("fixtures/csv/bad_headers.csv")
   assert_eq(schema.columns, [
     { name: "column1", data_type: LogicalType::Varchar, nullable: false },
@@ -62,7 +62,7 @@ test "csv normalizes invalid or duplicate headers" {
 }
 
 ///|
-test "csv rejects malformed row widths" {
+async test "csv rejects malformed row widths" {
   let result = try? read_csv("fixtures/csv/malformed.csv")
   match result {
     Err(CsvMalformed(_)) => ()

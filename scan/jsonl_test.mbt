@@ -2,7 +2,7 @@
 using @engine {type LogicalType, type VectorBuffer}
 
 ///|
-test "jsonl infers schema and materializes a columnar chunk" {
+async test "jsonl infers schema and materializes a columnar chunk" {
   let scan = read_jsonl("fixtures/jsonl/events.jsonl")
 
   assert_eq(scan.schema().columns, [
@@ -34,7 +34,7 @@ test "jsonl infers schema and materializes a columnar chunk" {
 }
 
 ///|
-test "jsonl widens mixed numeric columns to double" {
+async test "jsonl widens mixed numeric columns to double" {
   let schema = infer_jsonl_schema("fixtures/jsonl/mixed_numeric.jsonl")
   assert_eq(schema.columns, [
     { name: "score", data_type: LogicalType::Double, nullable: false },
@@ -47,7 +47,7 @@ test "jsonl widens mixed numeric columns to double" {
 }
 
 ///|
-test "jsonl scanner can reset and re-stream chunks" {
+async test "jsonl scanner can reset and re-stream chunks" {
   let scan = read_jsonl("fixtures/jsonl/events.jsonl")
   ignore(scan.next_chunk().unwrap())
   assert_eq(scan.next_chunk(), None)
@@ -58,7 +58,7 @@ test "jsonl scanner can reset and re-stream chunks" {
 }
 
 ///|
-test "jsonl reports malformed input with line numbers" {
+async test "jsonl reports malformed input with line numbers" {
   let result = try? read_jsonl("fixtures/jsonl/malformed.jsonl")
   match result {
     Err(JsonParse(line_no, _)) => assert_eq(line_no, 2)
@@ -67,7 +67,7 @@ test "jsonl reports malformed input with line numbers" {
 }
 
 ///|
-test "jsonl rejects non-object rows" {
+async test "jsonl rejects non-object rows" {
   let result = try? read_jsonl("fixtures/jsonl/not_object.jsonl")
   match result {
     Err(JsonRootNotObject(line_no)) => assert_eq(line_no, 1)

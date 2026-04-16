@@ -1,5 +1,5 @@
 ///|
-test "query executes projection and filter over read_jsonl" {
+async test "query executes projection and filter over read_jsonl" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -17,7 +17,7 @@ test "query executes projection and filter over read_jsonl" {
 }
 
 ///|
-test "query supports aliases and literals over read_jsonl" {
+async test "query supports aliases and literals over read_jsonl" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -35,7 +35,7 @@ test "query supports aliases and literals over read_jsonl" {
 }
 
 ///|
-test "query rejects unknown columns" {
+async test "query rejects unknown columns" {
   let conn = Database::new().connect()
   let err = conn
     .query("SELECT missing FROM read_jsonl('fixtures/jsonl/events.jsonl')")
@@ -48,7 +48,7 @@ test "query rejects unknown columns" {
 }
 
 ///|
-test "query executes projection and filter over read_csv" {
+async test "query executes projection and filter over read_csv" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -66,7 +66,7 @@ test "query executes projection and filter over read_csv" {
 }
 
 ///|
-test "query executes global aggregate over read_csv" {
+async test "query executes global aggregate over read_csv" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -83,7 +83,7 @@ test "query executes global aggregate over read_csv" {
 }
 
 ///|
-test "query executes grouped aggregate with having over read_jsonl" {
+async test "query executes grouped aggregate with having over read_jsonl" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -100,7 +100,7 @@ test "query executes grouped aggregate with having over read_jsonl" {
 }
 
 ///|
-test "query treats division as float division inside aggregates" {
+async test "query treats division as float division inside aggregates" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -116,7 +116,7 @@ test "query treats division as float division inside aggregates" {
 }
 
 ///|
-test "query applies SQL three-valued logic for boolean operators" {
+async test "query applies SQL three-valued logic for boolean operators" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -137,7 +137,7 @@ test "query applies SQL three-valued logic for boolean operators" {
 }
 
 ///|
-test "query executes csv jsonl inner join with where over joined rows" {
+async test "query executes csv jsonl inner join with where over joined rows" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -159,7 +159,7 @@ test "query executes csv jsonl inner join with where over joined rows" {
 }
 
 ///|
-test "query executes csv csv inner join" {
+async test "query executes csv csv inner join" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -195,7 +195,7 @@ test "query executes csv csv inner join" {
 }
 
 ///|
-test "query executes jsonl jsonl inner join" {
+async test "query executes jsonl jsonl inner join" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -225,7 +225,7 @@ test "query executes jsonl jsonl inner join" {
 }
 
 ///|
-test "query executes global aggregate over csv jsonl join" {
+async test "query executes global aggregate over csv jsonl join" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -242,7 +242,7 @@ test "query executes global aggregate over csv jsonl join" {
 }
 
 ///|
-test "query executes grouped aggregate with having over join" {
+async test "query executes grouped aggregate with having over join" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -260,7 +260,7 @@ test "query executes grouped aggregate with having over join" {
 }
 
 ///|
-test "query executes grouped aggregate over jsonl jsonl join" {
+async test "query executes grouped aggregate over jsonl jsonl join" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -278,7 +278,7 @@ test "query executes grouped aggregate over jsonl jsonl join" {
 }
 
 ///|
-test "query executes order by and limit over scan" {
+async test "query executes order by and limit over scan" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -292,7 +292,7 @@ test "query executes order by and limit over scan" {
 }
 
 ///|
-test "query executes order by alias" {
+async test "query executes order by alias" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -306,7 +306,7 @@ test "query executes order by alias" {
 }
 
 ///|
-test "query executes order by and limit over join" {
+async test "query executes order by and limit over join" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -330,7 +330,7 @@ test "query executes order by and limit over join" {
 }
 
 ///|
-test "query executes order by and limit over aggregate join" {
+async test "query executes order by and limit over aggregate join" {
   let conn = Database::new().connect()
   let result = conn
     .query(
@@ -344,7 +344,7 @@ test "query executes order by and limit over aggregate join" {
 }
 
 ///|
-test "query limit zero preserves schema and returns no rows" {
+async test "query limit zero preserves schema and returns no rows" {
   let conn = Database::new().connect()
   let result = conn
     .query("SELECT name, age FROM read_csv('fixtures/csv/people.csv') LIMIT 0")

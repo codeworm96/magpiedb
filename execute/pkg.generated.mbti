@@ -9,9 +9,9 @@ import {
 }
 
 // Values
-pub fn execute_plan(@plan.QueryPlan) -> QueryOutput raise ExecuteError
+pub async fn execute_plan(@plan.QueryPlan) -> QueryOutput raise ExecuteError
 
-pub fn execute_query(@sql.Query) -> QueryOutput raise ExecuteError
+pub async fn execute_query(@sql.Query) -> QueryOutput raise ExecuteError
 
 // Errors
 pub suberror ExecuteError {

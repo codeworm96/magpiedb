@@ -1,5 +1,5 @@
 ///|
-test "execute plan produces chunked projection and filter output" {
+async test "execute plan produces chunked projection and filter output" {
   let query = @sql.parse_sql(
     "SELECT id, name FROM read_jsonl('fixtures/jsonl/events.jsonl') WHERE active = true",
   ).unwrap()
@@ -20,7 +20,7 @@ test "execute plan produces chunked projection and filter output" {
 }
 
 ///|
-test "execute plan keeps literal projections chunked until materialization boundary" {
+async test "execute plan keeps literal projections chunked until materialization boundary" {
   let query = @sql.parse_sql(
     "SELECT id AS event_id, 'ok' AS status FROM read_jsonl('fixtures/jsonl/events.jsonl') WHERE id >= 2",
   ).unwrap()
@@ -46,7 +46,7 @@ test "execute plan keeps literal projections chunked until materialization bound
 }
 
 ///|
-test "execute plan supports csv scan through the same chunk pipeline" {
+async test "execute plan supports csv scan through the same chunk pipeline" {
   let query = @sql.parse_sql(
     "SELECT name, age FROM read_csv('fixtures/csv/people.csv') WHERE age > 18",
   ).unwrap()
@@ -68,7 +68,7 @@ test "execute plan supports csv scan through the same chunk pipeline" {
 }
 
 ///|
-test "execute plan computes global aggregates" {
+async test "execute plan computes global aggregates" {
   let query = @sql.parse_sql(
     "SELECT COUNT(*) AS total, AVG(age) AS avg_age FROM read_csv('fixtures/csv/people.csv')",
   ).unwrap()
@@ -88,7 +88,7 @@ test "execute plan computes global aggregates" {
 }
 
 ///|
-test "execute plan computes grouped aggregates with having" {
+async test "execute plan computes grouped aggregates with having" {
   let query = @sql.parse_sql(
     "SELECT active, COUNT(*) AS total FROM read_jsonl('fixtures/jsonl/events.jsonl') GROUP BY active HAVING COUNT(*) > 1",
   ).unwrap()
@@ -103,7 +103,7 @@ test "execute plan computes grouped aggregates with having" {
 }
 
 ///|
-test "execute plan treats division as double in aggregate inputs" {
+async test "execute plan treats division as double in aggregate inputs" {
   let query = @sql.parse_sql(
     "SELECT SUM(age / 2) AS half_total FROM read_csv('fixtures/csv/people.csv')",
   ).unwrap()
@@ -125,7 +125,7 @@ test "execute plan treats division as double in aggregate inputs" {
 }
 
 ///|
-test "execute plan applies SQL three-valued logic for boolean operators" {
+async test "execute plan applies SQL three-valued logic for boolean operators" {
   let query = @sql.parse_sql(
     "SELECT false AND NULL AS and_result, true OR NULL AS or_result, true AND NULL AS and_unknown, false OR NULL AS or_unknown FROM read_csv('fixtures/csv/people.csv')",
   ).unwrap()
@@ -158,7 +158,7 @@ test "execute plan applies SQL three-valued logic for boolean operators" {
 }
 
 ///|
-test "execute plan performs csv jsonl inner join with deterministic output order" {
+async test "execute plan performs csv jsonl inner join with deterministic output order" {
   let query = @sql.parse_sql(
     "SELECT people.name, events.name, events.active FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id",
   ).unwrap()
@@ -185,7 +185,7 @@ test "execute plan performs csv jsonl inner join with deterministic output order
 }
 
 ///|
-test "execute plan performs csv csv inner join" {
+async test "execute plan performs csv csv inner join" {
   let query = @sql.parse_sql(
     "SELECT people.name, flags.team, flags.enabled FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_csv('fixtures/csv/join_flags.csv') AS flags ON people.id = flags.id",
   ).unwrap()
@@ -210,7 +210,7 @@ test "execute plan performs csv csv inner join" {
 }
 
 ///|
-test "execute plan performs jsonl jsonl inner join" {
+async test "execute plan performs jsonl jsonl inner join" {
   let query = @sql.parse_sql(
     "SELECT events.name, profiles.city, profiles.score FROM read_jsonl('fixtures/jsonl/join_events.jsonl') AS events JOIN read_jsonl('fixtures/jsonl/join_profiles.jsonl') AS profiles ON events.id = profiles.id",
   ).unwrap()
@@ -237,7 +237,7 @@ test "execute plan performs jsonl jsonl inner join" {
 }
 
 ///|
-test "execute plan does not match null join keys" {
+async test "execute plan does not match null join keys" {
   let query = @sql.parse_sql(
     "SELECT people.name FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id WHERE people.name = 'NoId'",
   ).unwrap()
@@ -248,7 +248,7 @@ test "execute plan does not match null join keys" {
 }
 
 ///|
-test "execute plan computes global aggregate over csv jsonl join" {
+async test "execute plan computes global aggregate over csv jsonl join" {
   let query = @sql.parse_sql(
     "SELECT COUNT(*) AS total, SUM(events.id) AS total_id FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id",
   ).unwrap()
@@ -267,7 +267,7 @@ test "execute plan computes global aggregate over csv jsonl join" {
 }
 
 ///|
-test "execute plan computes grouped aggregate over csv csv join with having" {
+async test "execute plan computes grouped aggregate over csv csv join with having" {
   let query = @sql.parse_sql(
     "SELECT people.name, COUNT(*) AS total FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_csv('fixtures/csv/join_flags.csv') AS flags ON people.id = flags.id GROUP BY people.name HAVING COUNT(*) > 1",
   ).unwrap()
@@ -285,7 +285,7 @@ test "execute plan computes grouped aggregate over csv csv join with having" {
 }
 
 ///|
-test "execute plan computes grouped aggregate over jsonl jsonl join on right key" {
+async test "execute plan computes grouped aggregate over jsonl jsonl join on right key" {
   let query = @sql.parse_sql(
     "SELECT profiles.city, COUNT(*) AS total FROM read_jsonl('fixtures/jsonl/join_events.jsonl') AS events JOIN read_jsonl('fixtures/jsonl/join_profiles.jsonl') AS profiles ON events.id = profiles.id GROUP BY profiles.city HAVING COUNT(*) > 1",
   ).unwrap()
@@ -300,7 +300,7 @@ test "execute plan computes grouped aggregate over jsonl jsonl join on right key
 }
 
 ///|
-test "execute plan sorts with nulls last and limit" {
+async test "execute plan sorts with nulls last and limit" {
   let query = @sql.parse_sql(
     "SELECT name, age FROM read_csv('fixtures/csv/people.csv') ORDER BY age DESC LIMIT 2",
   ).unwrap()
@@ -318,7 +318,7 @@ test "execute plan sorts with nulls last and limit" {
 }
 
 ///|
-test "execute plan sorts stable on duplicate keys" {
+async test "execute plan sorts stable on duplicate keys" {
   let query = @sql.parse_sql(
     "SELECT name, id FROM read_csv('fixtures/csv/join_people.csv') ORDER BY id ASC",
   ).unwrap()
@@ -338,7 +338,7 @@ test "execute plan sorts stable on duplicate keys" {
 }
 
 ///|
-test "execute plan sorts join results and limits them" {
+async test "execute plan sorts join results and limits them" {
   let query = @sql.parse_sql(
     "SELECT people.name, events.name AS event_name FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_jsonl('fixtures/jsonl/join_events.jsonl') AS events ON people.id = events.id ORDER BY event_name DESC, people.name LIMIT 3",
   ).unwrap()
@@ -358,7 +358,7 @@ test "execute plan sorts join results and limits them" {
 }
 
 ///|
-test "execute plan sorts aggregate over join results" {
+async test "execute plan sorts aggregate over join results" {
   let query = @sql.parse_sql(
     "SELECT people.name, COUNT(*) AS total FROM read_csv('fixtures/csv/join_people.csv') AS people JOIN read_csv('fixtures/csv/join_flags.csv') AS flags ON people.id = flags.id GROUP BY people.name ORDER BY total DESC, people.name LIMIT 2",
   ).unwrap()
@@ -375,7 +375,7 @@ test "execute plan sorts aggregate over join results" {
 }
 
 ///|
-test "execute plan limit zero returns empty result with schema" {
+async test "execute plan limit zero returns empty result with schema" {
   let query = @sql.parse_sql(
     "SELECT name, age FROM read_csv('fixtures/csv/people.csv') LIMIT 0",
   ).unwrap()

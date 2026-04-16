@@ -31,13 +31,26 @@ pub fn infer_source_schema(
 }
 
 ///|
-pub fn open_source(
+pub async fn open_source(
   kind : ScanSourceKind,
   path : String,
 ) -> Scanner raise ScanError {
   match kind {
     ScanSourceKind::Csv => Scanner::Csv(read_csv(path))
     ScanSourceKind::Jsonl => Scanner::Jsonl(read_jsonl(path))
+  }
+}
+
+///|
+pub async fn open_source_with_schema(
+  kind : ScanSourceKind,
+  path : String,
+  schema : Schema,
+) -> Scanner raise ScanError {
+  match kind {
+    ScanSourceKind::Csv => Scanner::Csv(read_csv_with_schema(path, schema))
+    ScanSourceKind::Jsonl =>
+      Scanner::Jsonl(read_jsonl_with_schema(path, schema))
   }
 }
 
@@ -50,7 +63,7 @@ pub fn Scanner::schema(self : Scanner) -> Schema {
 }
 
 ///|
-pub fn Scanner::next_chunk(self : Scanner) -> DataChunk? raise ScanError {
+pub async fn Scanner::next_chunk(self : Scanner) -> DataChunk? raise ScanError {
   match self {
     Csv(scanner) => scanner.next_chunk()
     Jsonl(scanner) => scanner.next_chunk()

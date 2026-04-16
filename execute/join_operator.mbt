@@ -1,5 +1,5 @@
 ///|
-fn build_join_operator(
+async fn build_join_operator(
   join_plan : @plan.JoinPlan,
 ) -> ChunkOperator raise ExecuteError {
   ChunkOperator::Join(JoinOperator::{
@@ -18,7 +18,7 @@ fn build_join_operator(
 }
 
 ///|
-fn JoinOperator::next_chunk(
+async fn JoinOperator::next_chunk(
   self : JoinOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   self.ensure_build_ready()
@@ -62,7 +62,7 @@ fn JoinOperator::next_chunk(
 }
 
 ///|
-fn JoinOperator::ensure_build_ready(
+async fn JoinOperator::ensure_build_ready(
   self : JoinOperator,
 ) -> Unit raise ExecuteError {
   guard !self.build_ready else { return }
@@ -96,7 +96,7 @@ fn JoinOperator::ensure_build_ready(
 }
 
 ///|
-fn JoinOperator::next_left_row(
+async fn JoinOperator::next_left_row(
   self : JoinOperator,
 ) -> Array[@engine.Value]? raise ExecuteError {
   while true {

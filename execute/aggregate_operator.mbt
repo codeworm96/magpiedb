@@ -9,7 +9,7 @@ priv enum AggregateState {
 }
 
 ///|
-fn build_aggregate_operator(
+async fn build_aggregate_operator(
   aggregate_plan : @plan.AggregatePlan,
 ) -> ChunkOperator raise ExecuteError {
   ChunkOperator::Aggregate(AggregateOperator::{
@@ -22,7 +22,7 @@ fn build_aggregate_operator(
 }
 
 ///|
-fn AggregateOperator::next_chunk(
+async fn AggregateOperator::next_chunk(
   self : AggregateOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   self.ensure_build_ready()
@@ -33,7 +33,7 @@ fn AggregateOperator::next_chunk(
 }
 
 ///|
-fn AggregateOperator::ensure_build_ready(
+async fn AggregateOperator::ensure_build_ready(
   self : AggregateOperator,
 ) -> Unit raise ExecuteError {
   guard !self.build_ready else { return }
@@ -42,7 +42,7 @@ fn AggregateOperator::ensure_build_ready(
 }
 
 ///|
-fn AggregateOperator::build_output_chunks(
+async fn AggregateOperator::build_output_chunks(
   self : AggregateOperator,
 ) -> Array[@engine.DataChunk] raise ExecuteError {
   let group_indices : Map[String, Int] = {}

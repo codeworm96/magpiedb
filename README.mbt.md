@@ -118,7 +118,7 @@ import {
   "codeworm96/magpiedb" @db
 }
 
-fn run_query() -> Result[Unit, @db.DbError] {
+async fn run_query() -> Result[Unit, @db.DbError] {
   let conn = @db.Database::new().connect()
   let result = conn.query(
     "SELECT COUNT(*) AS total FROM read_csv('fixtures/csv/people.csv')",
@@ -139,7 +139,7 @@ Public entrypoints:
 
 - `Database::new()`
 - `Database::connect()`
-- `Connection::query(sql)`
+- `Connection::query(sql)` (async)
 - `ResultSet::schema()`
 - `ResultSet::next()`
 

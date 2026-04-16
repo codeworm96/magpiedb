@@ -1,16 +1,16 @@
 ///|
-fn build_scan_operator(
+async fn build_scan_operator(
   source : @plan.ScanSource,
 ) -> ChunkOperator raise ExecuteError {
-  let (kind, path) = planned_source_open_info(source)
-  let scanner = @scan.open_source(kind, path) catch {
+  let (kind, path, schema) = planned_source_open_info(source)
+  let scanner = @scan.open_source_with_schema(kind, path, schema) catch {
     err => raise map_scan_error(err)
   }
   ChunkOperator::Scan(ScanOperator::{ scanner, })
 }
 
 ///|
-fn collect_operator_chunks(
+async fn collect_operator_chunks(
   operator : ChunkOperator,
 ) -> Array[@engine.DataChunk] raise ExecuteError {
   let chunks = []
@@ -24,7 +24,7 @@ fn collect_operator_chunks(
 }
 
 ///|
-fn ChunkOperator::next_chunk(
+async fn ChunkOperator::next_chunk(
   self : ChunkOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   match self {
@@ -39,7 +39,7 @@ fn ChunkOperator::next_chunk(
 }
 
 ///|
-fn ScanOperator::next_chunk(
+async fn ScanOperator::next_chunk(
   self : ScanOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   self.scanner.next_chunk() catch {
@@ -48,7 +48,7 @@ fn ScanOperator::next_chunk(
 }
 
 ///|
-fn FilterOperator::next_chunk(
+async fn FilterOperator::next_chunk(
   self : FilterOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   while true {
@@ -67,7 +67,7 @@ fn FilterOperator::next_chunk(
 }
 
 ///|
-fn ProjectionOperator::next_chunk(
+async fn ProjectionOperator::next_chunk(
   self : ProjectionOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   match self.input.next_chunk() {
@@ -78,7 +78,7 @@ fn ProjectionOperator::next_chunk(
 }
 
 ///|
-fn LimitOperator::next_chunk(
+async fn LimitOperator::next_chunk(
   self : LimitOperator,
 ) -> @engine.DataChunk? raise ExecuteError {
   guard self.remaining > 0 else { return None }
@@ -122,9 +122,11 @@ fn take_chunk_prefix(
 ///|
 fn planned_source_open_info(
   source : @plan.ScanSource,
-) -> (@scan.ScanSourceKind, String) {
+) -> (@scan.ScanSourceKind, String, @engine.Schema) {
   match source {
-    @plan.ScanSource::Csv(scan) => (@scan.ScanSourceKind::Csv, scan.path)
-    @plan.ScanSource::Jsonl(scan) => (@scan.ScanSourceKind::Jsonl, scan.path)
+    @plan.ScanSource::Csv(scan) =>
+      (@scan.ScanSourceKind::Csv, scan.path, scan.schema)
+    @plan.ScanSource::Jsonl(scan) =>
+      (@scan.ScanSourceKind::Jsonl, scan.path, scan.schema)
   }
 }

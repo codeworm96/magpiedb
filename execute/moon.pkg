@@ -5,3 +5,7 @@ import {
   "codeworm96/magpiedb/scan",
   "codeworm96/magpiedb/sql",
 }
+
+import {
+  "moonbitlang/async",
+} for "test"
