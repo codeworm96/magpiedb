@@ -135,6 +135,8 @@ table_function
 source_ref
   : table_function opt_source_alias
       { make_source_ref($1, $2) }
+  | STRING_LITERAL opt_source_alias
+      { make_path_source_ref($1, $2) }
   ;
 
 opt_source_alias

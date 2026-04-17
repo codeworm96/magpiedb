@@ -51,6 +51,11 @@ fn make_source_ref(source : TableFunction, alias_name : String?) -> SourceRef {
 }
 
 ///|
+fn make_path_source_ref(path : String, alias_name : String?) -> SourceRef {
+  { source: RelationSource::PathLiteral(path), alias_name }
+}
+
+///|
 fn make_source_from_item(source : SourceRef) -> FromItem {
   FromItem::Source(source)
 }

@@ -15,6 +15,14 @@ fn unwrap_table_function(source_ref : SourceRef) -> TableFunction {
 }
 
 ///|
+fn unwrap_path_literal(source_ref : SourceRef) -> String {
+  match source_ref.source {
+    RelationSource::TableFunction(_) => panic()
+    RelationSource::PathLiteral(path) => path
+  }
+}
+
+///|
 fn order_by_matches(
   item : OrderByItem,
   expr : Expr,
@@ -110,6 +118,18 @@ test "parse qualified column names" {
 }
 
 ///|
+test "parse quoted path source" {
+  let query = parse_sql(
+    "SELECT flight_no FROM 'flights.csv' AS flights",
+  ).unwrap()
+  let source = unwrap_source(query.from)
+
+  assert_eq(source.alias_name, Some("flights"))
+  assert_eq(unwrap_path_literal(source), "flights.csv")
+  assert_eq(query.select_items[0].expr, Expr::ColumnRef(["flight_no"]))
+}
+
+///|
 test "parse aggregate functions and count star" {
   let query = parse_sql(
     "SELECT COUNT(*) AS total, SUM(amount), AVG(score) FROM read_csv('metrics.csv')",
@@ -195,6 +215,31 @@ test "parse explicit inner join with where" {
       ),
     ),
   )
+}
+
+///|
+test "parse join with quoted path sources" {
+  let query = parse_sql(
+    "SELECT l.id, r.name FROM 'a.csv' l JOIN 'b.jsonl' r ON l.id = r.id",
+  ).unwrap()
+
+  match query.from {
+    Source(_) => fail("expected join")
+    Join(join) => {
+      assert_eq(join.left.alias_name, Some("l"))
+      assert_eq(join.right.alias_name, Some("r"))
+      assert_eq(unwrap_path_literal(join.left), "a.csv")
+      assert_eq(unwrap_path_literal(join.right), "b.jsonl")
+      assert_eq(
+        join.on,
+        Expr::Binary(
+          BinaryOp::Equal,
+          Expr::ColumnRef(["l", "id"]),
+          Expr::ColumnRef(["r", "id"]),
+        ),
+      )
+    }
+  }
 }
 
 ///|

@@ -457,23 +457,23 @@ fn yy_action_2(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
 }
 
 // file:///./parser.mbty
-// 215|    "LIMIT" INTEGER_LITERAL
-// 216|      { Some($2) }
+// 217|    "LIMIT" INTEGER_LITERAL
+// 218|      { Some($2) }
 fn yy_action_3(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[1].0 is YYObj_String(_dollar2)
   YYObj_String_({();  Some(_dollar2) })
 }
 
 // file:///./parser.mbty
-// 213|   
-// 214|      { None }
+// 215|   
+// 216|      { None }
 fn yy_action_4(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_String_({();  None })
 }
 
 // file:///./parser.mbty
-// 194|    order_by_list "," order_by_item
-// 195|      { push_order_by_item($1, $3) }
+// 196|    order_by_list "," order_by_item
+// 197|      { push_order_by_item($1, $3) }
 fn yy_action_5(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Array_OrderByItem_(_dollar1)
   guard _args[2].0 is YYObj_OrderByItem(_dollar3)
@@ -481,24 +481,24 @@ fn yy_action_5(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
 }
 
 // file:///./parser.mbty
-// 187|    "ORDER" "BY" order_by_list
-// 188|      { $3 }
+// 189|    "ORDER" "BY" order_by_list
+// 190|      { $3 }
 fn yy_action_6(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[2].0 is YYObj_Array_OrderByItem_(_dollar3)
   YYObj_Array_OrderByItem_({();  _dollar3 })
 }
 
 // file:///./parser.mbty
-// 192|    order_by_item
-// 193|      { [$1] }
+// 194|    order_by_item
+// 195|      { [$1] }
 fn yy_action_7(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_OrderByItem(_dollar1)
   YYObj_Array_OrderByItem_({();  [_dollar1] })
 }
 
 // file:///./parser.mbty
-// 199|    expr opt_sort_direction
-// 200|      { make_order_by_item($1, $2) }
+// 201|    expr opt_sort_direction
+// 202|      { make_order_by_item($1, $2) }
 fn yy_action_8(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[1].0 is YYObj_SortDirection(_dollar2)
@@ -506,51 +506,51 @@ fn yy_action_8(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
 }
 
 // file:///./parser.mbty
-// 206|    "ASC"
-// 207|      { SortDirection::Asc }
+// 208|    "ASC"
+// 209|      { SortDirection::Asc }
 fn yy_action_9(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_SortDirection({();  SortDirection::Asc })
 }
 
 // file:///./parser.mbty
-// 208|    "DESC"
-// 209|      { SortDirection::Desc }
+// 210|    "DESC"
+// 211|      { SortDirection::Desc }
 fn yy_action_10(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_SortDirection({();  SortDirection::Desc })
 }
 
 // file:///./parser.mbty
-// 204|   
-// 205|      { SortDirection::Asc }
+// 206|   
+// 207|      { SortDirection::Asc }
 fn yy_action_11(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_SortDirection({();  SortDirection::Asc })
 }
 
 // file:///./parser.mbty
-// 185|   
-// 186|      { [] }
+// 187|   
+// 188|      { [] }
 fn yy_action_12(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_Array_OrderByItem_({();  [] })
 }
 
 // file:///./parser.mbty
-// 180|    "HAVING" expr
-// 181|      { Some($2) }
+// 182|    "HAVING" expr
+// 183|      { Some($2) }
 fn yy_action_13(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[1].0 is YYObj_Expr(_dollar2)
   YYObj_Expr_({();  Some(_dollar2) })
 }
 
 // file:///./parser.mbty
-// 178|   
-// 179|      { None }
+// 180|   
+// 181|      { None }
 fn yy_action_14(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_Expr_({();  None })
 }
 
 // file:///./parser.mbty
-// 173|    group_key_list "," identifier_path
-// 174|      { push_group_key($1, $3) }
+// 175|    group_key_list "," identifier_path
+// 176|      { push_group_key($1, $3) }
 fn yy_action_15(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Array_Array_String__(_dollar1)
   guard _args[2].0 is YYObj_Array_String_(_dollar3)
@@ -558,39 +558,39 @@ fn yy_action_15(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj 
 }
 
 // file:///./parser.mbty
-// 166|    "GROUP" "BY" group_key_list
-// 167|      { $3 }
+// 168|    "GROUP" "BY" group_key_list
+// 169|      { $3 }
 fn yy_action_16(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[2].0 is YYObj_Array_Array_String__(_dollar3)
   YYObj_Array_Array_String__({();  _dollar3 })
 }
 
 // file:///./parser.mbty
-// 171|    identifier_path
-// 172|      { [$1] }
+// 173|    identifier_path
+// 174|      { [$1] }
 fn yy_action_17(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Array_String_(_dollar1)
   YYObj_Array_Array_String__({();  [_dollar1] })
 }
 
 // file:///./parser.mbty
-// 164|   
-// 165|      { [] }
+// 166|   
+// 167|      { [] }
 fn yy_action_18(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_Array_Array_String__({();  [] })
 }
 
 // file:///./parser.mbty
-// 159|    "WHERE" expr
-// 160|      { Some($2) }
+// 161|    "WHERE" expr
+// 162|      { Some($2) }
 fn yy_action_19(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[1].0 is YYObj_Expr(_dollar2)
   YYObj_Expr_({();  Some(_dollar2) })
 }
 
 // file:///./parser.mbty
-// 157|   
-// 158|      { None }
+// 159|   
+// 160|      { None }
 fn yy_action_20(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_Expr_({();  None })
 }
@@ -650,32 +650,41 @@ fn yy_action_26(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj 
 }
 
 // file:///./parser.mbty
-// 143|    "AS" IDENT
-// 144|      { Some($2) }
+// 138|    STRING_LITERAL opt_source_alias
+// 139|      { make_path_source_ref($1, $2) }
 fn yy_action_27(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+  guard _args[0].0 is YYObj_String(_dollar1)
+  guard _args[1].0 is YYObj_String_(_dollar2)
+  YYObj_SourceRef({();  make_path_source_ref(_dollar1, _dollar2) })
+}
+
+// file:///./parser.mbty
+// 145|    "AS" IDENT
+// 146|      { Some($2) }
+fn yy_action_28(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[1].0 is YYObj_String(_dollar2)
   YYObj_String_({();  Some(_dollar2) })
 }
 
 // file:///./parser.mbty
-// 145|    IDENT
-// 146|      { Some($1) }
-fn yy_action_28(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 147|    IDENT
+// 148|      { Some($1) }
+fn yy_action_29(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_String(_dollar1)
   YYObj_String_({();  Some(_dollar1) })
 }
 
 // file:///./parser.mbty
-// 141|   
-// 142|      { None }
-fn yy_action_29(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 143|   
+// 144|      { None }
+fn yy_action_30(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_String_({();  None })
 }
 
 // file:///./parser.mbty
 // 101|    select_list "," select_item
 // 102|      { push_select_item($1, $3) }
-fn yy_action_30(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+fn yy_action_31(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Array_SelectItem_(_dollar1)
   guard _args[2].0 is YYObj_SelectItem(_dollar3)
   YYObj_Array_SelectItem_({();  push_select_item(_dollar1, _dollar3) })
@@ -684,7 +693,7 @@ fn yy_action_30(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj 
 // file:///./parser.mbty
 //  99|    select_item
 // 100|      { [$1] }
-fn yy_action_31(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+fn yy_action_32(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_SelectItem(_dollar1)
   YYObj_Array_SelectItem_({();  [_dollar1] })
 }
@@ -692,7 +701,7 @@ fn yy_action_31(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj 
 // file:///./parser.mbty
 // 106|    expr opt_alias
 // 107|      { make_select_item($1, $2) }
-fn yy_action_32(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+fn yy_action_33(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[1].0 is YYObj_String_(_dollar2)
   YYObj_SelectItem({();  make_select_item(_dollar1, _dollar2) })
@@ -701,7 +710,7 @@ fn yy_action_32(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj 
 // file:///./parser.mbty
 // 113|    "AS" IDENT
 // 114|      { Some($2) }
-fn yy_action_33(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+fn yy_action_34(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[1].0 is YYObj_String(_dollar2)
   YYObj_String_({();  Some(_dollar2) })
 }
@@ -709,7 +718,7 @@ fn yy_action_33(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj 
 // file:///./parser.mbty
 // 115|    IDENT
 // 116|      { Some($1) }
-fn yy_action_34(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+fn yy_action_35(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_String(_dollar1)
   YYObj_String_({();  Some(_dollar1) })
 }
@@ -717,390 +726,390 @@ fn yy_action_34(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj 
 // file:///./parser.mbty
 // 111|   
 // 112|      { None }
-fn yy_action_35(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+fn yy_action_36(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_String_({();  None })
 }
 
 // file:///./parser.mbty
-// 150|    expr
-// 151|      { [$1] }
-fn yy_action_36(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 152|    expr
+// 153|      { [$1] }
+fn yy_action_37(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   YYObj_Array_Expr_({();  [_dollar1] })
 }
 
 // file:///./parser.mbty
-// 152|    argument_list "," expr
-// 153|      { push_expr($1, $3) }
-fn yy_action_37(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 154|    argument_list "," expr
+// 155|      { push_expr($1, $3) }
+fn yy_action_38(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Array_Expr_(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Array_Expr_({();  push_expr(_dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 319|    IDENT "(" argument_list ")"
-// 320|      { Expr::FunctionCall($1, $3) }
-fn yy_action_38(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 321|    IDENT "(" argument_list ")"
+// 322|      { Expr::FunctionCall($1, $3) }
+fn yy_action_39(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_String(_dollar1)
   guard _args[2].0 is YYObj_Array_Expr_(_dollar3)
   YYObj_Expr({();  Expr::FunctionCall(_dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 227|    or_expr "OR" and_expr
-// 228|      { Expr::Binary(BinaryOp::Or, $1, $3) }
-fn yy_action_39(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 229|    or_expr "OR" and_expr
+// 230|      { Expr::Binary(BinaryOp::Or, $1, $3) }
+fn yy_action_40(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::Or, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 220|    or_expr
-// 221|      { $1 }
-fn yy_action_40(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 222|    or_expr
+// 223|      { $1 }
+fn yy_action_41(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   YYObj_Expr({();  _dollar1 })
 }
 
 // file:///./parser.mbty
-// 234|    and_expr "AND" not_expr
-// 235|      { Expr::Binary(BinaryOp::And, $1, $3) }
-fn yy_action_41(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 236|    and_expr "AND" not_expr
+// 237|      { Expr::Binary(BinaryOp::And, $1, $3) }
+fn yy_action_42(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::And, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 225|    and_expr
-// 226|      { $1 }
-fn yy_action_42(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
-  guard _args[0].0 is YYObj_Expr(_dollar1)
-  YYObj_Expr({();  _dollar1 })
-}
-
-// file:///./parser.mbty
-// 232|    not_expr
-// 233|      { $1 }
+// 227|    and_expr
+// 228|      { $1 }
 fn yy_action_43(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   YYObj_Expr({();  _dollar1 })
 }
 
 // file:///./parser.mbty
-// 239|    comparison_expr
-// 240|      { $1 }
+// 234|    not_expr
+// 235|      { $1 }
 fn yy_action_44(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   YYObj_Expr({();  _dollar1 })
 }
 
 // file:///./parser.mbty
-// 241|    "NOT" not_expr
-// 242|      { Expr::Unary(UnaryOp::Not, $2) }
+// 241|    comparison_expr
+// 242|      { $1 }
 fn yy_action_45(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+  guard _args[0].0 is YYObj_Expr(_dollar1)
+  YYObj_Expr({();  _dollar1 })
+}
+
+// file:///./parser.mbty
+// 243|    "NOT" not_expr
+// 244|      { Expr::Unary(UnaryOp::Not, $2) }
+fn yy_action_46(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[1].0 is YYObj_Expr(_dollar2)
   YYObj_Expr({();  Expr::Unary(UnaryOp::Not, _dollar2) })
 }
 
 // file:///./parser.mbty
-// 248|    additive_expr "=" additive_expr
-// 249|      { Expr::Binary(BinaryOp::Equal, $1, $3) }
-fn yy_action_46(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 250|    additive_expr "=" additive_expr
+// 251|      { Expr::Binary(BinaryOp::Equal, $1, $3) }
+fn yy_action_47(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::Equal, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 250|    additive_expr "!=" additive_expr
-// 251|      { Expr::Binary(BinaryOp::NotEqual, $1, $3) }
-fn yy_action_47(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 252|    additive_expr "!=" additive_expr
+// 253|      { Expr::Binary(BinaryOp::NotEqual, $1, $3) }
+fn yy_action_48(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::NotEqual, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 252|    additive_expr "<" additive_expr
-// 253|      { Expr::Binary(BinaryOp::LessThan, $1, $3) }
-fn yy_action_48(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 254|    additive_expr "<" additive_expr
+// 255|      { Expr::Binary(BinaryOp::LessThan, $1, $3) }
+fn yy_action_49(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::LessThan, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 254|    additive_expr "<=" additive_expr
-// 255|      { Expr::Binary(BinaryOp::LessThanOrEqual, $1, $3) }
-fn yy_action_49(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 256|    additive_expr "<=" additive_expr
+// 257|      { Expr::Binary(BinaryOp::LessThanOrEqual, $1, $3) }
+fn yy_action_50(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::LessThanOrEqual, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 256|    additive_expr ">" additive_expr
-// 257|      { Expr::Binary(BinaryOp::GreaterThan, $1, $3) }
-fn yy_action_50(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 258|    additive_expr ">" additive_expr
+// 259|      { Expr::Binary(BinaryOp::GreaterThan, $1, $3) }
+fn yy_action_51(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::GreaterThan, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 258|    additive_expr ">=" additive_expr
-// 259|      { Expr::Binary(BinaryOp::GreaterThanOrEqual, $1, $3) }
-fn yy_action_51(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 260|    additive_expr ">=" additive_expr
+// 261|      { Expr::Binary(BinaryOp::GreaterThanOrEqual, $1, $3) }
+fn yy_action_52(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::GreaterThanOrEqual, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 260|    additive_expr "IS" "NULL"
-// 261|      { Expr::IsNull($1) }
-fn yy_action_52(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 262|    additive_expr "IS" "NULL"
+// 263|      { Expr::IsNull($1) }
+fn yy_action_53(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   YYObj_Expr({();  Expr::IsNull(_dollar1) })
 }
 
 // file:///./parser.mbty
-// 262|    additive_expr "IS" "NOT" "NULL"
-// 263|      { Expr::IsNotNull($1) }
-fn yy_action_53(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 264|    additive_expr "IS" "NOT" "NULL"
+// 265|      { Expr::IsNotNull($1) }
+fn yy_action_54(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   YYObj_Expr({();  Expr::IsNotNull(_dollar1) })
 }
 
 // file:///./parser.mbty
-// 269|    additive_expr "+" multiplicative_expr
-// 270|      { Expr::Binary(BinaryOp::Add, $1, $3) }
-fn yy_action_54(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 271|    additive_expr "+" multiplicative_expr
+// 272|      { Expr::Binary(BinaryOp::Add, $1, $3) }
+fn yy_action_55(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::Add, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 271|    additive_expr "-" multiplicative_expr
-// 272|      { Expr::Binary(BinaryOp::Subtract, $1, $3) }
-fn yy_action_55(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 273|    additive_expr "-" multiplicative_expr
+// 274|      { Expr::Binary(BinaryOp::Subtract, $1, $3) }
+fn yy_action_56(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::Subtract, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 246|    additive_expr
-// 247|      { $1 }
-fn yy_action_56(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 248|    additive_expr
+// 249|      { $1 }
+fn yy_action_57(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   YYObj_Expr({();  _dollar1 })
 }
 
 // file:///./parser.mbty
-// 278|    multiplicative_expr "*" unary_expr
-// 279|      { Expr::Binary(BinaryOp::Multiply, $1, $3) }
-fn yy_action_57(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 280|    multiplicative_expr "*" unary_expr
+// 281|      { Expr::Binary(BinaryOp::Multiply, $1, $3) }
+fn yy_action_58(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::Multiply, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 280|    multiplicative_expr "/" unary_expr
-// 281|      { Expr::Binary(BinaryOp::Divide, $1, $3) }
-fn yy_action_58(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 282|    multiplicative_expr "/" unary_expr
+// 283|      { Expr::Binary(BinaryOp::Divide, $1, $3) }
+fn yy_action_59(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   guard _args[2].0 is YYObj_Expr(_dollar3)
   YYObj_Expr({();  Expr::Binary(BinaryOp::Divide, _dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 267|    multiplicative_expr
-// 268|      { $1 }
-fn yy_action_59(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
-  guard _args[0].0 is YYObj_Expr(_dollar1)
-  YYObj_Expr({();  _dollar1 })
-}
-
-// file:///./parser.mbty
-// 276|    unary_expr
-// 277|      { $1 }
+// 269|    multiplicative_expr
+// 270|      { $1 }
 fn yy_action_60(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   YYObj_Expr({();  _dollar1 })
 }
 
 // file:///./parser.mbty
-// 285|    primary_expr
-// 286|      { $1 }
+// 278|    unary_expr
+// 279|      { $1 }
 fn yy_action_61(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   YYObj_Expr({();  _dollar1 })
 }
 
 // file:///./parser.mbty
-// 287|    "+" unary_expr
-// 288|      { Expr::Unary(UnaryOp::Plus, $2) }
+// 287|    primary_expr
+// 288|      { $1 }
 fn yy_action_62(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
-  guard _args[1].0 is YYObj_Expr(_dollar2)
-  YYObj_Expr({();  Expr::Unary(UnaryOp::Plus, _dollar2) })
-}
-
-// file:///./parser.mbty
-// 289|    "-" unary_expr
-// 290|      { Expr::Unary(UnaryOp::Minus, $2) }
-fn yy_action_63(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
-  guard _args[1].0 is YYObj_Expr(_dollar2)
-  YYObj_Expr({();  Expr::Unary(UnaryOp::Minus, _dollar2) })
-}
-
-// file:///./parser.mbty
-// 294|    function_call_expr
-// 295|      { $1 }
-fn yy_action_64(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Expr(_dollar1)
   YYObj_Expr({();  _dollar1 })
 }
 
 // file:///./parser.mbty
-// 328|    identifier_path "." IDENT
-// 329|      { push_string($1, $3) }
+// 289|    "+" unary_expr
+// 290|      { Expr::Unary(UnaryOp::Plus, $2) }
+fn yy_action_63(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+  guard _args[1].0 is YYObj_Expr(_dollar2)
+  YYObj_Expr({();  Expr::Unary(UnaryOp::Plus, _dollar2) })
+}
+
+// file:///./parser.mbty
+// 291|    "-" unary_expr
+// 292|      { Expr::Unary(UnaryOp::Minus, $2) }
+fn yy_action_64(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+  guard _args[1].0 is YYObj_Expr(_dollar2)
+  YYObj_Expr({();  Expr::Unary(UnaryOp::Minus, _dollar2) })
+}
+
+// file:///./parser.mbty
+// 296|    function_call_expr
+// 297|      { $1 }
 fn yy_action_65(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+  guard _args[0].0 is YYObj_Expr(_dollar1)
+  YYObj_Expr({();  _dollar1 })
+}
+
+// file:///./parser.mbty
+// 330|    identifier_path "." IDENT
+// 331|      { push_string($1, $3) }
+fn yy_action_66(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Array_String_(_dollar1)
   guard _args[2].0 is YYObj_String(_dollar3)
   YYObj_Array_String_({();  push_string(_dollar1, _dollar3) })
 }
 
 // file:///./parser.mbty
-// 296|    identifier_path
-// 297|      { Expr::ColumnRef($1) }
-fn yy_action_66(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 298|    identifier_path
+// 299|      { Expr::ColumnRef($1) }
+fn yy_action_67(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_Array_String_(_dollar1)
   YYObj_Expr({();  Expr::ColumnRef(_dollar1) })
 }
 
 // file:///./parser.mbty
-// 298|    STRING_LITERAL
-// 299|      { Expr::StringLiteral($1) }
-fn yy_action_67(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 300|    STRING_LITERAL
+// 301|      { Expr::StringLiteral($1) }
+fn yy_action_68(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_String(_dollar1)
   YYObj_Expr({();  Expr::StringLiteral(_dollar1) })
 }
 
 // file:///./parser.mbty
-// 300|    INTEGER_LITERAL
-// 301|      { Expr::IntegerLiteral($1) }
-fn yy_action_68(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 302|    INTEGER_LITERAL
+// 303|      { Expr::IntegerLiteral($1) }
+fn yy_action_69(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_String(_dollar1)
   YYObj_Expr({();  Expr::IntegerLiteral(_dollar1) })
 }
 
 // file:///./parser.mbty
-// 302|    DOUBLE_LITERAL
-// 303|      { Expr::DoubleLiteral($1) }
-fn yy_action_69(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 304|    DOUBLE_LITERAL
+// 305|      { Expr::DoubleLiteral($1) }
+fn yy_action_70(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_String(_dollar1)
   YYObj_Expr({();  Expr::DoubleLiteral(_dollar1) })
 }
 
 // file:///./parser.mbty
-// 304|    "TRUE"
-// 305|      { Expr::BooleanLiteral(true) }
-fn yy_action_70(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 306|    "TRUE"
+// 307|      { Expr::BooleanLiteral(true) }
+fn yy_action_71(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_Expr({();  Expr::BooleanLiteral(true) })
 }
 
 // file:///./parser.mbty
-// 306|    "FALSE"
-// 307|      { Expr::BooleanLiteral(false) }
-fn yy_action_71(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 308|    "FALSE"
+// 309|      { Expr::BooleanLiteral(false) }
+fn yy_action_72(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_Expr({();  Expr::BooleanLiteral(false) })
 }
 
 // file:///./parser.mbty
-// 308|    "NULL"
-// 309|      { Expr::NullLiteral }
-fn yy_action_72(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 310|    "NULL"
+// 311|      { Expr::NullLiteral }
+fn yy_action_73(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_Expr({();  Expr::NullLiteral })
 }
 
 // file:///./parser.mbty
-// 310|    "(" expr ")"
-// 311|      { $2 }
-fn yy_action_73(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 312|    "(" expr ")"
+// 313|      { $2 }
+fn yy_action_74(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[1].0 is YYObj_Expr(_dollar2)
   YYObj_Expr({();  _dollar2 })
 }
 
 // file:///./parser.mbty
-// 312|    "CAST" "(" expr "AS" type_name ")"
-// 313|      { Expr::Cast($3, $5) }
-fn yy_action_74(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 314|    "CAST" "(" expr "AS" type_name ")"
+// 315|      { Expr::Cast($3, $5) }
+fn yy_action_75(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[2].0 is YYObj_Expr(_dollar3)
   guard _args[4].0 is YYObj_TypeName(_dollar5)
   YYObj_Expr({();  Expr::Cast(_dollar3, _dollar5) })
 }
 
 // file:///./parser.mbty
-// 333|    "NULL"
-// 334|      { TypeName::Null }
-fn yy_action_75(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 335|    "NULL"
+// 336|      { TypeName::Null }
+fn yy_action_76(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_TypeName({();  TypeName::Null })
 }
 
 // file:///./parser.mbty
-// 335|    "BOOLEAN"
-// 336|      { TypeName::Boolean }
-fn yy_action_76(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 337|    "BOOLEAN"
+// 338|      { TypeName::Boolean }
+fn yy_action_77(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_TypeName({();  TypeName::Boolean })
 }
 
 // file:///./parser.mbty
-// 337|    "BIGINT"
-// 338|      { TypeName::BigInt }
-fn yy_action_77(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 339|    "BIGINT"
+// 340|      { TypeName::BigInt }
+fn yy_action_78(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_TypeName({();  TypeName::BigInt })
 }
 
 // file:///./parser.mbty
-// 339|    "DOUBLE"
-// 340|      { TypeName::Double }
-fn yy_action_78(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 341|    "DOUBLE"
+// 342|      { TypeName::Double }
+fn yy_action_79(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_TypeName({();  TypeName::Double })
 }
 
 // file:///./parser.mbty
-// 341|    "VARCHAR"
-// 342|      { TypeName::Varchar }
-fn yy_action_79(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 343|    "VARCHAR"
+// 344|      { TypeName::Varchar }
+fn yy_action_80(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   YYObj_TypeName({();  TypeName::Varchar })
 }
 
 // file:///./parser.mbty
-// 317|    IDENT "(" ")"
-// 318|      { Expr::FunctionCall($1, []) }
-fn yy_action_80(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 319|    IDENT "(" ")"
+// 320|      { Expr::FunctionCall($1, []) }
+fn yy_action_81(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_String(_dollar1)
   YYObj_Expr({();  Expr::FunctionCall(_dollar1, []) })
 }
 
 // file:///./parser.mbty
-// 321|    IDENT "(" "*" ")"
-// 322|      { Expr::FunctionCallStar($1) }
-fn yy_action_81(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 323|    IDENT "(" "*" ")"
+// 324|      { Expr::FunctionCallStar($1) }
+fn yy_action_82(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_String(_dollar1)
   YYObj_Expr({();  Expr::FunctionCallStar(_dollar1) })
 }
 
 // file:///./parser.mbty
-// 326|    IDENT
-// 327|      { [$1] }
-fn yy_action_82(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
+// 328|    IDENT
+// 329|      { [$1] }
+fn yy_action_83(_last_pos : Int, _args : ArrayView[(YYObj, Int, Int)]) -> YYObj {
   guard _args[0].0 is YYObj_String(_dollar1)
   YYObj_Array_String_({();  [_dollar1] })
 }
@@ -1156,7 +1165,7 @@ fn yy_input(token : Token, _start_pos : Int, _end_pos : Int) -> (YYSymbol, YYObj
 }
 
 // [0, query → • SELECT select_list FROM from_item opt_where opt_group_by opt_having opt_order_by opt_limit opt_semicolon, $]
-// [83, query_prime → • query, $]
+// [84, query_prime → • query, $]
 fn yy_state_0(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     NT_query => Shift(yy_state_1)
@@ -1165,7 +1174,7 @@ fn yy_state_0(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [83, query_prime → query •, $]
+// [84, query_prime → query •, $]
 fn yy_state_1(_lookahead : YYSymbol) -> YYDecision {
   Accept
 }
@@ -1174,46 +1183,46 @@ fn yy_state_1(_lookahead : YYSymbol) -> YYDecision {
 // [3, select_list → • select_item, FROM / COMMA]
 // [4, select_list → • select_list COMMA select_item, FROM / COMMA]
 // [5, select_item → • expr opt_alias, FROM / COMMA]
-// [38, expr → • or_expr, IDENT / FROM / AS / COMMA]
-// [39, or_expr → • and_expr, IDENT / FROM / AS / OR / COMMA]
-// [40, or_expr → • or_expr OR and_expr, IDENT / FROM / AS / OR / COMMA]
-// [41, and_expr → • not_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [42, and_expr → • and_expr AND not_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [43, not_expr → • comparison_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [44, not_expr → • NOT not_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [45, comparison_expr → • additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [46, comparison_expr → • additive_expr EQ additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [48, comparison_expr → • additive_expr LT additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [49, comparison_expr → • additive_expr LTE additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [50, comparison_expr → • additive_expr GT additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [51, comparison_expr → • additive_expr GTE additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [52, comparison_expr → • additive_expr IS NULL, IDENT / FROM / AS / AND / OR / COMMA]
-// [53, comparison_expr → • additive_expr IS NOT NULL, IDENT / FROM / AS / AND / OR / COMMA]
-// [54, additive_expr → • multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [57, multiplicative_expr → • unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [60, unary_expr → • primary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [61, unary_expr → • PLUS unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [62, unary_expr → • MINUS unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [63, primary_expr → • function_call_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [64, primary_expr → • identifier_path, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [65, primary_expr → • STRING_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [66, primary_expr → • INTEGER_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [67, primary_expr → • DOUBLE_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [68, primary_expr → • TRUE, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [69, primary_expr → • FALSE, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [70, primary_expr → • NULL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [71, primary_expr → • LPAREN expr RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [76, identifier_path → • IDENT, IDENT / FROM / AS / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [77, identifier_path → • identifier_path DOT IDENT, IDENT / FROM / AS / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [39, expr → • or_expr, IDENT / FROM / AS / COMMA]
+// [40, or_expr → • and_expr, IDENT / FROM / AS / OR / COMMA]
+// [41, or_expr → • or_expr OR and_expr, IDENT / FROM / AS / OR / COMMA]
+// [42, and_expr → • not_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [43, and_expr → • and_expr AND not_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [44, not_expr → • comparison_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [45, not_expr → • NOT not_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [46, comparison_expr → • additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [47, comparison_expr → • additive_expr EQ additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [49, comparison_expr → • additive_expr LT additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [50, comparison_expr → • additive_expr LTE additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [51, comparison_expr → • additive_expr GT additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [52, comparison_expr → • additive_expr GTE additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [53, comparison_expr → • additive_expr IS NULL, IDENT / FROM / AS / AND / OR / COMMA]
+// [54, comparison_expr → • additive_expr IS NOT NULL, IDENT / FROM / AS / AND / OR / COMMA]
+// [55, additive_expr → • multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [58, multiplicative_expr → • unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [61, unary_expr → • primary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [62, unary_expr → • PLUS unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [63, unary_expr → • MINUS unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [64, primary_expr → • function_call_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [65, primary_expr → • identifier_path, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [66, primary_expr → • STRING_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [67, primary_expr → • INTEGER_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [68, primary_expr → • DOUBLE_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [69, primary_expr → • TRUE, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [70, primary_expr → • FALSE, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [71, primary_expr → • NULL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [72, primary_expr → • LPAREN expr RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [77, identifier_path → • IDENT, IDENT / FROM / AS / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [78, identifier_path → • identifier_path DOT IDENT, IDENT / FROM / AS / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
 fn yy_state_2(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -1245,63 +1254,63 @@ fn yy_state_2(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [73, function_call_expr → IDENT • LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → IDENT • LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → IDENT • LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → IDENT •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → IDENT • LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → IDENT • LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → IDENT • LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → IDENT •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_3(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_LPAREN => Shift(yy_state_4)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_IS | T_AND | T_OR | T_RPAREN | T_COMMA | T_DOT | T_PLUS | T_MINUS | T_STAR | T_SLASH | T_EQ | T_NEQ | T_LT | T_LTE | T_GT | T_GTE | T_SEMICOLON | EOI => Reduce(1, NT_identifier_path, yy_action_82)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_IS | T_AND | T_OR | T_RPAREN | T_COMMA | T_DOT | T_PLUS | T_MINUS | T_STAR | T_SLASH | T_EQ | T_NEQ | T_LT | T_LTE | T_GT | T_GTE | T_SEMICOLON | EOI => Reduce(1, NT_identifier_path, yy_action_83)
     _ => Error
   }
 }
 
-// [18, argument_list → • expr, RPAREN / COMMA]
-// [19, argument_list → • argument_list COMMA expr, RPAREN / COMMA]
-// [38, expr → • or_expr, RPAREN / COMMA]
-// [39, or_expr → • and_expr, OR / RPAREN / COMMA]
-// [40, or_expr → • or_expr OR and_expr, OR / RPAREN / COMMA]
-// [41, and_expr → • not_expr, AND / OR / RPAREN / COMMA]
-// [42, and_expr → • and_expr AND not_expr, AND / OR / RPAREN / COMMA]
-// [43, not_expr → • comparison_expr, AND / OR / RPAREN / COMMA]
-// [44, not_expr → • NOT not_expr, AND / OR / RPAREN / COMMA]
-// [45, comparison_expr → • additive_expr, AND / OR / RPAREN / COMMA]
-// [46, comparison_expr → • additive_expr EQ additive_expr, AND / OR / RPAREN / COMMA]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, AND / OR / RPAREN / COMMA]
-// [48, comparison_expr → • additive_expr LT additive_expr, AND / OR / RPAREN / COMMA]
-// [49, comparison_expr → • additive_expr LTE additive_expr, AND / OR / RPAREN / COMMA]
-// [50, comparison_expr → • additive_expr GT additive_expr, AND / OR / RPAREN / COMMA]
-// [51, comparison_expr → • additive_expr GTE additive_expr, AND / OR / RPAREN / COMMA]
-// [52, comparison_expr → • additive_expr IS NULL, AND / OR / RPAREN / COMMA]
-// [53, comparison_expr → • additive_expr IS NOT NULL, AND / OR / RPAREN / COMMA]
-// [54, additive_expr → • multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [57, multiplicative_expr → • unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [60, unary_expr → • primary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [61, unary_expr → • PLUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [62, unary_expr → • MINUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [63, primary_expr → • function_call_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [64, primary_expr → • identifier_path, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [65, primary_expr → • STRING_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [66, primary_expr → • INTEGER_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [67, primary_expr → • DOUBLE_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [68, primary_expr → • TRUE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [69, primary_expr → • FALSE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [70, primary_expr → • NULL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [71, primary_expr → • LPAREN expr RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [73, function_call_expr → IDENT LPAREN • RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [74, function_call_expr → IDENT LPAREN • argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [75, function_call_expr → IDENT LPAREN • STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [77, identifier_path → • identifier_path DOT IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [19, argument_list → • expr, RPAREN / COMMA]
+// [20, argument_list → • argument_list COMMA expr, RPAREN / COMMA]
+// [39, expr → • or_expr, RPAREN / COMMA]
+// [40, or_expr → • and_expr, OR / RPAREN / COMMA]
+// [41, or_expr → • or_expr OR and_expr, OR / RPAREN / COMMA]
+// [42, and_expr → • not_expr, AND / OR / RPAREN / COMMA]
+// [43, and_expr → • and_expr AND not_expr, AND / OR / RPAREN / COMMA]
+// [44, not_expr → • comparison_expr, AND / OR / RPAREN / COMMA]
+// [45, not_expr → • NOT not_expr, AND / OR / RPAREN / COMMA]
+// [46, comparison_expr → • additive_expr, AND / OR / RPAREN / COMMA]
+// [47, comparison_expr → • additive_expr EQ additive_expr, AND / OR / RPAREN / COMMA]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, AND / OR / RPAREN / COMMA]
+// [49, comparison_expr → • additive_expr LT additive_expr, AND / OR / RPAREN / COMMA]
+// [50, comparison_expr → • additive_expr LTE additive_expr, AND / OR / RPAREN / COMMA]
+// [51, comparison_expr → • additive_expr GT additive_expr, AND / OR / RPAREN / COMMA]
+// [52, comparison_expr → • additive_expr GTE additive_expr, AND / OR / RPAREN / COMMA]
+// [53, comparison_expr → • additive_expr IS NULL, AND / OR / RPAREN / COMMA]
+// [54, comparison_expr → • additive_expr IS NOT NULL, AND / OR / RPAREN / COMMA]
+// [55, additive_expr → • multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [58, multiplicative_expr → • unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [61, unary_expr → • primary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [62, unary_expr → • PLUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [63, unary_expr → • MINUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [64, primary_expr → • function_call_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [65, primary_expr → • identifier_path, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [66, primary_expr → • STRING_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [67, primary_expr → • INTEGER_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [68, primary_expr → • DOUBLE_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [69, primary_expr → • TRUE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [70, primary_expr → • FALSE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [71, primary_expr → • NULL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [72, primary_expr → • LPAREN expr RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [74, function_call_expr → IDENT LPAREN • RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [75, function_call_expr → IDENT LPAREN • argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [76, function_call_expr → IDENT LPAREN • STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [78, identifier_path → • identifier_path DOT IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
 fn yy_state_4(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -1334,7 +1343,7 @@ fn yy_state_4(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [75, function_call_expr → IDENT LPAREN STAR • RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → IDENT LPAREN STAR • RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_5(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_RPAREN => Shift(yy_state_6)
@@ -1342,17 +1351,17 @@ fn yy_state_5(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [75, function_call_expr → IDENT LPAREN STAR RPAREN •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → IDENT LPAREN STAR RPAREN •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_6(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(4, NT_function_call_expr, yy_action_81)
+  ReduceNoLookahead(4, NT_function_call_expr, yy_action_82)
 }
 
-// [73, function_call_expr → IDENT LPAREN RPAREN •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → IDENT LPAREN RPAREN •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_7(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(3, NT_function_call_expr, yy_action_80)
+  ReduceNoLookahead(3, NT_function_call_expr, yy_action_81)
 }
 
-// [72, primary_expr → CAST • LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → CAST • LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_8(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_LPAREN => Shift(yy_state_9)
@@ -1360,47 +1369,47 @@ fn yy_state_8(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [38, expr → • or_expr, AS]
-// [39, or_expr → • and_expr, AS / OR]
-// [40, or_expr → • or_expr OR and_expr, AS / OR]
-// [41, and_expr → • not_expr, AS / AND / OR]
-// [42, and_expr → • and_expr AND not_expr, AS / AND / OR]
-// [43, not_expr → • comparison_expr, AS / AND / OR]
-// [44, not_expr → • NOT not_expr, AS / AND / OR]
-// [45, comparison_expr → • additive_expr, AS / AND / OR]
-// [46, comparison_expr → • additive_expr EQ additive_expr, AS / AND / OR]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, AS / AND / OR]
-// [48, comparison_expr → • additive_expr LT additive_expr, AS / AND / OR]
-// [49, comparison_expr → • additive_expr LTE additive_expr, AS / AND / OR]
-// [50, comparison_expr → • additive_expr GT additive_expr, AS / AND / OR]
-// [51, comparison_expr → • additive_expr GTE additive_expr, AS / AND / OR]
-// [52, comparison_expr → • additive_expr IS NULL, AS / AND / OR]
-// [53, comparison_expr → • additive_expr IS NOT NULL, AS / AND / OR]
-// [54, additive_expr → • multiplicative_expr, AS / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, AS / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, AS / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [57, multiplicative_expr → • unary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [60, unary_expr → • primary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [61, unary_expr → • PLUS unary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [62, unary_expr → • MINUS unary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [63, primary_expr → • function_call_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [64, primary_expr → • identifier_path, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [65, primary_expr → • STRING_LITERAL, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [66, primary_expr → • INTEGER_LITERAL, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [67, primary_expr → • DOUBLE_LITERAL, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [68, primary_expr → • TRUE, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [69, primary_expr → • FALSE, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [70, primary_expr → • NULL, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [71, primary_expr → • LPAREN expr RPAREN, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [72, primary_expr → CAST LPAREN • expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [76, identifier_path → • IDENT, AS / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [77, identifier_path → • identifier_path DOT IDENT, AS / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [39, expr → • or_expr, AS]
+// [40, or_expr → • and_expr, AS / OR]
+// [41, or_expr → • or_expr OR and_expr, AS / OR]
+// [42, and_expr → • not_expr, AS / AND / OR]
+// [43, and_expr → • and_expr AND not_expr, AS / AND / OR]
+// [44, not_expr → • comparison_expr, AS / AND / OR]
+// [45, not_expr → • NOT not_expr, AS / AND / OR]
+// [46, comparison_expr → • additive_expr, AS / AND / OR]
+// [47, comparison_expr → • additive_expr EQ additive_expr, AS / AND / OR]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, AS / AND / OR]
+// [49, comparison_expr → • additive_expr LT additive_expr, AS / AND / OR]
+// [50, comparison_expr → • additive_expr LTE additive_expr, AS / AND / OR]
+// [51, comparison_expr → • additive_expr GT additive_expr, AS / AND / OR]
+// [52, comparison_expr → • additive_expr GTE additive_expr, AS / AND / OR]
+// [53, comparison_expr → • additive_expr IS NULL, AS / AND / OR]
+// [54, comparison_expr → • additive_expr IS NOT NULL, AS / AND / OR]
+// [55, additive_expr → • multiplicative_expr, AS / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, AS / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, AS / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [58, multiplicative_expr → • unary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [61, unary_expr → • primary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [62, unary_expr → • PLUS unary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [63, unary_expr → • MINUS unary_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [64, primary_expr → • function_call_expr, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [65, primary_expr → • identifier_path, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [66, primary_expr → • STRING_LITERAL, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [67, primary_expr → • INTEGER_LITERAL, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [68, primary_expr → • DOUBLE_LITERAL, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [69, primary_expr → • TRUE, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [70, primary_expr → • FALSE, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [71, primary_expr → • NULL, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [72, primary_expr → • LPAREN expr RPAREN, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [73, primary_expr → CAST LPAREN • expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, AS / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [77, identifier_path → • IDENT, AS / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [78, identifier_path → • identifier_path DOT IDENT, AS / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
 fn yy_state_9(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -1430,7 +1439,7 @@ fn yy_state_9(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [72, primary_expr → CAST LPAREN expr • AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → CAST LPAREN expr • AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_10(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_AS => Shift(yy_state_11)
@@ -1438,12 +1447,12 @@ fn yy_state_10(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [72, primary_expr → CAST LPAREN expr AS • type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [78, type_name → • NULL, RPAREN]
-// [79, type_name → • BOOLEAN_T, RPAREN]
-// [80, type_name → • BIGINT_T, RPAREN]
-// [81, type_name → • DOUBLE_T, RPAREN]
-// [82, type_name → • VARCHAR_T, RPAREN]
+// [73, primary_expr → CAST LPAREN expr AS • type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [79, type_name → • NULL, RPAREN]
+// [80, type_name → • BOOLEAN_T, RPAREN]
+// [81, type_name → • BIGINT_T, RPAREN]
+// [82, type_name → • DOUBLE_T, RPAREN]
+// [83, type_name → • VARCHAR_T, RPAREN]
 fn yy_state_11(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_VARCHAR_T => Shift(yy_state_12)
@@ -1456,32 +1465,32 @@ fn yy_state_11(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [82, type_name → VARCHAR_T •, RPAREN]
+// [83, type_name → VARCHAR_T •, RPAREN]
 fn yy_state_12(_lookahead : YYSymbol) -> YYDecision {
+  ReduceNoLookahead(1, NT_type_name, yy_action_80)
+}
+
+// [82, type_name → DOUBLE_T •, RPAREN]
+fn yy_state_13(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_type_name, yy_action_79)
 }
 
-// [81, type_name → DOUBLE_T •, RPAREN]
-fn yy_state_13(_lookahead : YYSymbol) -> YYDecision {
+// [81, type_name → BIGINT_T •, RPAREN]
+fn yy_state_14(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_type_name, yy_action_78)
 }
 
-// [80, type_name → BIGINT_T •, RPAREN]
-fn yy_state_14(_lookahead : YYSymbol) -> YYDecision {
+// [80, type_name → BOOLEAN_T •, RPAREN]
+fn yy_state_15(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_type_name, yy_action_77)
 }
 
-// [79, type_name → BOOLEAN_T •, RPAREN]
-fn yy_state_15(_lookahead : YYSymbol) -> YYDecision {
+// [79, type_name → NULL •, RPAREN]
+fn yy_state_16(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_type_name, yy_action_76)
 }
 
-// [78, type_name → NULL •, RPAREN]
-fn yy_state_16(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_type_name, yy_action_75)
-}
-
-// [72, primary_expr → CAST LPAREN expr AS type_name • RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → CAST LPAREN expr AS type_name • RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_17(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_RPAREN => Shift(yy_state_18)
@@ -1489,52 +1498,52 @@ fn yy_state_17(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [72, primary_expr → CAST LPAREN expr AS type_name RPAREN •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → CAST LPAREN expr AS type_name RPAREN •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_18(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(6, NT_primary_expr, yy_action_74)
+  ReduceNoLookahead(6, NT_primary_expr, yy_action_75)
 }
 
-// [38, expr → • or_expr, RPAREN]
-// [39, or_expr → • and_expr, OR / RPAREN]
-// [40, or_expr → • or_expr OR and_expr, OR / RPAREN]
-// [41, and_expr → • not_expr, AND / OR / RPAREN]
-// [42, and_expr → • and_expr AND not_expr, AND / OR / RPAREN]
-// [43, not_expr → • comparison_expr, AND / OR / RPAREN]
-// [44, not_expr → • NOT not_expr, AND / OR / RPAREN]
-// [45, comparison_expr → • additive_expr, AND / OR / RPAREN]
-// [46, comparison_expr → • additive_expr EQ additive_expr, AND / OR / RPAREN]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, AND / OR / RPAREN]
-// [48, comparison_expr → • additive_expr LT additive_expr, AND / OR / RPAREN]
-// [49, comparison_expr → • additive_expr LTE additive_expr, AND / OR / RPAREN]
-// [50, comparison_expr → • additive_expr GT additive_expr, AND / OR / RPAREN]
-// [51, comparison_expr → • additive_expr GTE additive_expr, AND / OR / RPAREN]
-// [52, comparison_expr → • additive_expr IS NULL, AND / OR / RPAREN]
-// [53, comparison_expr → • additive_expr IS NOT NULL, AND / OR / RPAREN]
-// [54, additive_expr → • multiplicative_expr, IS / AND / OR / RPAREN / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, IS / AND / OR / RPAREN / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, IS / AND / OR / RPAREN / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [57, multiplicative_expr → • unary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [60, unary_expr → • primary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [61, unary_expr → • PLUS unary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [62, unary_expr → • MINUS unary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [63, primary_expr → • function_call_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [64, primary_expr → • identifier_path, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [65, primary_expr → • STRING_LITERAL, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [66, primary_expr → • INTEGER_LITERAL, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [67, primary_expr → • DOUBLE_LITERAL, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [68, primary_expr → • TRUE, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [69, primary_expr → • FALSE, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [70, primary_expr → • NULL, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [71, primary_expr → • LPAREN expr RPAREN, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [71, primary_expr → LPAREN • expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [76, identifier_path → • IDENT, IS / AND / OR / RPAREN / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [77, identifier_path → • identifier_path DOT IDENT, IS / AND / OR / RPAREN / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [39, expr → • or_expr, RPAREN]
+// [40, or_expr → • and_expr, OR / RPAREN]
+// [41, or_expr → • or_expr OR and_expr, OR / RPAREN]
+// [42, and_expr → • not_expr, AND / OR / RPAREN]
+// [43, and_expr → • and_expr AND not_expr, AND / OR / RPAREN]
+// [44, not_expr → • comparison_expr, AND / OR / RPAREN]
+// [45, not_expr → • NOT not_expr, AND / OR / RPAREN]
+// [46, comparison_expr → • additive_expr, AND / OR / RPAREN]
+// [47, comparison_expr → • additive_expr EQ additive_expr, AND / OR / RPAREN]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, AND / OR / RPAREN]
+// [49, comparison_expr → • additive_expr LT additive_expr, AND / OR / RPAREN]
+// [50, comparison_expr → • additive_expr LTE additive_expr, AND / OR / RPAREN]
+// [51, comparison_expr → • additive_expr GT additive_expr, AND / OR / RPAREN]
+// [52, comparison_expr → • additive_expr GTE additive_expr, AND / OR / RPAREN]
+// [53, comparison_expr → • additive_expr IS NULL, AND / OR / RPAREN]
+// [54, comparison_expr → • additive_expr IS NOT NULL, AND / OR / RPAREN]
+// [55, additive_expr → • multiplicative_expr, IS / AND / OR / RPAREN / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, IS / AND / OR / RPAREN / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, IS / AND / OR / RPAREN / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [58, multiplicative_expr → • unary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [61, unary_expr → • primary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [62, unary_expr → • PLUS unary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [63, unary_expr → • MINUS unary_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [64, primary_expr → • function_call_expr, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [65, primary_expr → • identifier_path, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [66, primary_expr → • STRING_LITERAL, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [67, primary_expr → • INTEGER_LITERAL, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [68, primary_expr → • DOUBLE_LITERAL, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [69, primary_expr → • TRUE, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [70, primary_expr → • FALSE, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [71, primary_expr → • NULL, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [72, primary_expr → • LPAREN expr RPAREN, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [72, primary_expr → LPAREN • expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, IS / AND / OR / RPAREN / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [77, identifier_path → • IDENT, IS / AND / OR / RPAREN / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [78, identifier_path → • identifier_path DOT IDENT, IS / AND / OR / RPAREN / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
 fn yy_state_19(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -1564,7 +1573,7 @@ fn yy_state_19(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [71, primary_expr → LPAREN expr • RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → LPAREN expr • RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_20(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_RPAREN => Shift(yy_state_21)
@@ -1572,52 +1581,52 @@ fn yy_state_20(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [71, primary_expr → LPAREN expr RPAREN •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → LPAREN expr RPAREN •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_21(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(3, NT_primary_expr, yy_action_73)
+  ReduceNoLookahead(3, NT_primary_expr, yy_action_74)
 }
 
-// [70, primary_expr → NULL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → NULL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_22(_lookahead : YYSymbol) -> YYDecision {
+  ReduceNoLookahead(1, NT_primary_expr, yy_action_73)
+}
+
+// [70, primary_expr → FALSE •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_23(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_primary_expr, yy_action_72)
 }
 
-// [69, primary_expr → FALSE •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_23(_lookahead : YYSymbol) -> YYDecision {
+// [69, primary_expr → TRUE •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_24(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_primary_expr, yy_action_71)
 }
 
-// [68, primary_expr → TRUE •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_24(_lookahead : YYSymbol) -> YYDecision {
+// [68, primary_expr → DOUBLE_LITERAL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_25(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_primary_expr, yy_action_70)
 }
 
-// [67, primary_expr → DOUBLE_LITERAL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_25(_lookahead : YYSymbol) -> YYDecision {
+// [67, primary_expr → INTEGER_LITERAL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_26(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_primary_expr, yy_action_69)
 }
 
-// [66, primary_expr → INTEGER_LITERAL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_26(_lookahead : YYSymbol) -> YYDecision {
+// [66, primary_expr → STRING_LITERAL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_27(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_primary_expr, yy_action_68)
 }
 
-// [65, primary_expr → STRING_LITERAL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_27(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_primary_expr, yy_action_67)
-}
-
-// [64, primary_expr → identifier_path •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → identifier_path • DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → identifier_path •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → identifier_path • DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_28(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_DOT => Shift(yy_state_29)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_IS | T_AND | T_OR | T_RPAREN | T_COMMA | T_PLUS | T_MINUS | T_STAR | T_SLASH | T_EQ | T_NEQ | T_LT | T_LTE | T_GT | T_GTE | T_SEMICOLON | EOI => Reduce(1, NT_primary_expr, yy_action_66)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_IS | T_AND | T_OR | T_RPAREN | T_COMMA | T_PLUS | T_MINUS | T_STAR | T_SLASH | T_EQ | T_NEQ | T_LT | T_LTE | T_GT | T_GTE | T_SEMICOLON | EOI => Reduce(1, NT_primary_expr, yy_action_67)
     _ => Error
   }
 }
 
-// [77, identifier_path → identifier_path DOT • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → identifier_path DOT • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_29(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_30)
@@ -1625,35 +1634,35 @@ fn yy_state_29(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [77, identifier_path → identifier_path DOT IDENT •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → identifier_path DOT IDENT •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_30(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(3, NT_identifier_path, yy_action_65)
+  ReduceNoLookahead(3, NT_identifier_path, yy_action_66)
 }
 
-// [63, primary_expr → function_call_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → function_call_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_31(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_primary_expr, yy_action_64)
+  ReduceNoLookahead(1, NT_primary_expr, yy_action_65)
 }
 
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → MINUS • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → MINUS • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_32(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -1675,30 +1684,30 @@ fn yy_state_32(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [62, unary_expr → MINUS unary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → MINUS unary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_33(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(2, NT_unary_expr, yy_action_63)
+  ReduceNoLookahead(2, NT_unary_expr, yy_action_64)
 }
 
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → PLUS • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → PLUS • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_34(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -1720,52 +1729,52 @@ fn yy_state_34(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [61, unary_expr → PLUS unary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → PLUS unary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_35(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(2, NT_unary_expr, yy_action_62)
+  ReduceNoLookahead(2, NT_unary_expr, yy_action_63)
 }
 
-// [60, unary_expr → primary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → primary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_36(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_unary_expr, yy_action_61)
+  ReduceNoLookahead(1, NT_unary_expr, yy_action_62)
 }
 
-// [57, multiplicative_expr → unary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → unary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_37(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_multiplicative_expr, yy_action_60)
+  ReduceNoLookahead(1, NT_multiplicative_expr, yy_action_61)
 }
 
-// [54, additive_expr → multiplicative_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → multiplicative_expr • STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → multiplicative_expr • SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [55, additive_expr → multiplicative_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → multiplicative_expr • STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → multiplicative_expr • SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_38(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_SLASH => Shift(yy_state_39)
     T_STAR => Shift(yy_state_41)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_IS | T_AND | T_OR | T_RPAREN | T_COMMA | T_PLUS | T_MINUS | T_EQ | T_NEQ | T_LT | T_LTE | T_GT | T_GTE | T_SEMICOLON | EOI => Reduce(1, NT_additive_expr, yy_action_59)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_IS | T_AND | T_OR | T_RPAREN | T_COMMA | T_PLUS | T_MINUS | T_EQ | T_NEQ | T_LT | T_LTE | T_GT | T_GTE | T_SEMICOLON | EOI => Reduce(1, NT_additive_expr, yy_action_60)
     _ => Error
   }
 }
 
-// [59, multiplicative_expr → multiplicative_expr SLASH • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → multiplicative_expr SLASH • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_39(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -1787,30 +1796,30 @@ fn yy_state_39(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [59, multiplicative_expr → multiplicative_expr SLASH unary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → multiplicative_expr SLASH unary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_40(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(3, NT_multiplicative_expr, yy_action_58)
+  ReduceNoLookahead(3, NT_multiplicative_expr, yy_action_59)
 }
 
-// [58, multiplicative_expr → multiplicative_expr STAR • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → multiplicative_expr STAR • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_41(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -1832,22 +1841,22 @@ fn yy_state_41(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [58, multiplicative_expr → multiplicative_expr STAR unary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → multiplicative_expr STAR unary_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_42(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(3, NT_multiplicative_expr, yy_action_57)
+  ReduceNoLookahead(3, NT_multiplicative_expr, yy_action_58)
 }
 
-// [45, comparison_expr → additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [46, comparison_expr → additive_expr • EQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [47, comparison_expr → additive_expr • NEQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [48, comparison_expr → additive_expr • LT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [49, comparison_expr → additive_expr • LTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [50, comparison_expr → additive_expr • GT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [51, comparison_expr → additive_expr • GTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [52, comparison_expr → additive_expr • IS NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [53, comparison_expr → additive_expr • IS NOT NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [55, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [56, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [46, comparison_expr → additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [47, comparison_expr → additive_expr • EQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [48, comparison_expr → additive_expr • NEQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [49, comparison_expr → additive_expr • LT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [50, comparison_expr → additive_expr • LTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [51, comparison_expr → additive_expr • GT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [52, comparison_expr → additive_expr • GTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [53, comparison_expr → additive_expr • IS NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [54, comparison_expr → additive_expr • IS NOT NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [56, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_43(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_MINUS => Shift(yy_state_44)
@@ -1859,33 +1868,33 @@ fn yy_state_43(_lookahead : YYSymbol) -> YYDecision {
     T_LT => Shift(yy_state_58)
     T_NEQ => Shift(yy_state_60)
     T_EQ => Shift(yy_state_62)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(1, NT_comparison_expr, yy_action_56)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(1, NT_comparison_expr, yy_action_57)
     _ => Error
   }
 }
 
-// [56, additive_expr → additive_expr MINUS • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → additive_expr MINUS • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_44(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -1908,40 +1917,40 @@ fn yy_state_44(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [56, additive_expr → additive_expr MINUS multiplicative_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → multiplicative_expr • STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → multiplicative_expr • SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → additive_expr MINUS multiplicative_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → multiplicative_expr • STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → multiplicative_expr • SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_45(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_SLASH => Shift(yy_state_39)
     T_STAR => Shift(yy_state_41)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_IS | T_AND | T_OR | T_RPAREN | T_COMMA | T_PLUS | T_MINUS | T_EQ | T_NEQ | T_LT | T_LTE | T_GT | T_GTE | T_SEMICOLON | EOI => Reduce(3, NT_additive_expr, yy_action_55)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_IS | T_AND | T_OR | T_RPAREN | T_COMMA | T_PLUS | T_MINUS | T_EQ | T_NEQ | T_LT | T_LTE | T_GT | T_GTE | T_SEMICOLON | EOI => Reduce(3, NT_additive_expr, yy_action_56)
     _ => Error
   }
 }
 
-// [55, additive_expr → additive_expr PLUS • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → additive_expr PLUS • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_46(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -1964,20 +1973,20 @@ fn yy_state_46(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [55, additive_expr → additive_expr PLUS multiplicative_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → multiplicative_expr • STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → multiplicative_expr • SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → additive_expr PLUS multiplicative_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → multiplicative_expr • STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → multiplicative_expr • SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_47(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_SLASH => Shift(yy_state_39)
     T_STAR => Shift(yy_state_41)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_IS | T_AND | T_OR | T_RPAREN | T_COMMA | T_PLUS | T_MINUS | T_EQ | T_NEQ | T_LT | T_LTE | T_GT | T_GTE | T_SEMICOLON | EOI => Reduce(3, NT_additive_expr, yy_action_54)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_IS | T_AND | T_OR | T_RPAREN | T_COMMA | T_PLUS | T_MINUS | T_EQ | T_NEQ | T_LT | T_LTE | T_GT | T_GTE | T_SEMICOLON | EOI => Reduce(3, NT_additive_expr, yy_action_55)
     _ => Error
   }
 }
 
-// [52, comparison_expr → additive_expr IS • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [53, comparison_expr → additive_expr IS • NOT NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [53, comparison_expr → additive_expr IS • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [54, comparison_expr → additive_expr IS • NOT NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_48(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_NOT => Shift(yy_state_49)
@@ -1986,7 +1995,7 @@ fn yy_state_48(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [53, comparison_expr → additive_expr IS NOT • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [54, comparison_expr → additive_expr IS NOT • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_49(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_NULL => Shift(yy_state_50)
@@ -1994,41 +2003,41 @@ fn yy_state_49(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [53, comparison_expr → additive_expr IS NOT NULL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [54, comparison_expr → additive_expr IS NOT NULL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_50(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(4, NT_comparison_expr, yy_action_53)
+  ReduceNoLookahead(4, NT_comparison_expr, yy_action_54)
 }
 
-// [52, comparison_expr → additive_expr IS NULL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [53, comparison_expr → additive_expr IS NULL •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_51(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(3, NT_comparison_expr, yy_action_52)
+  ReduceNoLookahead(3, NT_comparison_expr, yy_action_53)
 }
 
-// [51, comparison_expr → additive_expr GTE • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [52, comparison_expr → additive_expr GTE • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
 fn yy_state_52(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2052,43 +2061,43 @@ fn yy_state_52(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [51, comparison_expr → additive_expr GTE additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [55, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [52, comparison_expr → additive_expr GTE additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [56, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
 fn yy_state_53(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_MINUS => Shift(yy_state_44)
     T_PLUS => Shift(yy_state_46)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_51)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_52)
     _ => Error
   }
 }
 
-// [50, comparison_expr → additive_expr GT • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [51, comparison_expr → additive_expr GT • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
 fn yy_state_54(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2112,43 +2121,43 @@ fn yy_state_54(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [50, comparison_expr → additive_expr GT additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [55, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [51, comparison_expr → additive_expr GT additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [56, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
 fn yy_state_55(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_MINUS => Shift(yy_state_44)
     T_PLUS => Shift(yy_state_46)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_50)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_51)
     _ => Error
   }
 }
 
-// [49, comparison_expr → additive_expr LTE • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [50, comparison_expr → additive_expr LTE • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
 fn yy_state_56(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2172,43 +2181,43 @@ fn yy_state_56(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [49, comparison_expr → additive_expr LTE additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [55, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [50, comparison_expr → additive_expr LTE additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [56, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
 fn yy_state_57(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_MINUS => Shift(yy_state_44)
     T_PLUS => Shift(yy_state_46)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_49)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_50)
     _ => Error
   }
 }
 
-// [48, comparison_expr → additive_expr LT • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [49, comparison_expr → additive_expr LT • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
 fn yy_state_58(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2232,43 +2241,43 @@ fn yy_state_58(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [48, comparison_expr → additive_expr LT additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [55, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [49, comparison_expr → additive_expr LT additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [56, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
 fn yy_state_59(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_MINUS => Shift(yy_state_44)
     T_PLUS => Shift(yy_state_46)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_48)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_49)
     _ => Error
   }
 }
 
-// [47, comparison_expr → additive_expr NEQ • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [48, comparison_expr → additive_expr NEQ • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
 fn yy_state_60(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2292,43 +2301,43 @@ fn yy_state_60(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [47, comparison_expr → additive_expr NEQ additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [55, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [48, comparison_expr → additive_expr NEQ additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [56, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
 fn yy_state_61(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_MINUS => Shift(yy_state_44)
     T_PLUS => Shift(yy_state_46)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_47)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_48)
     _ => Error
   }
 }
 
-// [46, comparison_expr → additive_expr EQ • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [47, comparison_expr → additive_expr EQ • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / SEMICOLON]
 fn yy_state_62(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2352,54 +2361,54 @@ fn yy_state_62(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [46, comparison_expr → additive_expr EQ additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [55, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
-// [56, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [47, comparison_expr → additive_expr EQ additive_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [56, additive_expr → additive_expr • PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
+// [57, additive_expr → additive_expr • MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / PLUS / MINUS / SEMICOLON]
 fn yy_state_63(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_MINUS => Shift(yy_state_44)
     T_PLUS => Shift(yy_state_46)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_46)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_AND | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_comparison_expr, yy_action_47)
     _ => Error
   }
 }
 
-// [43, not_expr → • comparison_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [44, not_expr → • NOT not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [44, not_expr → NOT • not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [45, comparison_expr → • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [46, comparison_expr → • additive_expr EQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [48, comparison_expr → • additive_expr LT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [49, comparison_expr → • additive_expr LTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [50, comparison_expr → • additive_expr GT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [51, comparison_expr → • additive_expr GTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [52, comparison_expr → • additive_expr IS NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [53, comparison_expr → • additive_expr IS NOT NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [44, not_expr → • comparison_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [45, not_expr → • NOT not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [45, not_expr → NOT • not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [46, comparison_expr → • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [47, comparison_expr → • additive_expr EQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [49, comparison_expr → • additive_expr LT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [50, comparison_expr → • additive_expr LTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [51, comparison_expr → • additive_expr GT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [52, comparison_expr → • additive_expr GTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [53, comparison_expr → • additive_expr IS NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [54, comparison_expr → • additive_expr IS NOT NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_64(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2426,67 +2435,67 @@ fn yy_state_64(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [44, not_expr → NOT not_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [45, not_expr → NOT not_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_65(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(2, NT_not_expr, yy_action_45)
+  ReduceNoLookahead(2, NT_not_expr, yy_action_46)
 }
 
-// [43, not_expr → comparison_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [44, not_expr → comparison_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_66(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_not_expr, yy_action_44)
+  ReduceNoLookahead(1, NT_not_expr, yy_action_45)
 }
 
-// [41, and_expr → not_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [42, and_expr → not_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_67(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_and_expr, yy_action_43)
+  ReduceNoLookahead(1, NT_and_expr, yy_action_44)
 }
 
-// [39, or_expr → and_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / OR / RPAREN / COMMA / SEMICOLON]
-// [42, and_expr → and_expr • AND not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [40, or_expr → and_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / OR / RPAREN / COMMA / SEMICOLON]
+// [43, and_expr → and_expr • AND not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_68(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_AND => Shift(yy_state_69)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(1, NT_or_expr, yy_action_42)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(1, NT_or_expr, yy_action_43)
     _ => Error
   }
 }
 
-// [42, and_expr → and_expr AND • not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [43, not_expr → • comparison_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [44, not_expr → • NOT not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [45, comparison_expr → • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [46, comparison_expr → • additive_expr EQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [48, comparison_expr → • additive_expr LT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [49, comparison_expr → • additive_expr LTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [50, comparison_expr → • additive_expr GT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [51, comparison_expr → • additive_expr GTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [52, comparison_expr → • additive_expr IS NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [53, comparison_expr → • additive_expr IS NOT NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [43, and_expr → and_expr AND • not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [44, not_expr → • comparison_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [45, not_expr → • NOT not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [46, comparison_expr → • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [47, comparison_expr → • additive_expr EQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [49, comparison_expr → • additive_expr LT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [50, comparison_expr → • additive_expr LTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [51, comparison_expr → • additive_expr GT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [52, comparison_expr → • additive_expr GTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [53, comparison_expr → • additive_expr IS NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [54, comparison_expr → • additive_expr IS NOT NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_69(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2513,59 +2522,59 @@ fn yy_state_69(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [42, and_expr → and_expr AND not_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [43, and_expr → and_expr AND not_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_70(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(3, NT_and_expr, yy_action_41)
+  ReduceNoLookahead(3, NT_and_expr, yy_action_42)
 }
 
-// [38, expr → or_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / RPAREN / COMMA / SEMICOLON]
-// [40, or_expr → or_expr • OR and_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / OR / RPAREN / COMMA / SEMICOLON]
+// [39, expr → or_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / RPAREN / COMMA / SEMICOLON]
+// [41, or_expr → or_expr • OR and_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_71(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_OR => Shift(yy_state_72)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(1, NT_expr, yy_action_40)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(1, NT_expr, yy_action_41)
     _ => Error
   }
 }
 
-// [40, or_expr → or_expr OR • and_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / OR / RPAREN / COMMA / SEMICOLON]
-// [41, and_expr → • not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [42, and_expr → • and_expr AND not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [43, not_expr → • comparison_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [44, not_expr → • NOT not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [45, comparison_expr → • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [46, comparison_expr → • additive_expr EQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [48, comparison_expr → • additive_expr LT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [49, comparison_expr → • additive_expr LTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [50, comparison_expr → • additive_expr GT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [51, comparison_expr → • additive_expr GTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [52, comparison_expr → • additive_expr IS NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [53, comparison_expr → • additive_expr IS NOT NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [41, or_expr → or_expr OR • and_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / OR / RPAREN / COMMA / SEMICOLON]
+// [42, and_expr → • not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [43, and_expr → • and_expr AND not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [44, not_expr → • comparison_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [45, not_expr → • NOT not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [46, comparison_expr → • additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [47, comparison_expr → • additive_expr EQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [49, comparison_expr → • additive_expr LT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [50, comparison_expr → • additive_expr LTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [51, comparison_expr → • additive_expr GT additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [52, comparison_expr → • additive_expr GTE additive_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [53, comparison_expr → • additive_expr IS NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [54, comparison_expr → • additive_expr IS NOT NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_72(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2593,18 +2602,18 @@ fn yy_state_72(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [40, or_expr → or_expr OR and_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / OR / RPAREN / COMMA / SEMICOLON]
-// [42, and_expr → and_expr • AND not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
+// [41, or_expr → or_expr OR and_expr •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / OR / RPAREN / COMMA / SEMICOLON]
+// [43, and_expr → and_expr • AND not_expr, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / AND / OR / RPAREN / COMMA / SEMICOLON]
 fn yy_state_73(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_AND => Shift(yy_state_69)
-    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_or_expr, yy_action_39)
+    T_IDENT | T_FROM | T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_ASC | T_DESC | T_AS | T_OR | T_RPAREN | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_or_expr, yy_action_40)
     _ => Error
   }
 }
 
-// [19, argument_list → argument_list • COMMA expr, RPAREN / COMMA]
-// [74, function_call_expr → IDENT LPAREN argument_list • RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [20, argument_list → argument_list • COMMA expr, RPAREN / COMMA]
+// [75, function_call_expr → IDENT LPAREN argument_list • RPAREN, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_74(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_RPAREN => Shift(yy_state_75)
@@ -2613,52 +2622,52 @@ fn yy_state_74(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [74, function_call_expr → IDENT LPAREN argument_list RPAREN •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → IDENT LPAREN argument_list RPAREN •, $ / IDENT / FROM / WHERE / GROUP / HAVING / ORDER / LIMIT / ASC / DESC / AS / IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
 fn yy_state_75(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(4, NT_function_call_expr, yy_action_38)
+  ReduceNoLookahead(4, NT_function_call_expr, yy_action_39)
 }
 
-// [19, argument_list → argument_list COMMA • expr, RPAREN / COMMA]
-// [38, expr → • or_expr, RPAREN / COMMA]
-// [39, or_expr → • and_expr, OR / RPAREN / COMMA]
-// [40, or_expr → • or_expr OR and_expr, OR / RPAREN / COMMA]
-// [41, and_expr → • not_expr, AND / OR / RPAREN / COMMA]
-// [42, and_expr → • and_expr AND not_expr, AND / OR / RPAREN / COMMA]
-// [43, not_expr → • comparison_expr, AND / OR / RPAREN / COMMA]
-// [44, not_expr → • NOT not_expr, AND / OR / RPAREN / COMMA]
-// [45, comparison_expr → • additive_expr, AND / OR / RPAREN / COMMA]
-// [46, comparison_expr → • additive_expr EQ additive_expr, AND / OR / RPAREN / COMMA]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, AND / OR / RPAREN / COMMA]
-// [48, comparison_expr → • additive_expr LT additive_expr, AND / OR / RPAREN / COMMA]
-// [49, comparison_expr → • additive_expr LTE additive_expr, AND / OR / RPAREN / COMMA]
-// [50, comparison_expr → • additive_expr GT additive_expr, AND / OR / RPAREN / COMMA]
-// [51, comparison_expr → • additive_expr GTE additive_expr, AND / OR / RPAREN / COMMA]
-// [52, comparison_expr → • additive_expr IS NULL, AND / OR / RPAREN / COMMA]
-// [53, comparison_expr → • additive_expr IS NOT NULL, AND / OR / RPAREN / COMMA]
-// [54, additive_expr → • multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [57, multiplicative_expr → • unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [60, unary_expr → • primary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [61, unary_expr → • PLUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [62, unary_expr → • MINUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [63, primary_expr → • function_call_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [64, primary_expr → • identifier_path, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [65, primary_expr → • STRING_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [66, primary_expr → • INTEGER_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [67, primary_expr → • DOUBLE_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [68, primary_expr → • TRUE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [69, primary_expr → • FALSE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [70, primary_expr → • NULL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [71, primary_expr → • LPAREN expr RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [76, identifier_path → • IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [77, identifier_path → • identifier_path DOT IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [20, argument_list → argument_list COMMA • expr, RPAREN / COMMA]
+// [39, expr → • or_expr, RPAREN / COMMA]
+// [40, or_expr → • and_expr, OR / RPAREN / COMMA]
+// [41, or_expr → • or_expr OR and_expr, OR / RPAREN / COMMA]
+// [42, and_expr → • not_expr, AND / OR / RPAREN / COMMA]
+// [43, and_expr → • and_expr AND not_expr, AND / OR / RPAREN / COMMA]
+// [44, not_expr → • comparison_expr, AND / OR / RPAREN / COMMA]
+// [45, not_expr → • NOT not_expr, AND / OR / RPAREN / COMMA]
+// [46, comparison_expr → • additive_expr, AND / OR / RPAREN / COMMA]
+// [47, comparison_expr → • additive_expr EQ additive_expr, AND / OR / RPAREN / COMMA]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, AND / OR / RPAREN / COMMA]
+// [49, comparison_expr → • additive_expr LT additive_expr, AND / OR / RPAREN / COMMA]
+// [50, comparison_expr → • additive_expr LTE additive_expr, AND / OR / RPAREN / COMMA]
+// [51, comparison_expr → • additive_expr GT additive_expr, AND / OR / RPAREN / COMMA]
+// [52, comparison_expr → • additive_expr GTE additive_expr, AND / OR / RPAREN / COMMA]
+// [53, comparison_expr → • additive_expr IS NULL, AND / OR / RPAREN / COMMA]
+// [54, comparison_expr → • additive_expr IS NOT NULL, AND / OR / RPAREN / COMMA]
+// [55, additive_expr → • multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [58, multiplicative_expr → • unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [61, unary_expr → • primary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [62, unary_expr → • PLUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [63, unary_expr → • MINUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [64, primary_expr → • function_call_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [65, primary_expr → • identifier_path, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [66, primary_expr → • STRING_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [67, primary_expr → • INTEGER_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [68, primary_expr → • DOUBLE_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [69, primary_expr → • TRUE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [70, primary_expr → • FALSE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [71, primary_expr → • NULL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [72, primary_expr → • LPAREN expr RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [77, identifier_path → • IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [78, identifier_path → • identifier_path DOT IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
 fn yy_state_76(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2688,14 +2697,14 @@ fn yy_state_76(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [19, argument_list → argument_list COMMA expr •, RPAREN / COMMA]
+// [20, argument_list → argument_list COMMA expr •, RPAREN / COMMA]
 fn yy_state_77(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(3, NT_argument_list, yy_action_37)
+  ReduceNoLookahead(3, NT_argument_list, yy_action_38)
 }
 
-// [18, argument_list → expr •, RPAREN / COMMA]
+// [19, argument_list → expr •, RPAREN / COMMA]
 fn yy_state_78(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_argument_list, yy_action_36)
+  ReduceNoLookahead(1, NT_argument_list, yy_action_37)
 }
 
 // [5, select_item → expr • opt_alias, FROM / COMMA]
@@ -2707,14 +2716,14 @@ fn yy_state_79(_lookahead : YYSymbol) -> YYDecision {
     T_IDENT => Shift(yy_state_80)
     T_AS => Shift(yy_state_81)
     NT_opt_alias => Shift(yy_state_83)
-    T_FROM | T_COMMA => Reduce(0, NT_opt_alias, yy_action_35)
+    T_FROM | T_COMMA => Reduce(0, NT_opt_alias, yy_action_36)
     _ => Error
   }
 }
 
 // [8, opt_alias → IDENT •, FROM / COMMA]
 fn yy_state_80(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_opt_alias, yy_action_34)
+  ReduceNoLookahead(1, NT_opt_alias, yy_action_35)
 }
 
 // [7, opt_alias → AS • IDENT, FROM / COMMA]
@@ -2727,17 +2736,17 @@ fn yy_state_81(_lookahead : YYSymbol) -> YYDecision {
 
 // [7, opt_alias → AS IDENT •, FROM / COMMA]
 fn yy_state_82(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(2, NT_opt_alias, yy_action_33)
+  ReduceNoLookahead(2, NT_opt_alias, yy_action_34)
 }
 
 // [5, select_item → expr opt_alias •, FROM / COMMA]
 fn yy_state_83(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(2, NT_select_item, yy_action_32)
+  ReduceNoLookahead(2, NT_select_item, yy_action_33)
 }
 
 // [3, select_list → select_item •, FROM / COMMA]
 fn yy_state_84(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_select_list, yy_action_31)
+  ReduceNoLookahead(1, NT_select_list, yy_action_32)
 }
 
 // [0, query → SELECT select_list • FROM from_item opt_where opt_group_by opt_having opt_order_by opt_limit opt_semicolon, $]
@@ -2752,46 +2761,46 @@ fn yy_state_85(_lookahead : YYSymbol) -> YYDecision {
 
 // [4, select_list → select_list COMMA • select_item, FROM / COMMA]
 // [5, select_item → • expr opt_alias, FROM / COMMA]
-// [38, expr → • or_expr, IDENT / FROM / AS / COMMA]
-// [39, or_expr → • and_expr, IDENT / FROM / AS / OR / COMMA]
-// [40, or_expr → • or_expr OR and_expr, IDENT / FROM / AS / OR / COMMA]
-// [41, and_expr → • not_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [42, and_expr → • and_expr AND not_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [43, not_expr → • comparison_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [44, not_expr → • NOT not_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [45, comparison_expr → • additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [46, comparison_expr → • additive_expr EQ additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [48, comparison_expr → • additive_expr LT additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [49, comparison_expr → • additive_expr LTE additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [50, comparison_expr → • additive_expr GT additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [51, comparison_expr → • additive_expr GTE additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
-// [52, comparison_expr → • additive_expr IS NULL, IDENT / FROM / AS / AND / OR / COMMA]
-// [53, comparison_expr → • additive_expr IS NOT NULL, IDENT / FROM / AS / AND / OR / COMMA]
-// [54, additive_expr → • multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [57, multiplicative_expr → • unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [60, unary_expr → • primary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [61, unary_expr → • PLUS unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [62, unary_expr → • MINUS unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [63, primary_expr → • function_call_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [64, primary_expr → • identifier_path, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [65, primary_expr → • STRING_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [66, primary_expr → • INTEGER_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [67, primary_expr → • DOUBLE_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [68, primary_expr → • TRUE, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [69, primary_expr → • FALSE, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [70, primary_expr → • NULL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [71, primary_expr → • LPAREN expr RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [76, identifier_path → • IDENT, IDENT / FROM / AS / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [77, identifier_path → • identifier_path DOT IDENT, IDENT / FROM / AS / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [39, expr → • or_expr, IDENT / FROM / AS / COMMA]
+// [40, or_expr → • and_expr, IDENT / FROM / AS / OR / COMMA]
+// [41, or_expr → • or_expr OR and_expr, IDENT / FROM / AS / OR / COMMA]
+// [42, and_expr → • not_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [43, and_expr → • and_expr AND not_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [44, not_expr → • comparison_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [45, not_expr → • NOT not_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [46, comparison_expr → • additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [47, comparison_expr → • additive_expr EQ additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [49, comparison_expr → • additive_expr LT additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [50, comparison_expr → • additive_expr LTE additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [51, comparison_expr → • additive_expr GT additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [52, comparison_expr → • additive_expr GTE additive_expr, IDENT / FROM / AS / AND / OR / COMMA]
+// [53, comparison_expr → • additive_expr IS NULL, IDENT / FROM / AS / AND / OR / COMMA]
+// [54, comparison_expr → • additive_expr IS NOT NULL, IDENT / FROM / AS / AND / OR / COMMA]
+// [55, additive_expr → • multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [58, multiplicative_expr → • unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [61, unary_expr → • primary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [62, unary_expr → • PLUS unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [63, unary_expr → • MINUS unary_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [64, primary_expr → • function_call_expr, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [65, primary_expr → • identifier_path, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [66, primary_expr → • STRING_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [67, primary_expr → • INTEGER_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [68, primary_expr → • DOUBLE_LITERAL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [69, primary_expr → • TRUE, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [70, primary_expr → • FALSE, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [71, primary_expr → • NULL, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [72, primary_expr → • LPAREN expr RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, IDENT / FROM / AS / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [77, identifier_path → • IDENT, IDENT / FROM / AS / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [78, identifier_path → • identifier_path DOT IDENT, IDENT / FROM / AS / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
 fn yy_state_86(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
@@ -2824,7 +2833,7 @@ fn yy_state_86(_lookahead : YYSymbol) -> YYDecision {
 
 // [4, select_list → select_list COMMA select_item •, FROM / COMMA]
 fn yy_state_87(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(3, NT_select_list, yy_action_30)
+  ReduceNoLookahead(3, NT_select_list, yy_action_31)
 }
 
 // [0, query → SELECT select_list FROM • from_item opt_where opt_group_by opt_having opt_order_by opt_limit opt_semicolon, $]
@@ -2834,36 +2843,38 @@ fn yy_state_87(_lookahead : YYSymbol) -> YYDecision {
 // [12, table_function → • IDENT LPAREN RPAREN, $ / IDENT / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / AS / SEMICOLON]
 // [13, table_function → • IDENT LPAREN argument_list RPAREN, $ / IDENT / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / AS / SEMICOLON]
 // [14, source_ref → • table_function opt_source_alias, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / SEMICOLON]
+// [15, source_ref → • STRING_LITERAL opt_source_alias, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / SEMICOLON]
 fn yy_state_88(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    NT_table_function => Shift(yy_state_89)
-    T_IDENT => Shift(yy_state_94)
-    NT_source_ref => Shift(yy_state_99)
-    NT_from_item => Shift(yy_state_109)
+    T_STRING_LITERAL => Shift(yy_state_89)
+    NT_table_function => Shift(yy_state_94)
+    T_IDENT => Shift(yy_state_96)
+    NT_source_ref => Shift(yy_state_101)
+    NT_from_item => Shift(yy_state_111)
     _ => Error
   }
 }
 
-// [14, source_ref → table_function • opt_source_alias, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
-// [15, opt_source_alias → •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
-// [16, opt_source_alias → • AS IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
-// [17, opt_source_alias → • IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+// [15, source_ref → STRING_LITERAL • opt_source_alias, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+// [16, opt_source_alias → •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+// [17, opt_source_alias → • AS IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+// [18, opt_source_alias → • IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
 fn yy_state_89(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_90)
     T_AS => Shift(yy_state_91)
     NT_opt_source_alias => Shift(yy_state_93)
-    T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_JOIN | T_INNER | T_ON | T_SEMICOLON | EOI => Reduce(0, NT_opt_source_alias, yy_action_29)
+    T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_JOIN | T_INNER | T_ON | T_SEMICOLON | EOI => Reduce(0, NT_opt_source_alias, yy_action_30)
     _ => Error
   }
 }
 
-// [17, opt_source_alias → IDENT •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+// [18, opt_source_alias → IDENT •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
 fn yy_state_90(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_opt_source_alias, yy_action_28)
+  ReduceNoLookahead(1, NT_opt_source_alias, yy_action_29)
 }
 
-// [16, opt_source_alias → AS • IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+// [17, opt_source_alias → AS • IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
 fn yy_state_91(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_92)
@@ -2871,70 +2882,89 @@ fn yy_state_91(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [16, opt_source_alias → AS IDENT •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+// [17, opt_source_alias → AS IDENT •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
 fn yy_state_92(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(2, NT_opt_source_alias, yy_action_27)
+  ReduceNoLookahead(2, NT_opt_source_alias, yy_action_28)
+}
+
+// [15, source_ref → STRING_LITERAL opt_source_alias •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+fn yy_state_93(_lookahead : YYSymbol) -> YYDecision {
+  ReduceNoLookahead(2, NT_source_ref, yy_action_27)
+}
+
+// [14, source_ref → table_function • opt_source_alias, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+// [16, opt_source_alias → •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+// [17, opt_source_alias → • AS IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+// [18, opt_source_alias → • IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
+fn yy_state_94(_lookahead : YYSymbol) -> YYDecision {
+  match _lookahead {
+    T_IDENT => Shift(yy_state_90)
+    T_AS => Shift(yy_state_91)
+    NT_opt_source_alias => Shift(yy_state_95)
+    T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_JOIN | T_INNER | T_ON | T_SEMICOLON | EOI => Reduce(0, NT_opt_source_alias, yy_action_30)
+    _ => Error
+  }
 }
 
 // [14, source_ref → table_function opt_source_alias •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / SEMICOLON]
-fn yy_state_93(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_95(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(2, NT_source_ref, yy_action_26)
 }
 
 // [12, table_function → IDENT • LPAREN RPAREN, $ / IDENT / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / AS / SEMICOLON]
 // [13, table_function → IDENT • LPAREN argument_list RPAREN, $ / IDENT / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / AS / SEMICOLON]
-fn yy_state_94(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_96(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_LPAREN => Shift(yy_state_95)
+    T_LPAREN => Shift(yy_state_97)
     _ => Error
   }
 }
 
 // [12, table_function → IDENT LPAREN • RPAREN, $ / IDENT / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / AS / SEMICOLON]
 // [13, table_function → IDENT LPAREN • argument_list RPAREN, $ / IDENT / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / AS / SEMICOLON]
-// [18, argument_list → • expr, RPAREN / COMMA]
-// [19, argument_list → • argument_list COMMA expr, RPAREN / COMMA]
-// [38, expr → • or_expr, RPAREN / COMMA]
-// [39, or_expr → • and_expr, OR / RPAREN / COMMA]
-// [40, or_expr → • or_expr OR and_expr, OR / RPAREN / COMMA]
-// [41, and_expr → • not_expr, AND / OR / RPAREN / COMMA]
-// [42, and_expr → • and_expr AND not_expr, AND / OR / RPAREN / COMMA]
-// [43, not_expr → • comparison_expr, AND / OR / RPAREN / COMMA]
-// [44, not_expr → • NOT not_expr, AND / OR / RPAREN / COMMA]
-// [45, comparison_expr → • additive_expr, AND / OR / RPAREN / COMMA]
-// [46, comparison_expr → • additive_expr EQ additive_expr, AND / OR / RPAREN / COMMA]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, AND / OR / RPAREN / COMMA]
-// [48, comparison_expr → • additive_expr LT additive_expr, AND / OR / RPAREN / COMMA]
-// [49, comparison_expr → • additive_expr LTE additive_expr, AND / OR / RPAREN / COMMA]
-// [50, comparison_expr → • additive_expr GT additive_expr, AND / OR / RPAREN / COMMA]
-// [51, comparison_expr → • additive_expr GTE additive_expr, AND / OR / RPAREN / COMMA]
-// [52, comparison_expr → • additive_expr IS NULL, AND / OR / RPAREN / COMMA]
-// [53, comparison_expr → • additive_expr IS NOT NULL, AND / OR / RPAREN / COMMA]
-// [54, additive_expr → • multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
-// [57, multiplicative_expr → • unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [60, unary_expr → • primary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [61, unary_expr → • PLUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [62, unary_expr → • MINUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [63, primary_expr → • function_call_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [64, primary_expr → • identifier_path, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [65, primary_expr → • STRING_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [66, primary_expr → • INTEGER_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [67, primary_expr → • DOUBLE_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [68, primary_expr → • TRUE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [69, primary_expr → • FALSE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [70, primary_expr → • NULL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [71, primary_expr → • LPAREN expr RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [76, identifier_path → • IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-// [77, identifier_path → • identifier_path DOT IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
-fn yy_state_95(_lookahead : YYSymbol) -> YYDecision {
+// [19, argument_list → • expr, RPAREN / COMMA]
+// [20, argument_list → • argument_list COMMA expr, RPAREN / COMMA]
+// [39, expr → • or_expr, RPAREN / COMMA]
+// [40, or_expr → • and_expr, OR / RPAREN / COMMA]
+// [41, or_expr → • or_expr OR and_expr, OR / RPAREN / COMMA]
+// [42, and_expr → • not_expr, AND / OR / RPAREN / COMMA]
+// [43, and_expr → • and_expr AND not_expr, AND / OR / RPAREN / COMMA]
+// [44, not_expr → • comparison_expr, AND / OR / RPAREN / COMMA]
+// [45, not_expr → • NOT not_expr, AND / OR / RPAREN / COMMA]
+// [46, comparison_expr → • additive_expr, AND / OR / RPAREN / COMMA]
+// [47, comparison_expr → • additive_expr EQ additive_expr, AND / OR / RPAREN / COMMA]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, AND / OR / RPAREN / COMMA]
+// [49, comparison_expr → • additive_expr LT additive_expr, AND / OR / RPAREN / COMMA]
+// [50, comparison_expr → • additive_expr LTE additive_expr, AND / OR / RPAREN / COMMA]
+// [51, comparison_expr → • additive_expr GT additive_expr, AND / OR / RPAREN / COMMA]
+// [52, comparison_expr → • additive_expr GTE additive_expr, AND / OR / RPAREN / COMMA]
+// [53, comparison_expr → • additive_expr IS NULL, AND / OR / RPAREN / COMMA]
+// [54, comparison_expr → • additive_expr IS NOT NULL, AND / OR / RPAREN / COMMA]
+// [55, additive_expr → • multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE]
+// [58, multiplicative_expr → • unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [61, unary_expr → • primary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [62, unary_expr → • PLUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [63, unary_expr → • MINUS unary_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [64, primary_expr → • function_call_expr, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [65, primary_expr → • identifier_path, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [66, primary_expr → • STRING_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [67, primary_expr → • INTEGER_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [68, primary_expr → • DOUBLE_LITERAL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [69, primary_expr → • TRUE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [70, primary_expr → • FALSE, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [71, primary_expr → • NULL, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [72, primary_expr → • LPAREN expr RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, IS / AND / OR / RPAREN / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [77, identifier_path → • IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+// [78, identifier_path → • identifier_path DOT IDENT, IS / AND / OR / RPAREN / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE]
+fn yy_state_97(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
     T_CAST => Shift(yy_state_8)
@@ -2959,48 +2989,48 @@ fn yy_state_95(_lookahead : YYSymbol) -> YYDecision {
     NT_and_expr => Shift(yy_state_68)
     NT_or_expr => Shift(yy_state_71)
     NT_expr => Shift(yy_state_78)
-    NT_argument_list => Shift(yy_state_96)
-    T_RPAREN => Shift(yy_state_98)
+    NT_argument_list => Shift(yy_state_98)
+    T_RPAREN => Shift(yy_state_100)
     _ => Error
   }
 }
 
 // [13, table_function → IDENT LPAREN argument_list • RPAREN, $ / IDENT / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / AS / SEMICOLON]
-// [19, argument_list → argument_list • COMMA expr, RPAREN / COMMA]
-fn yy_state_96(_lookahead : YYSymbol) -> YYDecision {
+// [20, argument_list → argument_list • COMMA expr, RPAREN / COMMA]
+fn yy_state_98(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_COMMA => Shift(yy_state_76)
-    T_RPAREN => Shift(yy_state_97)
+    T_RPAREN => Shift(yy_state_99)
     _ => Error
   }
 }
 
 // [13, table_function → IDENT LPAREN argument_list RPAREN •, $ / IDENT / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / AS / SEMICOLON]
-fn yy_state_97(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_99(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(4, NT_table_function, yy_action_25)
 }
 
 // [12, table_function → IDENT LPAREN RPAREN •, $ / IDENT / WHERE / GROUP / HAVING / ORDER / LIMIT / JOIN / INNER / ON / AS / SEMICOLON]
-fn yy_state_98(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_100(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(3, NT_table_function, yy_action_24)
 }
 
 // [9, from_item → source_ref •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
 // [10, from_item → source_ref • JOIN source_ref ON expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
 // [11, from_item → source_ref • INNER JOIN source_ref ON expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-fn yy_state_99(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_101(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_INNER => Shift(yy_state_100)
-    T_JOIN => Shift(yy_state_105)
+    T_INNER => Shift(yy_state_102)
+    T_JOIN => Shift(yy_state_107)
     T_WHERE | T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_SEMICOLON | EOI => Reduce(1, NT_from_item, yy_action_23)
     _ => Error
   }
 }
 
 // [11, from_item → source_ref INNER • JOIN source_ref ON expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-fn yy_state_100(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_102(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_JOIN => Shift(yy_state_101)
+    T_JOIN => Shift(yy_state_103)
     _ => Error
   }
 }
@@ -3009,65 +3039,67 @@ fn yy_state_100(_lookahead : YYSymbol) -> YYDecision {
 // [12, table_function → • IDENT LPAREN RPAREN, IDENT / ON / AS]
 // [13, table_function → • IDENT LPAREN argument_list RPAREN, IDENT / ON / AS]
 // [14, source_ref → • table_function opt_source_alias, ON]
-fn yy_state_101(_lookahead : YYSymbol) -> YYDecision {
+// [15, source_ref → • STRING_LITERAL opt_source_alias, ON]
+fn yy_state_103(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    NT_table_function => Shift(yy_state_89)
-    T_IDENT => Shift(yy_state_94)
-    NT_source_ref => Shift(yy_state_102)
+    T_STRING_LITERAL => Shift(yy_state_89)
+    NT_table_function => Shift(yy_state_94)
+    T_IDENT => Shift(yy_state_96)
+    NT_source_ref => Shift(yy_state_104)
     _ => Error
   }
 }
 
 // [11, from_item → source_ref INNER JOIN source_ref • ON expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-fn yy_state_102(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_104(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_ON => Shift(yy_state_103)
+    T_ON => Shift(yy_state_105)
     _ => Error
   }
 }
 
 // [11, from_item → source_ref INNER JOIN source_ref ON • expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-// [38, expr → • or_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-// [39, or_expr → • and_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
-// [40, or_expr → • or_expr OR and_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
-// [41, and_expr → • not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [42, and_expr → • and_expr AND not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [43, not_expr → • comparison_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [44, not_expr → • NOT not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [45, comparison_expr → • additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [46, comparison_expr → • additive_expr EQ additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [48, comparison_expr → • additive_expr LT additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [49, comparison_expr → • additive_expr LTE additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [50, comparison_expr → • additive_expr GT additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [51, comparison_expr → • additive_expr GTE additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [52, comparison_expr → • additive_expr IS NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [53, comparison_expr → • additive_expr IS NOT NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_103(_lookahead : YYSymbol) -> YYDecision {
+// [39, expr → • or_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
+// [40, or_expr → • and_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
+// [41, or_expr → • or_expr OR and_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
+// [42, and_expr → • not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [43, and_expr → • and_expr AND not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [44, not_expr → • comparison_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [45, not_expr → • NOT not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [46, comparison_expr → • additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [47, comparison_expr → • additive_expr EQ additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [49, comparison_expr → • additive_expr LT additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [50, comparison_expr → • additive_expr LTE additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [51, comparison_expr → • additive_expr GT additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [52, comparison_expr → • additive_expr GTE additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [53, comparison_expr → • additive_expr IS NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [54, comparison_expr → • additive_expr IS NOT NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_105(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
     T_CAST => Shift(yy_state_8)
@@ -3091,13 +3123,13 @@ fn yy_state_103(_lookahead : YYSymbol) -> YYDecision {
     NT_not_expr => Shift(yy_state_67)
     NT_and_expr => Shift(yy_state_68)
     NT_or_expr => Shift(yy_state_71)
-    NT_expr => Shift(yy_state_104)
+    NT_expr => Shift(yy_state_106)
     _ => Error
   }
 }
 
 // [11, from_item → source_ref INNER JOIN source_ref ON expr •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-fn yy_state_104(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_106(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(6, NT_from_item, yy_action_22)
 }
 
@@ -3105,65 +3137,67 @@ fn yy_state_104(_lookahead : YYSymbol) -> YYDecision {
 // [12, table_function → • IDENT LPAREN RPAREN, IDENT / ON / AS]
 // [13, table_function → • IDENT LPAREN argument_list RPAREN, IDENT / ON / AS]
 // [14, source_ref → • table_function opt_source_alias, ON]
-fn yy_state_105(_lookahead : YYSymbol) -> YYDecision {
+// [15, source_ref → • STRING_LITERAL opt_source_alias, ON]
+fn yy_state_107(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    NT_table_function => Shift(yy_state_89)
-    T_IDENT => Shift(yy_state_94)
-    NT_source_ref => Shift(yy_state_106)
+    T_STRING_LITERAL => Shift(yy_state_89)
+    NT_table_function => Shift(yy_state_94)
+    T_IDENT => Shift(yy_state_96)
+    NT_source_ref => Shift(yy_state_108)
     _ => Error
   }
 }
 
 // [10, from_item → source_ref JOIN source_ref • ON expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-fn yy_state_106(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_108(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_ON => Shift(yy_state_107)
+    T_ON => Shift(yy_state_109)
     _ => Error
   }
 }
 
 // [10, from_item → source_ref JOIN source_ref ON • expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-// [38, expr → • or_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-// [39, or_expr → • and_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
-// [40, or_expr → • or_expr OR and_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
-// [41, and_expr → • not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [42, and_expr → • and_expr AND not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [43, not_expr → • comparison_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [44, not_expr → • NOT not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [45, comparison_expr → • additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [46, comparison_expr → • additive_expr EQ additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [48, comparison_expr → • additive_expr LT additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [49, comparison_expr → • additive_expr LTE additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [50, comparison_expr → • additive_expr GT additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [51, comparison_expr → • additive_expr GTE additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [52, comparison_expr → • additive_expr IS NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [53, comparison_expr → • additive_expr IS NOT NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_107(_lookahead : YYSymbol) -> YYDecision {
+// [39, expr → • or_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
+// [40, or_expr → • and_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
+// [41, or_expr → • or_expr OR and_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
+// [42, and_expr → • not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [43, and_expr → • and_expr AND not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [44, not_expr → • comparison_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [45, not_expr → • NOT not_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [46, comparison_expr → • additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [47, comparison_expr → • additive_expr EQ additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [49, comparison_expr → • additive_expr LT additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [50, comparison_expr → • additive_expr LTE additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [51, comparison_expr → • additive_expr GT additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [52, comparison_expr → • additive_expr GTE additive_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [53, comparison_expr → • additive_expr IS NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [54, comparison_expr → • additive_expr IS NOT NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_109(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
     T_CAST => Shift(yy_state_8)
@@ -3187,70 +3221,70 @@ fn yy_state_107(_lookahead : YYSymbol) -> YYDecision {
     NT_not_expr => Shift(yy_state_67)
     NT_and_expr => Shift(yy_state_68)
     NT_or_expr => Shift(yy_state_71)
-    NT_expr => Shift(yy_state_108)
+    NT_expr => Shift(yy_state_110)
     _ => Error
   }
 }
 
 // [10, from_item → source_ref JOIN source_ref ON expr •, $ / WHERE / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-fn yy_state_108(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_110(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(5, NT_from_item, yy_action_21)
 }
 
 // [0, query → SELECT select_list FROM from_item • opt_where opt_group_by opt_having opt_order_by opt_limit opt_semicolon, $]
-// [20, opt_where → •, $ / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-// [21, opt_where → • WHERE expr, $ / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-fn yy_state_109(_lookahead : YYSymbol) -> YYDecision {
+// [21, opt_where → •, $ / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
+// [22, opt_where → • WHERE expr, $ / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
+fn yy_state_111(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_WHERE => Shift(yy_state_110)
-    NT_opt_where => Shift(yy_state_112)
+    T_WHERE => Shift(yy_state_112)
+    NT_opt_where => Shift(yy_state_114)
     T_GROUP | T_HAVING | T_ORDER | T_LIMIT | T_SEMICOLON | EOI => Reduce(0, NT_opt_where, yy_action_20)
     _ => Error
   }
 }
 
-// [21, opt_where → WHERE • expr, $ / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-// [38, expr → • or_expr, $ / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-// [39, or_expr → • and_expr, $ / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
-// [40, or_expr → • or_expr OR and_expr, $ / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
-// [41, and_expr → • not_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [42, and_expr → • and_expr AND not_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [43, not_expr → • comparison_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [44, not_expr → • NOT not_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [45, comparison_expr → • additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [46, comparison_expr → • additive_expr EQ additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [48, comparison_expr → • additive_expr LT additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [49, comparison_expr → • additive_expr LTE additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [50, comparison_expr → • additive_expr GT additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [51, comparison_expr → • additive_expr GTE additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [52, comparison_expr → • additive_expr IS NULL, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [53, comparison_expr → • additive_expr IS NOT NULL, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_110(_lookahead : YYSymbol) -> YYDecision {
+// [22, opt_where → WHERE • expr, $ / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
+// [39, expr → • or_expr, $ / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
+// [40, or_expr → • and_expr, $ / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
+// [41, or_expr → • or_expr OR and_expr, $ / GROUP / HAVING / ORDER / LIMIT / OR / SEMICOLON]
+// [42, and_expr → • not_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [43, and_expr → • and_expr AND not_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [44, not_expr → • comparison_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [45, not_expr → • NOT not_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [46, comparison_expr → • additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [47, comparison_expr → • additive_expr EQ additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [49, comparison_expr → • additive_expr LT additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [50, comparison_expr → • additive_expr LTE additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [51, comparison_expr → • additive_expr GT additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [52, comparison_expr → • additive_expr GTE additive_expr, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [53, comparison_expr → • additive_expr IS NULL, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [54, comparison_expr → • additive_expr IS NOT NULL, $ / GROUP / HAVING / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / GROUP / HAVING / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_112(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
     T_CAST => Shift(yy_state_8)
@@ -3274,58 +3308,58 @@ fn yy_state_110(_lookahead : YYSymbol) -> YYDecision {
     NT_not_expr => Shift(yy_state_67)
     NT_and_expr => Shift(yy_state_68)
     NT_or_expr => Shift(yy_state_71)
-    NT_expr => Shift(yy_state_111)
+    NT_expr => Shift(yy_state_113)
     _ => Error
   }
 }
 
-// [21, opt_where → WHERE expr •, $ / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
-fn yy_state_111(_lookahead : YYSymbol) -> YYDecision {
+// [22, opt_where → WHERE expr •, $ / GROUP / HAVING / ORDER / LIMIT / SEMICOLON]
+fn yy_state_113(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(2, NT_opt_where, yy_action_19)
 }
 
 // [0, query → SELECT select_list FROM from_item opt_where • opt_group_by opt_having opt_order_by opt_limit opt_semicolon, $]
-// [22, opt_group_by → •, $ / HAVING / ORDER / LIMIT / SEMICOLON]
-// [23, opt_group_by → • GROUP BY group_key_list, $ / HAVING / ORDER / LIMIT / SEMICOLON]
-fn yy_state_112(_lookahead : YYSymbol) -> YYDecision {
+// [23, opt_group_by → •, $ / HAVING / ORDER / LIMIT / SEMICOLON]
+// [24, opt_group_by → • GROUP BY group_key_list, $ / HAVING / ORDER / LIMIT / SEMICOLON]
+fn yy_state_114(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_GROUP => Shift(yy_state_113)
-    NT_opt_group_by => Shift(yy_state_120)
+    T_GROUP => Shift(yy_state_115)
+    NT_opt_group_by => Shift(yy_state_122)
     T_HAVING | T_ORDER | T_LIMIT | T_SEMICOLON | EOI => Reduce(0, NT_opt_group_by, yy_action_18)
     _ => Error
   }
 }
 
-// [23, opt_group_by → GROUP • BY group_key_list, $ / HAVING / ORDER / LIMIT / SEMICOLON]
-fn yy_state_113(_lookahead : YYSymbol) -> YYDecision {
-  match _lookahead {
-    T_BY => Shift(yy_state_114)
-    _ => Error
-  }
-}
-
-// [23, opt_group_by → GROUP BY • group_key_list, $ / HAVING / ORDER / LIMIT / SEMICOLON]
-// [24, group_key_list → • identifier_path, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
-// [25, group_key_list → • group_key_list COMMA identifier_path, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
-fn yy_state_114(_lookahead : YYSymbol) -> YYDecision {
-  match _lookahead {
-    T_IDENT => Shift(yy_state_115)
-    NT_identifier_path => Shift(yy_state_116)
-    NT_group_key_list => Shift(yy_state_117)
-    _ => Error
-  }
-}
-
-// [76, identifier_path → IDENT •, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
+// [24, opt_group_by → GROUP • BY group_key_list, $ / HAVING / ORDER / LIMIT / SEMICOLON]
 fn yy_state_115(_lookahead : YYSymbol) -> YYDecision {
-  ReduceNoLookahead(1, NT_identifier_path, yy_action_82)
+  match _lookahead {
+    T_BY => Shift(yy_state_116)
+    _ => Error
+  }
 }
 
-// [24, group_key_list → identifier_path •, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
-// [77, identifier_path → identifier_path • DOT IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
+// [24, opt_group_by → GROUP BY • group_key_list, $ / HAVING / ORDER / LIMIT / SEMICOLON]
+// [25, group_key_list → • identifier_path, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
+// [26, group_key_list → • group_key_list COMMA identifier_path, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
 fn yy_state_116(_lookahead : YYSymbol) -> YYDecision {
+  match _lookahead {
+    T_IDENT => Shift(yy_state_117)
+    NT_identifier_path => Shift(yy_state_118)
+    NT_group_key_list => Shift(yy_state_119)
+    _ => Error
+  }
+}
+
+// [77, identifier_path → IDENT •, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
+fn yy_state_117(_lookahead : YYSymbol) -> YYDecision {
+  ReduceNoLookahead(1, NT_identifier_path, yy_action_83)
+}
+
+// [25, group_key_list → identifier_path •, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
+// [78, identifier_path → identifier_path • DOT IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
+fn yy_state_118(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_DOT => Shift(yy_state_29)
     T_HAVING | T_ORDER | T_LIMIT | T_COMMA | T_SEMICOLON | EOI => Reduce(1, NT_group_key_list, yy_action_17)
@@ -3333,30 +3367,30 @@ fn yy_state_116(_lookahead : YYSymbol) -> YYDecision {
   }
 }
 
-// [23, opt_group_by → GROUP BY group_key_list •, $ / HAVING / ORDER / LIMIT / SEMICOLON]
-// [25, group_key_list → group_key_list • COMMA identifier_path, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
-fn yy_state_117(_lookahead : YYSymbol) -> YYDecision {
+// [24, opt_group_by → GROUP BY group_key_list •, $ / HAVING / ORDER / LIMIT / SEMICOLON]
+// [26, group_key_list → group_key_list • COMMA identifier_path, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
+fn yy_state_119(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_COMMA => Shift(yy_state_118)
+    T_COMMA => Shift(yy_state_120)
     T_HAVING | T_ORDER | T_LIMIT | T_SEMICOLON | EOI => Reduce(3, NT_opt_group_by, yy_action_16)
     _ => Error
   }
 }
 
-// [25, group_key_list → group_key_list COMMA • identifier_path, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
-fn yy_state_118(_lookahead : YYSymbol) -> YYDecision {
+// [26, group_key_list → group_key_list COMMA • identifier_path, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
+fn yy_state_120(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_IDENT => Shift(yy_state_115)
-    NT_identifier_path => Shift(yy_state_119)
+    T_IDENT => Shift(yy_state_117)
+    NT_identifier_path => Shift(yy_state_121)
     _ => Error
   }
 }
 
-// [25, group_key_list → group_key_list COMMA identifier_path •, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
-// [77, identifier_path → identifier_path • DOT IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
-fn yy_state_119(_lookahead : YYSymbol) -> YYDecision {
+// [26, group_key_list → group_key_list COMMA identifier_path •, $ / HAVING / ORDER / LIMIT / COMMA / SEMICOLON]
+// [78, identifier_path → identifier_path • DOT IDENT, $ / HAVING / ORDER / LIMIT / COMMA / DOT / SEMICOLON]
+fn yy_state_121(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_DOT => Shift(yy_state_29)
     T_HAVING | T_ORDER | T_LIMIT | T_COMMA | T_SEMICOLON | EOI => Reduce(3, NT_group_key_list, yy_action_15)
@@ -3365,59 +3399,59 @@ fn yy_state_119(_lookahead : YYSymbol) -> YYDecision {
 }
 
 // [0, query → SELECT select_list FROM from_item opt_where opt_group_by • opt_having opt_order_by opt_limit opt_semicolon, $]
-// [26, opt_having → •, $ / ORDER / LIMIT / SEMICOLON]
-// [27, opt_having → • HAVING expr, $ / ORDER / LIMIT / SEMICOLON]
-fn yy_state_120(_lookahead : YYSymbol) -> YYDecision {
+// [27, opt_having → •, $ / ORDER / LIMIT / SEMICOLON]
+// [28, opt_having → • HAVING expr, $ / ORDER / LIMIT / SEMICOLON]
+fn yy_state_122(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_HAVING => Shift(yy_state_121)
-    NT_opt_having => Shift(yy_state_123)
+    T_HAVING => Shift(yy_state_123)
+    NT_opt_having => Shift(yy_state_125)
     T_ORDER | T_LIMIT | T_SEMICOLON | EOI => Reduce(0, NT_opt_having, yy_action_14)
     _ => Error
   }
 }
 
-// [27, opt_having → HAVING • expr, $ / ORDER / LIMIT / SEMICOLON]
-// [38, expr → • or_expr, $ / ORDER / LIMIT / SEMICOLON]
-// [39, or_expr → • and_expr, $ / ORDER / LIMIT / OR / SEMICOLON]
-// [40, or_expr → • or_expr OR and_expr, $ / ORDER / LIMIT / OR / SEMICOLON]
-// [41, and_expr → • not_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [42, and_expr → • and_expr AND not_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [43, not_expr → • comparison_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [44, not_expr → • NOT not_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [45, comparison_expr → • additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [46, comparison_expr → • additive_expr EQ additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [48, comparison_expr → • additive_expr LT additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [49, comparison_expr → • additive_expr LTE additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [50, comparison_expr → • additive_expr GT additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [51, comparison_expr → • additive_expr GTE additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [52, comparison_expr → • additive_expr IS NULL, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [53, comparison_expr → • additive_expr IS NOT NULL, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_121(_lookahead : YYSymbol) -> YYDecision {
+// [28, opt_having → HAVING • expr, $ / ORDER / LIMIT / SEMICOLON]
+// [39, expr → • or_expr, $ / ORDER / LIMIT / SEMICOLON]
+// [40, or_expr → • and_expr, $ / ORDER / LIMIT / OR / SEMICOLON]
+// [41, or_expr → • or_expr OR and_expr, $ / ORDER / LIMIT / OR / SEMICOLON]
+// [42, and_expr → • not_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [43, and_expr → • and_expr AND not_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [44, not_expr → • comparison_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [45, not_expr → • NOT not_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [46, comparison_expr → • additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [47, comparison_expr → • additive_expr EQ additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [49, comparison_expr → • additive_expr LT additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [50, comparison_expr → • additive_expr LTE additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [51, comparison_expr → • additive_expr GT additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [52, comparison_expr → • additive_expr GTE additive_expr, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [53, comparison_expr → • additive_expr IS NULL, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [54, comparison_expr → • additive_expr IS NOT NULL, $ / ORDER / LIMIT / AND / OR / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / ORDER / LIMIT / IS / AND / OR / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / ORDER / LIMIT / IS / AND / OR / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_123(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
     T_CAST => Shift(yy_state_8)
@@ -3441,81 +3475,81 @@ fn yy_state_121(_lookahead : YYSymbol) -> YYDecision {
     NT_not_expr => Shift(yy_state_67)
     NT_and_expr => Shift(yy_state_68)
     NT_or_expr => Shift(yy_state_71)
-    NT_expr => Shift(yy_state_122)
+    NT_expr => Shift(yy_state_124)
     _ => Error
   }
 }
 
-// [27, opt_having → HAVING expr •, $ / ORDER / LIMIT / SEMICOLON]
-fn yy_state_122(_lookahead : YYSymbol) -> YYDecision {
+// [28, opt_having → HAVING expr •, $ / ORDER / LIMIT / SEMICOLON]
+fn yy_state_124(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(2, NT_opt_having, yy_action_13)
 }
 
 // [0, query → SELECT select_list FROM from_item opt_where opt_group_by opt_having • opt_order_by opt_limit opt_semicolon, $]
-// [28, opt_order_by → •, $ / LIMIT / SEMICOLON]
-// [29, opt_order_by → • ORDER BY order_by_list, $ / LIMIT / SEMICOLON]
-fn yy_state_123(_lookahead : YYSymbol) -> YYDecision {
+// [29, opt_order_by → •, $ / LIMIT / SEMICOLON]
+// [30, opt_order_by → • ORDER BY order_by_list, $ / LIMIT / SEMICOLON]
+fn yy_state_125(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_ORDER => Shift(yy_state_124)
-    NT_opt_order_by => Shift(yy_state_134)
+    T_ORDER => Shift(yy_state_126)
+    NT_opt_order_by => Shift(yy_state_136)
     T_LIMIT | T_SEMICOLON | EOI => Reduce(0, NT_opt_order_by, yy_action_12)
     _ => Error
   }
 }
 
-// [29, opt_order_by → ORDER • BY order_by_list, $ / LIMIT / SEMICOLON]
-fn yy_state_124(_lookahead : YYSymbol) -> YYDecision {
+// [30, opt_order_by → ORDER • BY order_by_list, $ / LIMIT / SEMICOLON]
+fn yy_state_126(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_BY => Shift(yy_state_125)
+    T_BY => Shift(yy_state_127)
     _ => Error
   }
 }
 
-// [29, opt_order_by → ORDER BY • order_by_list, $ / LIMIT / SEMICOLON]
-// [30, order_by_list → • order_by_item, $ / LIMIT / COMMA / SEMICOLON]
-// [31, order_by_list → • order_by_list COMMA order_by_item, $ / LIMIT / COMMA / SEMICOLON]
-// [32, order_by_item → • expr opt_sort_direction, $ / LIMIT / COMMA / SEMICOLON]
-// [38, expr → • or_expr, $ / LIMIT / ASC / DESC / COMMA / SEMICOLON]
-// [39, or_expr → • and_expr, $ / LIMIT / ASC / DESC / OR / COMMA / SEMICOLON]
-// [40, or_expr → • or_expr OR and_expr, $ / LIMIT / ASC / DESC / OR / COMMA / SEMICOLON]
-// [41, and_expr → • not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [42, and_expr → • and_expr AND not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [43, not_expr → • comparison_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [44, not_expr → • NOT not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [45, comparison_expr → • additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [46, comparison_expr → • additive_expr EQ additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [48, comparison_expr → • additive_expr LT additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [49, comparison_expr → • additive_expr LTE additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [50, comparison_expr → • additive_expr GT additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [51, comparison_expr → • additive_expr GTE additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [52, comparison_expr → • additive_expr IS NULL, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [53, comparison_expr → • additive_expr IS NOT NULL, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_125(_lookahead : YYSymbol) -> YYDecision {
+// [30, opt_order_by → ORDER BY • order_by_list, $ / LIMIT / SEMICOLON]
+// [31, order_by_list → • order_by_item, $ / LIMIT / COMMA / SEMICOLON]
+// [32, order_by_list → • order_by_list COMMA order_by_item, $ / LIMIT / COMMA / SEMICOLON]
+// [33, order_by_item → • expr opt_sort_direction, $ / LIMIT / COMMA / SEMICOLON]
+// [39, expr → • or_expr, $ / LIMIT / ASC / DESC / COMMA / SEMICOLON]
+// [40, or_expr → • and_expr, $ / LIMIT / ASC / DESC / OR / COMMA / SEMICOLON]
+// [41, or_expr → • or_expr OR and_expr, $ / LIMIT / ASC / DESC / OR / COMMA / SEMICOLON]
+// [42, and_expr → • not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [43, and_expr → • and_expr AND not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [44, not_expr → • comparison_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [45, not_expr → • NOT not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [46, comparison_expr → • additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [47, comparison_expr → • additive_expr EQ additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [49, comparison_expr → • additive_expr LT additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [50, comparison_expr → • additive_expr LTE additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [51, comparison_expr → • additive_expr GT additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [52, comparison_expr → • additive_expr GTE additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [53, comparison_expr → • additive_expr IS NULL, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [54, comparison_expr → • additive_expr IS NOT NULL, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_127(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
     T_CAST => Shift(yy_state_8)
@@ -3539,100 +3573,100 @@ fn yy_state_125(_lookahead : YYSymbol) -> YYDecision {
     NT_not_expr => Shift(yy_state_67)
     NT_and_expr => Shift(yy_state_68)
     NT_or_expr => Shift(yy_state_71)
-    NT_expr => Shift(yy_state_126)
-    NT_order_by_item => Shift(yy_state_130)
-    NT_order_by_list => Shift(yy_state_131)
+    NT_expr => Shift(yy_state_128)
+    NT_order_by_item => Shift(yy_state_132)
+    NT_order_by_list => Shift(yy_state_133)
     _ => Error
   }
 }
 
-// [32, order_by_item → expr • opt_sort_direction, $ / LIMIT / COMMA / SEMICOLON]
-// [33, opt_sort_direction → •, $ / LIMIT / COMMA / SEMICOLON]
-// [34, opt_sort_direction → • ASC, $ / LIMIT / COMMA / SEMICOLON]
-// [35, opt_sort_direction → • DESC, $ / LIMIT / COMMA / SEMICOLON]
-fn yy_state_126(_lookahead : YYSymbol) -> YYDecision {
+// [33, order_by_item → expr • opt_sort_direction, $ / LIMIT / COMMA / SEMICOLON]
+// [34, opt_sort_direction → •, $ / LIMIT / COMMA / SEMICOLON]
+// [35, opt_sort_direction → • ASC, $ / LIMIT / COMMA / SEMICOLON]
+// [36, opt_sort_direction → • DESC, $ / LIMIT / COMMA / SEMICOLON]
+fn yy_state_128(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_DESC => Shift(yy_state_127)
-    T_ASC => Shift(yy_state_128)
-    NT_opt_sort_direction => Shift(yy_state_129)
+    T_DESC => Shift(yy_state_129)
+    T_ASC => Shift(yy_state_130)
+    NT_opt_sort_direction => Shift(yy_state_131)
     T_LIMIT | T_COMMA | T_SEMICOLON | EOI => Reduce(0, NT_opt_sort_direction, yy_action_11)
     _ => Error
   }
 }
 
-// [35, opt_sort_direction → DESC •, $ / LIMIT / COMMA / SEMICOLON]
-fn yy_state_127(_lookahead : YYSymbol) -> YYDecision {
+// [36, opt_sort_direction → DESC •, $ / LIMIT / COMMA / SEMICOLON]
+fn yy_state_129(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_opt_sort_direction, yy_action_10)
 }
 
-// [34, opt_sort_direction → ASC •, $ / LIMIT / COMMA / SEMICOLON]
-fn yy_state_128(_lookahead : YYSymbol) -> YYDecision {
+// [35, opt_sort_direction → ASC •, $ / LIMIT / COMMA / SEMICOLON]
+fn yy_state_130(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_opt_sort_direction, yy_action_9)
 }
 
-// [32, order_by_item → expr opt_sort_direction •, $ / LIMIT / COMMA / SEMICOLON]
-fn yy_state_129(_lookahead : YYSymbol) -> YYDecision {
+// [33, order_by_item → expr opt_sort_direction •, $ / LIMIT / COMMA / SEMICOLON]
+fn yy_state_131(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(2, NT_order_by_item, yy_action_8)
 }
 
-// [30, order_by_list → order_by_item •, $ / LIMIT / COMMA / SEMICOLON]
-fn yy_state_130(_lookahead : YYSymbol) -> YYDecision {
+// [31, order_by_list → order_by_item •, $ / LIMIT / COMMA / SEMICOLON]
+fn yy_state_132(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_order_by_list, yy_action_7)
 }
 
-// [29, opt_order_by → ORDER BY order_by_list •, $ / LIMIT / SEMICOLON]
-// [31, order_by_list → order_by_list • COMMA order_by_item, $ / LIMIT / COMMA / SEMICOLON]
-fn yy_state_131(_lookahead : YYSymbol) -> YYDecision {
+// [30, opt_order_by → ORDER BY order_by_list •, $ / LIMIT / SEMICOLON]
+// [32, order_by_list → order_by_list • COMMA order_by_item, $ / LIMIT / COMMA / SEMICOLON]
+fn yy_state_133(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_COMMA => Shift(yy_state_132)
+    T_COMMA => Shift(yy_state_134)
     T_LIMIT | T_SEMICOLON | EOI => Reduce(3, NT_opt_order_by, yy_action_6)
     _ => Error
   }
 }
 
-// [31, order_by_list → order_by_list COMMA • order_by_item, $ / LIMIT / COMMA / SEMICOLON]
-// [32, order_by_item → • expr opt_sort_direction, $ / LIMIT / COMMA / SEMICOLON]
-// [38, expr → • or_expr, $ / LIMIT / ASC / DESC / COMMA / SEMICOLON]
-// [39, or_expr → • and_expr, $ / LIMIT / ASC / DESC / OR / COMMA / SEMICOLON]
-// [40, or_expr → • or_expr OR and_expr, $ / LIMIT / ASC / DESC / OR / COMMA / SEMICOLON]
-// [41, and_expr → • not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [42, and_expr → • and_expr AND not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [43, not_expr → • comparison_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [44, not_expr → • NOT not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [45, comparison_expr → • additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [46, comparison_expr → • additive_expr EQ additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [47, comparison_expr → • additive_expr NEQ additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [48, comparison_expr → • additive_expr LT additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [49, comparison_expr → • additive_expr LTE additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [50, comparison_expr → • additive_expr GT additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [51, comparison_expr → • additive_expr GTE additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [52, comparison_expr → • additive_expr IS NULL, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [53, comparison_expr → • additive_expr IS NOT NULL, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
-// [54, additive_expr → • multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [55, additive_expr → • additive_expr PLUS multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [56, additive_expr → • additive_expr MINUS multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [57, multiplicative_expr → • unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [58, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [59, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [60, unary_expr → • primary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [61, unary_expr → • PLUS unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [62, unary_expr → • MINUS unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [63, primary_expr → • function_call_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [64, primary_expr → • identifier_path, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [65, primary_expr → • STRING_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [66, primary_expr → • INTEGER_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [67, primary_expr → • DOUBLE_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [68, primary_expr → • TRUE, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [69, primary_expr → • FALSE, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [70, primary_expr → • NULL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [71, primary_expr → • LPAREN expr RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [72, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [73, function_call_expr → • IDENT LPAREN RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [74, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [75, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [76, identifier_path → • IDENT, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-// [77, identifier_path → • identifier_path DOT IDENT, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
-fn yy_state_132(_lookahead : YYSymbol) -> YYDecision {
+// [32, order_by_list → order_by_list COMMA • order_by_item, $ / LIMIT / COMMA / SEMICOLON]
+// [33, order_by_item → • expr opt_sort_direction, $ / LIMIT / COMMA / SEMICOLON]
+// [39, expr → • or_expr, $ / LIMIT / ASC / DESC / COMMA / SEMICOLON]
+// [40, or_expr → • and_expr, $ / LIMIT / ASC / DESC / OR / COMMA / SEMICOLON]
+// [41, or_expr → • or_expr OR and_expr, $ / LIMIT / ASC / DESC / OR / COMMA / SEMICOLON]
+// [42, and_expr → • not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [43, and_expr → • and_expr AND not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [44, not_expr → • comparison_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [45, not_expr → • NOT not_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [46, comparison_expr → • additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [47, comparison_expr → • additive_expr EQ additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [48, comparison_expr → • additive_expr NEQ additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [49, comparison_expr → • additive_expr LT additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [50, comparison_expr → • additive_expr LTE additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [51, comparison_expr → • additive_expr GT additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [52, comparison_expr → • additive_expr GTE additive_expr, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [53, comparison_expr → • additive_expr IS NULL, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [54, comparison_expr → • additive_expr IS NOT NULL, $ / LIMIT / ASC / DESC / AND / OR / COMMA / SEMICOLON]
+// [55, additive_expr → • multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [56, additive_expr → • additive_expr PLUS multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [57, additive_expr → • additive_expr MINUS multiplicative_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [58, multiplicative_expr → • unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [59, multiplicative_expr → • multiplicative_expr STAR unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [60, multiplicative_expr → • multiplicative_expr SLASH unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [61, unary_expr → • primary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [62, unary_expr → • PLUS unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [63, unary_expr → • MINUS unary_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [64, primary_expr → • function_call_expr, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [65, primary_expr → • identifier_path, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [66, primary_expr → • STRING_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [67, primary_expr → • INTEGER_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [68, primary_expr → • DOUBLE_LITERAL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [69, primary_expr → • TRUE, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [70, primary_expr → • FALSE, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [71, primary_expr → • NULL, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [72, primary_expr → • LPAREN expr RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [73, primary_expr → • CAST LPAREN expr AS type_name RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [74, function_call_expr → • IDENT LPAREN RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [75, function_call_expr → • IDENT LPAREN argument_list RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [76, function_call_expr → • IDENT LPAREN STAR RPAREN, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [77, identifier_path → • IDENT, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+// [78, identifier_path → • identifier_path DOT IDENT, $ / LIMIT / ASC / DESC / IS / AND / OR / COMMA / DOT / PLUS / MINUS / STAR / SLASH / EQ / NEQ / LT / LTE / GT / GTE / SEMICOLON]
+fn yy_state_134(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
     T_IDENT => Shift(yy_state_3)
     T_CAST => Shift(yy_state_8)
@@ -3656,61 +3690,61 @@ fn yy_state_132(_lookahead : YYSymbol) -> YYDecision {
     NT_not_expr => Shift(yy_state_67)
     NT_and_expr => Shift(yy_state_68)
     NT_or_expr => Shift(yy_state_71)
-    NT_expr => Shift(yy_state_126)
-    NT_order_by_item => Shift(yy_state_133)
+    NT_expr => Shift(yy_state_128)
+    NT_order_by_item => Shift(yy_state_135)
     _ => Error
   }
 }
 
-// [31, order_by_list → order_by_list COMMA order_by_item •, $ / LIMIT / COMMA / SEMICOLON]
-fn yy_state_133(_lookahead : YYSymbol) -> YYDecision {
+// [32, order_by_list → order_by_list COMMA order_by_item •, $ / LIMIT / COMMA / SEMICOLON]
+fn yy_state_135(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(3, NT_order_by_list, yy_action_5)
 }
 
 // [0, query → SELECT select_list FROM from_item opt_where opt_group_by opt_having opt_order_by • opt_limit opt_semicolon, $]
-// [36, opt_limit → •, $ / SEMICOLON]
-// [37, opt_limit → • LIMIT INTEGER_LITERAL, $ / SEMICOLON]
-fn yy_state_134(_lookahead : YYSymbol) -> YYDecision {
+// [37, opt_limit → •, $ / SEMICOLON]
+// [38, opt_limit → • LIMIT INTEGER_LITERAL, $ / SEMICOLON]
+fn yy_state_136(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_LIMIT => Shift(yy_state_135)
-    NT_opt_limit => Shift(yy_state_137)
+    T_LIMIT => Shift(yy_state_137)
+    NT_opt_limit => Shift(yy_state_139)
     T_SEMICOLON | EOI => Reduce(0, NT_opt_limit, yy_action_4)
     _ => Error
   }
 }
 
-// [37, opt_limit → LIMIT • INTEGER_LITERAL, $ / SEMICOLON]
-fn yy_state_135(_lookahead : YYSymbol) -> YYDecision {
+// [38, opt_limit → LIMIT • INTEGER_LITERAL, $ / SEMICOLON]
+fn yy_state_137(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_INTEGER_LITERAL => Shift(yy_state_136)
+    T_INTEGER_LITERAL => Shift(yy_state_138)
     _ => Error
   }
 }
 
-// [37, opt_limit → LIMIT INTEGER_LITERAL •, $ / SEMICOLON]
-fn yy_state_136(_lookahead : YYSymbol) -> YYDecision {
+// [38, opt_limit → LIMIT INTEGER_LITERAL •, $ / SEMICOLON]
+fn yy_state_138(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(2, NT_opt_limit, yy_action_3)
 }
 
 // [0, query → SELECT select_list FROM from_item opt_where opt_group_by opt_having opt_order_by opt_limit • opt_semicolon, $]
 // [1, opt_semicolon → •, $]
 // [2, opt_semicolon → • SEMICOLON, $]
-fn yy_state_137(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_139(_lookahead : YYSymbol) -> YYDecision {
   match _lookahead {
-    T_SEMICOLON => Shift(yy_state_138)
-    NT_opt_semicolon => Shift(yy_state_139)
+    T_SEMICOLON => Shift(yy_state_140)
+    NT_opt_semicolon => Shift(yy_state_141)
     EOI => Reduce(0, NT_opt_semicolon, yy_action_2)
     _ => Error
   }
 }
 
 // [2, opt_semicolon → SEMICOLON •, $]
-fn yy_state_138(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_140(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(1, NT_opt_semicolon, yy_action_1)
 }
 
 // [0, query → SELECT select_list FROM from_item opt_where opt_group_by opt_having opt_order_by opt_limit opt_semicolon •, $]
-fn yy_state_139(_lookahead : YYSymbol) -> YYDecision {
+fn yy_state_141(_lookahead : YYSymbol) -> YYDecision {
   ReduceNoLookahead(10, NT_query, yy_action_0)
 }
 
