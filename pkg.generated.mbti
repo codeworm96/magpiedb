@@ -23,11 +23,13 @@ pub impl Show for DbError
 
 // Types and methods
 pub struct Connection {
-} derive(Eq, @debug.Debug)
+  // private fields
+}
 pub async fn Connection::query(Self, String) -> Result[ResultSet, DbError]
 
 pub struct Database {
-} derive(Eq, @debug.Debug)
+  // private fields
+}
 pub fn Database::connect(Self) -> Connection
 pub fn Database::new() -> Self
 

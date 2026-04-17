@@ -3,12 +3,18 @@ package "codeworm96/magpiedb/plan"
 
 import {
   "codeworm96/magpiedb/engine",
+  "codeworm96/magpiedb/scan",
   "codeworm96/magpiedb/sql",
   "moonbitlang/core/debug",
+  "moonbitlang/core/ref",
 }
 
 // Values
+pub fn new_schema_catalog() -> SchemaCatalog
+
 pub async fn plan_query(@sql.Query) -> QueryPlan raise PlanError
+
+pub async fn plan_query_with_catalog(@sql.Query, SchemaCatalog) -> QueryPlan raise PlanError
 
 pub fn query_plan_schema(QueryPlan) -> @engine.Schema
 
@@ -126,6 +132,11 @@ pub(all) enum ScanSource {
   Csv(CsvScan)
   Jsonl(JsonlScan)
 } derive(Eq, @debug.Debug)
+
+pub(all) struct SchemaCatalog {
+  state : @ref.Ref[Map[String, (@scan.ScanSourceKind, @engine.Schema)]]
+}
+pub fn SchemaCatalog::entry_count(Self) -> Int
 
 pub(all) struct SortPlan {
   input : QueryPlan

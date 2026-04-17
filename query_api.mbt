@@ -1,8 +1,12 @@
 ///|
-pub struct Database {} derive(Eq, Debug)
+pub struct Database {
+  priv catalog : @plan.SchemaCatalog
+}
 
 ///|
-pub struct Connection {} derive(Eq, Debug)
+pub struct Connection {
+  priv catalog : @plan.SchemaCatalog
+}
 
 ///|
 pub struct ResultSet {
@@ -23,13 +27,12 @@ priv enum DbErrorKind {
 
 ///|
 pub fn Database::new() -> Database {
-  Database::{  }
+  Database::{ catalog: @plan.new_schema_catalog() }
 }
 
 ///|
 pub fn Database::connect(self : Database) -> Connection {
-  ignore(self)
-  Connection::{  }
+  Connection::{ catalog: self.catalog }
 }
 
 ///|
@@ -37,12 +40,11 @@ pub async fn Connection::query(
   self : Connection,
   sql : String,
 ) -> Result[ResultSet, DbError] {
-  ignore(self)
   let parsed = @sql.parse_sql(sql)
   match parsed {
     Ok(query) =>
       try {
-        let plan = @plan.plan_query(query) catch {
+        let plan = @plan.plan_query_with_catalog(query, self.catalog) catch {
           err => return Err(map_plan_error(err))
         }
         Ok(make_result_set(@execute.execute_plan(plan)))

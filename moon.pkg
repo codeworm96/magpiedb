@@ -8,3 +8,7 @@ import {
 import {
   "moonbitlang/async",
 } for "test"
+
+import {
+  "moonbitlang/async",
+} for "wbtest"

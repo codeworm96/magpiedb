@@ -176,7 +176,15 @@ priv enum PlanErrorKind {
 
 ///|
 pub async fn plan_query(query : @sql.Query) -> QueryPlan raise PlanError {
-  let bound_from = bind_from_item(query.from)
+  plan_query_with_catalog(query, new_schema_catalog())
+}
+
+///|
+pub async fn plan_query_with_catalog(
+  query : @sql.Query,
+  catalog : SchemaCatalog,
+) -> QueryPlan raise PlanError {
+  let bound_from = bind_from_item(query.from, catalog)
 
   if contains_aggregate_in_query(query) || query.group_by.length() > 0 {
     plan_aggregate_query(query, bound_from.plan, bound_from.context)
@@ -427,10 +435,13 @@ fn apply_where_filter(
 }
 
 ///|
-async fn bind_from_item(from : @sql.FromItem) -> BoundFrom raise PlanError {
+async fn bind_from_item(
+  from : @sql.FromItem,
+  catalog : SchemaCatalog,
+) -> BoundFrom raise PlanError {
   match from {
     @sql.FromItem::Source(source_ref) => {
-      let source = bind_source_ref(source_ref)
+      let source = bind_source_ref(source_ref, catalog)
       let schema = scan_source_schema(source)
       let relation = BoundRelation::{
         schema,
@@ -443,16 +454,17 @@ async fn bind_from_item(from : @sql.FromItem) -> BoundFrom raise PlanError {
         context: ColumnBindContext::{ schema, relations: [relation] },
       }
     }
-    @sql.FromItem::Join(join) => bind_join_from_item(join)
+    @sql.FromItem::Join(join) => bind_join_from_item(join, catalog)
   }
 }
 
 ///|
 async fn bind_join_from_item(
   join : @sql.JoinRelation,
+  catalog : SchemaCatalog,
 ) -> BoundFrom raise PlanError {
-  let left_source = bind_source_ref(join.left)
-  let right_source = bind_source_ref(join.right)
+  let left_source = bind_source_ref(join.left, catalog)
+  let right_source = bind_source_ref(join.right, catalog)
   let left_schema = scan_source_schema(left_source)
   let right_schema = scan_source_schema(right_source)
   let left_relation = BoundRelation::{
@@ -486,6 +498,7 @@ async fn bind_join_from_item(
 ///|
 async fn bind_source_ref(
   source_ref : @sql.SourceRef,
+  catalog : SchemaCatalog,
 ) -> ScanSource raise PlanError {
   let source = source_ref.source
   guard source.arguments.length() == 1 else {
@@ -507,8 +520,22 @@ async fn bind_source_ref(
         "only read_csv(path) and read_jsonl(path) are supported in the current MVP",
       )
   }
-  let schema = @scan.infer_source_schema(kind, path) catch {
-    err => raise map_scan_error(err)
+  let schema = match catalog.lookup(path) {
+    Some((cached_kind, schema)) =>
+      if cached_kind == kind {
+        schema
+      } else {
+        raise PlanError::Bind(
+          "source path \{path} was already used as \{schema_catalog_kind_name(cached_kind)} and cannot be used as \{schema_catalog_kind_name(kind)}",
+        )
+      }
+    None => {
+      let schema = @scan.infer_source_schema(kind, path) catch {
+        err => raise map_scan_error(err)
+      }
+      catalog.remember(path, kind, schema)
+      schema
+    }
   }
   match kind {
     @scan.ScanSourceKind::Csv => ScanSource::Csv(CsvScan::{ path, schema })
