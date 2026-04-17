@@ -60,8 +60,14 @@ pub struct TableFunction {
 } derive(Eq, Debug)
 
 ///|
+pub(all) enum RelationSource {
+  TableFunction(TableFunction)
+  PathLiteral(String)
+} derive(Eq, Debug)
+
+///|
 pub struct SourceRef {
-  source : TableFunction
+  source : RelationSource
   alias_name : String?
 } derive(Eq, Debug)
 

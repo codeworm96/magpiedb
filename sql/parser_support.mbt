@@ -47,7 +47,7 @@ fn make_table_function(name : String, arguments : Array[Expr]) -> TableFunction 
 
 ///|
 fn make_source_ref(source : TableFunction, alias_name : String?) -> SourceRef {
-  { source, alias_name }
+  { source: RelationSource::TableFunction(source), alias_name }
 }
 
 ///|

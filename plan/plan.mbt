@@ -446,7 +446,7 @@ async fn bind_from_item(
       let relation = BoundRelation::{
         schema,
         alias_name: source_ref.alias_name,
-        relation_name: source_ref.source.name,
+        relation_name: source_ref_relation_name(source_ref),
         output_offset: 0,
       }
       BoundFrom::{
@@ -470,13 +470,13 @@ async fn bind_join_from_item(
   let left_relation = BoundRelation::{
     schema: left_schema,
     alias_name: join.left.alias_name,
-    relation_name: join.left.source.name,
+    relation_name: source_ref_relation_name(join.left),
     output_offset: 0,
   }
   let right_relation = BoundRelation::{
     schema: right_schema,
     alias_name: join.right.alias_name,
-    relation_name: join.right.source.name,
+    relation_name: source_ref_relation_name(join.right),
     output_offset: left_schema.columns.length(),
   }
   let context = ColumnBindContext::{
@@ -500,7 +500,13 @@ async fn bind_source_ref(
   source_ref : @sql.SourceRef,
   catalog : SchemaCatalog,
 ) -> ScanSource raise PlanError {
-  let source = source_ref.source
+  let source = match source_ref.source {
+    @sql.RelationSource::TableFunction(source) => source
+    @sql.RelationSource::PathLiteral(_) =>
+      raise PlanError::Unsupported(
+        "path literal sources are not bound yet",
+      )
+  }
   guard source.arguments.length() == 1 else {
     raise PlanError::InvalidArgument(
       "\{source.name} requires exactly one argument",
@@ -541,6 +547,14 @@ async fn bind_source_ref(
     @scan.ScanSourceKind::Csv => ScanSource::Csv(CsvScan::{ path, schema })
     @scan.ScanSourceKind::Jsonl =>
       ScanSource::Jsonl(JsonlScan::{ path, schema })
+  }
+}
+
+///|
+fn source_ref_relation_name(source_ref : @sql.SourceRef) -> String {
+  match source_ref.source {
+    @sql.RelationSource::TableFunction(source) => source.name
+    @sql.RelationSource::PathLiteral(path) => path
   }
 }
 

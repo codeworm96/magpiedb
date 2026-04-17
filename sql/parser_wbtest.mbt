@@ -7,6 +7,14 @@ fn unwrap_source(from : FromItem) -> SourceRef {
 }
 
 ///|
+fn unwrap_table_function(source_ref : SourceRef) -> TableFunction {
+  match source_ref.source {
+    RelationSource::TableFunction(source) => source
+    RelationSource::PathLiteral(_) => panic()
+  }
+}
+
+///|
 fn order_by_matches(
   item : OrderByItem,
   expr : Expr,
@@ -21,11 +29,12 @@ test "parse basic query with where" {
     "SELECT name, age AS years FROM read_csv('fixtures/people.csv') WHERE age > 18",
   ).unwrap()
   let source = unwrap_source(query.from)
+  let table_function = unwrap_table_function(source)
 
   assert_eq(query.select_items.length(), 2)
-  assert_eq(source.source.name, "read_csv")
+  assert_eq(table_function.name, "read_csv")
   assert_eq(query.select_items[1].output_name, Some("years"))
-  assert_eq(source.source.arguments, [
+  assert_eq(table_function.arguments, [
     Expr::StringLiteral("fixtures/people.csv"),
   ])
   assert_eq(query.group_by, [])
@@ -149,8 +158,8 @@ test "parse join shorthand with aliases" {
       assert_true(join.join_kind is JoinKind::Inner)
       assert_eq(join.left.alias_name, Some("l"))
       assert_eq(join.right.alias_name, Some("r"))
-      assert_eq(join.left.source.name, "read_csv")
-      assert_eq(join.right.source.name, "read_jsonl")
+      assert_eq(unwrap_table_function(join.left).name, "read_csv")
+      assert_eq(unwrap_table_function(join.right).name, "read_jsonl")
       assert_eq(
         join.on,
         Expr::Binary(
