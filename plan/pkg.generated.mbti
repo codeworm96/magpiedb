@@ -6,7 +6,6 @@ import {
   "codeworm96/magpiedb/scan",
   "codeworm96/magpiedb/sql",
   "moonbitlang/core/debug",
-  "moonbitlang/core/ref",
 }
 
 // Values
@@ -134,7 +133,7 @@ pub(all) enum ScanSource {
 } derive(Eq, @debug.Debug)
 
 pub(all) struct SchemaCatalog {
-  state : @ref.Ref[Map[String, (@scan.ScanSourceKind, @engine.Schema)]]
+  entries : Map[String, (@scan.ScanSourceKind, @engine.Schema)]
 }
 pub fn SchemaCatalog::entry_count(Self) -> Int
 

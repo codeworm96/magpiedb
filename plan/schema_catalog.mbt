@@ -1,16 +1,16 @@
 ///|
 pub(all) struct SchemaCatalog {
-  state : @ref.Ref[Map[String, (@scan.ScanSourceKind, @engine.Schema)]]
+  entries : Map[String, (@scan.ScanSourceKind, @engine.Schema)]
 }
 
 ///|
 pub fn new_schema_catalog() -> SchemaCatalog {
-  SchemaCatalog::{ state: @ref.new({}) }
+  SchemaCatalog::{ entries: {} }
 }
 
 ///|
 pub fn SchemaCatalog::entry_count(self : SchemaCatalog) -> Int {
-  self.state.val.length()
+  self.entries.length()
 }
 
 ///|
@@ -18,7 +18,7 @@ fn SchemaCatalog::lookup(
   self : SchemaCatalog,
   path : String,
 ) -> (@scan.ScanSourceKind, @engine.Schema)? {
-  self.state.val.get(path)
+  self.entries.get(path)
 }
 
 ///|
@@ -28,7 +28,7 @@ fn SchemaCatalog::remember(
   kind : @scan.ScanSourceKind,
   schema : @engine.Schema,
 ) -> Unit {
-  self.state.val[path] = (kind, schema)
+  self.entries[path] = (kind, schema)
 }
 
 ///|

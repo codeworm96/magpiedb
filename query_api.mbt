@@ -5,7 +5,7 @@ pub struct Database {
 
 ///|
 pub struct Connection {
-  priv catalog : @plan.SchemaCatalog
+  priv database : Database
 }
 
 ///|
@@ -32,7 +32,7 @@ pub fn Database::new() -> Database {
 
 ///|
 pub fn Database::connect(self : Database) -> Connection {
-  Connection::{ catalog: self.catalog }
+  Connection::{ database: self }
 }
 
 ///|
@@ -44,7 +44,7 @@ pub async fn Connection::query(
   match parsed {
     Ok(query) =>
       try {
-        let plan = @plan.plan_query_with_catalog(query, self.catalog) catch {
+        let plan = @plan.plan_query_with_catalog(query, self.database.catalog) catch {
           err => return Err(map_plan_error(err))
         }
         Ok(make_result_set(@execute.execute_plan(plan)))
