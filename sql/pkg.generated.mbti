@@ -102,6 +102,11 @@ pub struct Query {
   limit : String?
 } derive(Eq, @debug.Debug)
 
+pub(all) enum RelationSource {
+  TableFunction(TableFunction)
+  PathLiteral(String)
+} derive(Eq, @debug.Debug)
+
 pub struct SelectItem {
   expr : Expr
   output_name : String?
@@ -113,7 +118,7 @@ pub(all) enum SortDirection {
 } derive(Eq, @debug.Debug)
 
 pub struct SourceRef {
-  source : TableFunction
+  source : RelationSource
   alias_name : String?
 } derive(Eq, @debug.Debug)
 

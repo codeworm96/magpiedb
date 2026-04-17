@@ -94,9 +94,7 @@ async test "planner binds csv scan, filter, and projections" {
 
 ///|
 async test "planner infers csv scan from quoted path source" {
-  let query = @sql.parse_sql(
-    "SELECT name FROM 'fixtures/csv/people.csv'",
-  ).unwrap()
+  let query = @sql.parse_sql("SELECT name FROM 'fixtures/csv/people.csv'").unwrap()
   let plan = try! plan_query(query)
 
   match plan {
@@ -118,9 +116,7 @@ async test "planner infers csv scan from quoted path source" {
 
 ///|
 async test "planner infers jsonl scan from quoted path source" {
-  let query = @sql.parse_sql(
-    "SELECT id FROM 'fixtures/jsonl/events.jsonl'",
-  ).unwrap()
+  let query = @sql.parse_sql("SELECT id FROM 'fixtures/jsonl/events.jsonl'").unwrap()
   let plan = try! plan_query(query)
 
   match plan {

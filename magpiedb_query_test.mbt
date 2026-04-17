@@ -66,6 +66,42 @@ async test "query executes projection and filter over read_csv" {
 }
 
 ///|
+async test "query executes projection and filter over quoted csv source" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT name, age FROM 'fixtures/csv/people.csv' WHERE active = true",
+    )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "name", data_type: LogicalType::Varchar, nullable: false },
+    { name: "age", data_type: LogicalType::BigInt, nullable: true },
+  ])
+  assert_eq(result.next(), Some([Value::Varchar("Ada"), Value::BigInt(30L)]))
+  assert_eq(result.next(), Some([Value::Varchar("Carla"), Value::BigInt(41L)]))
+  assert_eq(result.next(), None)
+}
+
+///|
+async test "query executes projection and filter over quoted jsonl source" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT id, name FROM 'fixtures/jsonl/events.jsonl' WHERE active = true",
+    )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "id", data_type: LogicalType::BigInt, nullable: false },
+    { name: "name", data_type: LogicalType::Varchar, nullable: true },
+  ])
+  assert_eq(result.next(), Some([Value::BigInt(1L), Value::Varchar("Ada")]))
+  assert_eq(result.next(), Some([Value::BigInt(3L), Value::Null]))
+  assert_eq(result.next(), None)
+}
+
+///|
 async test "query executes global aggregate over read_csv" {
   let conn = Database::new().connect()
   let result = conn
@@ -133,6 +169,28 @@ async test "query applies SQL three-valued logic for boolean operators" {
   assert_eq(result.next(), Some(expected_row))
   assert_eq(result.next(), Some(expected_row))
   assert_eq(result.next(), Some(expected_row))
+  assert_eq(result.next(), None)
+}
+
+///|
+async test "query executes join over quoted csv and jsonl sources" {
+  let conn = Database::new().connect()
+  let result = conn
+    .query(
+      "SELECT people.name, events.active FROM 'fixtures/csv/join_people.csv' AS people JOIN 'fixtures/jsonl/join_events.jsonl' AS events ON people.id = events.id WHERE events.active = true",
+    )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "name", data_type: LogicalType::Varchar, nullable: false },
+    { name: "active", data_type: LogicalType::Boolean, nullable: false },
+  ])
+  assert_eq(result.next(), Some([Value::Varchar("Ada"), Value::Boolean(true)]))
+  assert_eq(result.next(), Some([Value::Varchar("Bob"), Value::Boolean(true)]))
+  assert_eq(
+    result.next(),
+    Some([Value::Varchar("Bobby"), Value::Boolean(true)]),
+  )
   assert_eq(result.next(), None)
 }
 

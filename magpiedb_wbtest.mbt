@@ -22,9 +22,7 @@ async test "database schema catalog is shared across connections" {
   let conn1 = db.connect()
   let conn2 = db.connect()
 
-  ignore(
-    conn1.query("SELECT name FROM read_csv('fixtures/csv/people.csv')").unwrap(),
-  )
+  ignore(conn1.query("SELECT name FROM 'fixtures/csv/people.csv'").unwrap())
   assert_eq(db.catalog.entry_count(), 1)
 
   ignore(
@@ -32,9 +30,12 @@ async test "database schema catalog is shared across connections" {
   )
   assert_eq(db.catalog.entry_count(), 1)
 
+  ignore(conn2.query("SELECT id FROM 'fixtures/jsonl/events.jsonl'").unwrap())
+  assert_eq(db.catalog.entry_count(), 2)
+
   ignore(
-    conn2
-    .query("SELECT id FROM read_jsonl('fixtures/jsonl/events.jsonl')")
+    conn1
+    .query("SELECT active FROM read_jsonl('fixtures/jsonl/events.jsonl')")
     .unwrap(),
   )
   assert_eq(db.catalog.entry_count(), 2)
@@ -45,9 +46,7 @@ async test "database schema catalog rejects kind mismatch for same path" {
   let db = Database::new()
   let conn = db.connect()
 
-  ignore(
-    conn.query("SELECT name FROM read_csv('fixtures/csv/people.csv')").unwrap(),
-  )
+  ignore(conn.query("SELECT name FROM 'fixtures/csv/people.csv'").unwrap())
   assert_eq(db.catalog.entry_count(), 1)
 
   let err = conn

@@ -11,6 +11,7 @@ Implemented today:
 
 - `SELECT ... FROM read_csv('...')`
 - `SELECT ... FROM read_jsonl('...')`
+- `SELECT ... FROM 'path.csv'` / `SELECT ... FROM 'path.jsonl'`
 - `WHERE`
 - aliases and scalar expressions
 - aggregates: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
@@ -42,6 +43,13 @@ Run a single query directly:
 moon run cmd/main "SELECT name, age FROM read_csv('fixtures/csv/people.csv') WHERE age > 18"
 ```
 
+You can also query a file path directly and let `magpiedb` infer the format from
+the suffix:
+
+```bash
+moon run cmd/main "SELECT name, age FROM 'fixtures/csv/people.csv' WHERE age > 18"
+```
+
 Run tests:
 
 ```bash
@@ -55,6 +63,14 @@ Simple scan:
 ```sql
 SELECT name, age
 FROM read_csv('fixtures/csv/people.csv')
+WHERE age > 18
+```
+
+Simple scan with suffix-based source inference:
+
+```sql
+SELECT name, age
+FROM 'fixtures/csv/people.csv'
 WHERE age > 18
 ```
 

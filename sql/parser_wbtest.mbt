@@ -119,9 +119,7 @@ test "parse qualified column names" {
 
 ///|
 test "parse quoted path source" {
-  let query = parse_sql(
-    "SELECT flight_no FROM 'flights.csv' AS flights",
-  ).unwrap()
+  let query = parse_sql("SELECT flight_no FROM 'flights.csv' AS flights").unwrap()
   let source = unwrap_source(query.from)
 
   assert_eq(source.alias_name, Some("flights"))
