@@ -500,31 +500,11 @@ async fn bind_source_ref(
   source_ref : @sql.SourceRef,
   catalog : SchemaCatalog,
 ) -> ScanSource raise PlanError {
-  let source = match source_ref.source {
-    @sql.RelationSource::TableFunction(source) => source
-    @sql.RelationSource::PathLiteral(_) =>
-      raise PlanError::Unsupported(
-        "path literal sources are not bound yet",
-      )
-  }
-  guard source.arguments.length() == 1 else {
-    raise PlanError::InvalidArgument(
-      "\{source.name} requires exactly one argument",
-    )
-  }
-  let path = match source.arguments[0] {
-    @sql.Expr::StringLiteral(path) => path
-    _ =>
-      raise PlanError::InvalidArgument(
-        "\{source.name} path must be a string literal",
-      )
-  }
-  let kind = match @scan.scan_source_kind(source.name) {
-    Some(kind) => kind
-    None =>
-      raise PlanError::Unsupported(
-        "only read_csv(path) and read_jsonl(path) are supported in the current MVP",
-      )
+  let (path, kind) = match source_ref.source {
+    @sql.RelationSource::TableFunction(source) =>
+      resolve_table_function_source(source)
+    @sql.RelationSource::PathLiteral(path) =>
+      (path, infer_scan_source_kind_from_path(path))
   }
   let schema = match catalog.lookup(path) {
     Some((cached_kind, schema)) =>
@@ -547,6 +527,48 @@ async fn bind_source_ref(
     @scan.ScanSourceKind::Csv => ScanSource::Csv(CsvScan::{ path, schema })
     @scan.ScanSourceKind::Jsonl =>
       ScanSource::Jsonl(JsonlScan::{ path, schema })
+  }
+}
+
+///|
+fn resolve_table_function_source(
+  source : @sql.TableFunction,
+) -> (String, @scan.ScanSourceKind) raise PlanError {
+  guard source.arguments.length() == 1 else {
+    raise PlanError::InvalidArgument(
+      "\{source.name} requires exactly one argument",
+    )
+  }
+  let path = match source.arguments[0] {
+    @sql.Expr::StringLiteral(path) => path
+    _ =>
+      raise PlanError::InvalidArgument(
+        "\{source.name} path must be a string literal",
+      )
+  }
+  let kind = match @scan.scan_source_kind(source.name) {
+    Some(kind) => kind
+    None =>
+      raise PlanError::Unsupported(
+        "only read_csv(path) and read_jsonl(path) are supported in the current MVP",
+      )
+  }
+  (path, kind)
+}
+
+///|
+fn infer_scan_source_kind_from_path(
+  path : String,
+) -> @scan.ScanSourceKind raise PlanError {
+  let lowered = path.to_lower()
+  if lowered.has_suffix(".csv") {
+    @scan.ScanSourceKind::Csv
+  } else if lowered.has_suffix(".jsonl") {
+    @scan.ScanSourceKind::Jsonl
+  } else {
+    raise PlanError::Unsupported(
+      "source path \{path} must end with .csv or .jsonl",
+    )
   }
 }
 

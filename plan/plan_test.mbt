@@ -93,6 +93,68 @@ async test "planner binds csv scan, filter, and projections" {
 }
 
 ///|
+async test "planner infers csv scan from quoted path source" {
+  let query = @sql.parse_sql(
+    "SELECT name FROM 'fixtures/csv/people.csv'",
+  ).unwrap()
+  let plan = try! plan_query(query)
+
+  match plan {
+    Projection(projection_plan) =>
+      match projection_plan.input {
+        Scan(scan_plan) =>
+          match scan_plan.source {
+            Csv(scan) => {
+              assert_eq(scan.path, "fixtures/csv/people.csv")
+              assert_eq(scan.schema.column_index("name"), Some(0))
+            }
+            _ => fail("expected csv scan source")
+          }
+        _ => fail("expected scan input under projection")
+      }
+    _ => fail("expected projection root")
+  }
+}
+
+///|
+async test "planner infers jsonl scan from quoted path source" {
+  let query = @sql.parse_sql(
+    "SELECT id FROM 'fixtures/jsonl/events.jsonl'",
+  ).unwrap()
+  let plan = try! plan_query(query)
+
+  match plan {
+    Projection(projection_plan) =>
+      match projection_plan.input {
+        Scan(scan_plan) =>
+          match scan_plan.source {
+            Jsonl(scan) => {
+              assert_eq(scan.path, "fixtures/jsonl/events.jsonl")
+              assert_eq(scan.schema.column_index("id"), Some(1))
+            }
+            _ => fail("expected jsonl scan source")
+          }
+        _ => fail("expected scan input under projection")
+      }
+    _ => fail("expected projection root")
+  }
+}
+
+///|
+async test "planner rejects quoted path source with unsupported suffix" {
+  let query = @sql.parse_sql("SELECT name FROM 'fixtures/csv/people.txt'").unwrap()
+  let err = (try? plan_query(query)).unwrap_err()
+
+  match err {
+    PlanError::Unsupported(message) => {
+      assert_true(message.contains(".csv"))
+      assert_true(message.contains(".jsonl"))
+    }
+    _ => fail("expected unsupported error")
+  }
+}
+
+///|
 async test "planner rejects non boolean where clause" {
   let query = @sql.parse_sql(
     "SELECT id FROM read_jsonl('fixtures/jsonl/events.jsonl') WHERE id",
