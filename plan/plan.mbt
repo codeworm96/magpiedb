@@ -184,6 +184,14 @@ pub async fn plan_query_with_catalog(
   query : @sql.Query,
   catalog : SchemaCatalog,
 ) -> QueryPlan raise PlanError {
+  optimize_query_plan(bind_query_plan(query, catalog))
+}
+
+///|
+async fn bind_query_plan(
+  query : @sql.Query,
+  catalog : SchemaCatalog,
+) -> QueryPlan raise PlanError {
   let bound_from = bind_from_item(query.from, catalog)
 
   if contains_aggregate_in_query(query) || query.group_by.length() > 0 {
