@@ -39,8 +39,8 @@ pub(all) enum PlanExpr {
   DoubleLiteral(String)
   BooleanLiteral(Bool)
   NullLiteral
-  Unary(@sql.UnaryOp, PlanExpr)
-  Binary(@sql.BinaryOp, PlanExpr, PlanExpr)
+  Unary(@sql.UnaryOp, PlanExpr, @engine.LogicalType)
+  Binary(@sql.BinaryOp, PlanExpr, PlanExpr, @engine.LogicalType)
   IsNull(PlanExpr)
   IsNotNull(PlanExpr)
   Cast(PlanExpr, @engine.LogicalType)
@@ -641,9 +641,7 @@ fn build_bound_select_item(
 }
 
 ///|
-fn build_output_schema(
-  projections : Array[PlanSelectItem],
-) -> @engine.Schema raise PlanError {
+fn build_output_schema(projections : Array[PlanSelectItem]) -> @engine.Schema {
   let columns = []
   for item in projections {
     columns.push(@engine.ColumnDef::{
@@ -922,14 +920,15 @@ fn bind_post_aggregate_unary_expr(
     @sql.UnaryOp::Not =>
       match plan_expr_type(bound_inner) {
         @engine.LogicalType::Boolean | @engine.LogicalType::Null =>
-          PlanExpr::Unary(op, bound_inner)
+          PlanExpr::Unary(op, bound_inner, @engine.LogicalType::Boolean)
         _ => raise PlanError::Bind("NOT requires a BOOLEAN expression")
       }
     @sql.UnaryOp::Plus | @sql.UnaryOp::Minus =>
       match plan_expr_type(bound_inner) {
         @engine.LogicalType::BigInt
         | @engine.LogicalType::Double
-        | @engine.LogicalType::Null => PlanExpr::Unary(op, bound_inner)
+        | @engine.LogicalType::Null =>
+          PlanExpr::Unary(op, bound_inner, plan_expr_type(bound_inner))
         _ =>
           raise PlanError::Bind("numeric expression requires BIGINT or DOUBLE")
       }
@@ -950,18 +949,27 @@ fn bind_post_aggregate_binary_expr(
     | @sql.BinaryOp::Subtract
     | @sql.BinaryOp::Multiply
     | @sql.BinaryOp::Divide => {
-      ignore(infer_binary_numeric_type(bound_left, bound_right))
-      PlanExpr::Binary(op, bound_left, bound_right)
+      let logical_type = infer_binary_expr_type(op, bound_left, bound_right)
+      PlanExpr::Binary(op, bound_left, bound_right, logical_type)
     }
     @sql.BinaryOp::And | @sql.BinaryOp::Or => {
       validate_boolean_expr(bound_left)
       validate_boolean_expr(bound_right)
-      PlanExpr::Binary(op, bound_left, bound_right)
+      PlanExpr::Binary(
+        op,
+        bound_left,
+        bound_right,
+        @engine.LogicalType::Boolean,
+      )
     }
     _ => {
-      ignore(plan_expr_type(bound_left))
-      ignore(plan_expr_type(bound_right))
-      PlanExpr::Binary(op, bound_left, bound_right)
+      validate_comparison_operands(op, bound_left, bound_right)
+      PlanExpr::Binary(
+        op,
+        bound_left,
+        bound_right,
+        @engine.LogicalType::Boolean,
+      )
     }
   }
 }
@@ -977,14 +985,15 @@ fn bind_unary_expr(
     @sql.UnaryOp::Not =>
       match plan_expr_type(bound_inner) {
         @engine.LogicalType::Boolean | @engine.LogicalType::Null =>
-          PlanExpr::Unary(op, bound_inner)
+          PlanExpr::Unary(op, bound_inner, @engine.LogicalType::Boolean)
         _ => raise PlanError::Bind("NOT requires a BOOLEAN expression")
       }
     @sql.UnaryOp::Plus | @sql.UnaryOp::Minus =>
       match plan_expr_type(bound_inner) {
         @engine.LogicalType::BigInt
         | @engine.LogicalType::Double
-        | @engine.LogicalType::Null => PlanExpr::Unary(op, bound_inner)
+        | @engine.LogicalType::Null =>
+          PlanExpr::Unary(op, bound_inner, plan_expr_type(bound_inner))
         _ =>
           raise PlanError::Bind("numeric expression requires BIGINT or DOUBLE")
       }
@@ -1005,18 +1014,27 @@ fn bind_binary_expr(
     | @sql.BinaryOp::Subtract
     | @sql.BinaryOp::Multiply
     | @sql.BinaryOp::Divide => {
-      ignore(infer_binary_numeric_type(bound_left, bound_right))
-      PlanExpr::Binary(op, bound_left, bound_right)
+      let logical_type = infer_binary_expr_type(op, bound_left, bound_right)
+      PlanExpr::Binary(op, bound_left, bound_right, logical_type)
     }
     @sql.BinaryOp::And | @sql.BinaryOp::Or => {
       validate_boolean_expr(bound_left)
       validate_boolean_expr(bound_right)
-      PlanExpr::Binary(op, bound_left, bound_right)
+      PlanExpr::Binary(
+        op,
+        bound_left,
+        bound_right,
+        @engine.LogicalType::Boolean,
+      )
     }
     _ => {
-      ignore(plan_expr_type(bound_left))
-      ignore(plan_expr_type(bound_right))
-      PlanExpr::Binary(op, bound_left, bound_right)
+      validate_comparison_operands(op, bound_left, bound_right)
+      PlanExpr::Binary(
+        op,
+        bound_left,
+        bound_right,
+        @engine.LogicalType::Boolean,
+      )
     }
   }
 }
@@ -1123,6 +1141,36 @@ fn validate_boolean_expr(expr : PlanExpr) -> Unit raise PlanError {
     @engine.LogicalType::Boolean => ()
     @engine.LogicalType::Null => ()
     _ => raise PlanError::Bind("boolean operator requires BOOLEAN operands")
+  }
+}
+
+///|
+fn validate_comparison_operands(
+  op : @sql.BinaryOp,
+  left : PlanExpr,
+  right : PlanExpr,
+) -> Unit raise PlanError {
+  let left_type = plan_expr_type(left)
+  let right_type = plan_expr_type(right)
+  if left_type == @engine.LogicalType::Null ||
+    right_type == @engine.LogicalType::Null {
+    return
+  }
+  match (left_type, right_type) {
+    (@engine.LogicalType::Boolean, @engine.LogicalType::Boolean) =>
+      match op {
+        @sql.BinaryOp::Equal | @sql.BinaryOp::NotEqual => ()
+        _ => raise PlanError::Bind("BOOLEAN comparisons only support = and !=")
+      }
+    (@engine.LogicalType::Varchar, @engine.LogicalType::Varchar) => ()
+    (@engine.LogicalType::BigInt, @engine.LogicalType::BigInt)
+    | (@engine.LogicalType::BigInt, @engine.LogicalType::Double)
+    | (@engine.LogicalType::Double, @engine.LogicalType::BigInt)
+    | (@engine.LogicalType::Double, @engine.LogicalType::Double) => ()
+    _ =>
+      raise PlanError::Bind(
+        "comparison requires matching types or numeric BIGINT/DOUBLE coercion",
+      )
   }
 }
 
@@ -1323,7 +1371,7 @@ fn validate_join_key_types(
 }
 
 ///|
-fn plan_expr_type(expr : PlanExpr) -> @engine.LogicalType raise PlanError {
+fn plan_expr_type(expr : PlanExpr) -> @engine.LogicalType {
   match expr {
     ColumnRef(column_ref) => column_ref.column.data_type
     StringLiteral(_) => @engine.LogicalType::Varchar
@@ -1331,19 +1379,8 @@ fn plan_expr_type(expr : PlanExpr) -> @engine.LogicalType raise PlanError {
     DoubleLiteral(_) => @engine.LogicalType::Double
     BooleanLiteral(_) => @engine.LogicalType::Boolean
     NullLiteral => @engine.LogicalType::Null
-    Unary(op, inner) =>
-      match op {
-        @sql.UnaryOp::Not => @engine.LogicalType::Boolean
-        @sql.UnaryOp::Plus | @sql.UnaryOp::Minus => plan_expr_type(inner)
-      }
-    Binary(op, left, right) =>
-      match op {
-        @sql.BinaryOp::Add
-        | @sql.BinaryOp::Subtract
-        | @sql.BinaryOp::Multiply
-        | @sql.BinaryOp::Divide => infer_binary_expr_type(op, left, right)
-        _ => @engine.LogicalType::Boolean
-      }
+    Unary(_, _, logical_type) => logical_type
+    Binary(_, _, _, logical_type) => logical_type
     IsNull(_) | IsNotNull(_) => @engine.LogicalType::Boolean
     Cast(_, logical_type) => logical_type
   }
@@ -1354,8 +1391,8 @@ fn plan_expr_nullable(expr : PlanExpr) -> Bool {
   match expr {
     ColumnRef(column_ref) => column_ref.column.nullable
     NullLiteral => true
-    Unary(_, inner) => plan_expr_nullable(inner)
-    Binary(_, left, right) =>
+    Unary(_, inner, _) => plan_expr_nullable(inner)
+    Binary(_, left, right, _) =>
       plan_expr_nullable(left) || plan_expr_nullable(right)
     Cast(inner, _) => plan_expr_nullable(inner)
     _ => false

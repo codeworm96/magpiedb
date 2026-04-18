@@ -30,7 +30,8 @@ async test "planner binds jsonl scan, filter, and projections" {
             Binary(
               @sql.BinaryOp::Equal,
               ColumnRef(column_ref),
-              BooleanLiteral(true)
+              BooleanLiteral(true),
+              @engine.LogicalType::Boolean
             ) => assert_eq(column_ref.column.name, "active")
             _ => fail("expected bound equality filter")
           }
@@ -160,6 +161,23 @@ async test "planner rejects non boolean where clause" {
   match err {
     PlanError::Bind(message) =>
       assert_true(message.contains("WHERE clause must evaluate to BOOLEAN"))
+    _ => fail("expected bind error")
+  }
+}
+
+///|
+async test "planner rejects invalid comparison operand types" {
+  let query = @sql.parse_sql(
+    "SELECT id FROM read_jsonl('fixtures/jsonl/events.jsonl') WHERE active > 1",
+  ).unwrap()
+  let err = (try? plan_query(query)).unwrap_err()
+
+  match err {
+    PlanError::Bind(message) =>
+      assert_true(
+        message.contains("BOOLEAN comparisons") ||
+        message.contains("comparison requires"),
+      )
     _ => fail("expected bind error")
   }
 }

@@ -21,6 +21,7 @@ pub suberror ExecuteError {
   Io(String)
   Execute(String)
   Unsupported(String)
+  Internal(String)
 } derive(@debug.Debug)
 
 // Types and methods

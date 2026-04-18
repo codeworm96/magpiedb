@@ -74,7 +74,10 @@ fn build_bool_vector(
         buffer.push(value)
         validity.push(true)
       }
-      _ => raise ExecuteError::Execute("expected BOOLEAN expression result")
+      _ =>
+        raise ExecuteError::Internal(
+          "vector materialization received non-BOOLEAN values for a BOOLEAN column",
+        )
     }
   }
   @engine.Vector::{
@@ -100,7 +103,10 @@ fn build_int64_vector(
         buffer.push(value)
         validity.push(true)
       }
-      _ => raise ExecuteError::Execute("expected BIGINT expression result")
+      _ =>
+        raise ExecuteError::Internal(
+          "vector materialization received non-BIGINT values for a BIGINT column",
+        )
     }
   }
   @engine.Vector::{
@@ -126,7 +132,10 @@ fn build_double_vector(
         buffer.push(value)
         validity.push(true)
       }
-      _ => raise ExecuteError::Execute("expected DOUBLE expression result")
+      _ =>
+        raise ExecuteError::Internal(
+          "vector materialization received non-DOUBLE values for a DOUBLE column",
+        )
     }
   }
   @engine.Vector::{
@@ -152,7 +161,10 @@ fn build_varchar_vector(
         buffer.push(value)
         validity.push(true)
       }
-      _ => raise ExecuteError::Execute("expected VARCHAR expression result")
+      _ =>
+        raise ExecuteError::Internal(
+          "vector materialization received non-VARCHAR values for a VARCHAR column",
+        )
     }
   }
   @engine.Vector::{

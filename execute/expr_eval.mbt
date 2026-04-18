@@ -10,8 +10,8 @@ fn filter_chunk(
       @engine.Value::Boolean(true) => selected_indices.push(row_index)
       @engine.Value::Boolean(false) | @engine.Value::Null => ()
       _ =>
-        raise ExecuteError::Execute(
-          "filter predicate did not evaluate to BOOLEAN",
+        raise ExecuteError::Internal(
+          "bound filter predicate produced non-BOOLEAN values",
         )
     }
   }
@@ -73,18 +73,15 @@ fn eval_expr_to_vector(
       constant_vector(@engine.Value::Boolean(value), chunk.len)
     @plan.PlanExpr::NullLiteral =>
       constant_vector(@engine.Value::Null, chunk.len)
-    @plan.PlanExpr::Unary(op, inner) => {
+    @plan.PlanExpr::Unary(op, inner, logical_type) => {
       let inner_vector = eval_expr_to_vector(inner, chunk)
       let values = []
       for row_index in 0..<chunk.len {
         values.push(eval_unary(op, vector_value_at(inner_vector, row_index)))
       }
-      build_vector_from_values(
-        infer_unary_type(op, inner_vector.logical_type),
-        values,
-      )
+      build_vector_from_values(logical_type, values)
     }
-    @plan.PlanExpr::Binary(op, left, right) => {
+    @plan.PlanExpr::Binary(op, left, right, logical_type) => {
       let left_vector = eval_expr_to_vector(left, chunk)
       let right_vector = eval_expr_to_vector(right, chunk)
       let values = []
@@ -97,14 +94,7 @@ fn eval_expr_to_vector(
           ),
         )
       }
-      build_vector_from_values(
-        infer_binary_type(
-          op,
-          left_vector.logical_type,
-          right_vector.logical_type,
-        ),
-        values,
-      )
+      build_vector_from_values(logical_type, values)
     }
     @plan.PlanExpr::IsNull(inner) => {
       let inner_vector = eval_expr_to_vector(inner, chunk)
@@ -146,38 +136,6 @@ fn eval_expr_to_vector(
       }
       build_vector_from_values(logical_type, values)
     }
-  }
-}
-
-///|
-fn infer_unary_type(
-  op : @sql.UnaryOp,
-  inner_type : @engine.LogicalType,
-) -> @engine.LogicalType {
-  match op {
-    @sql.UnaryOp::Not => @engine.LogicalType::Boolean
-    @sql.UnaryOp::Plus | @sql.UnaryOp::Minus => inner_type
-  }
-}
-
-///|
-fn infer_binary_type(
-  op : @sql.BinaryOp,
-  left_type : @engine.LogicalType,
-  right_type : @engine.LogicalType,
-) -> @engine.LogicalType {
-  match op {
-    @sql.BinaryOp::And | @sql.BinaryOp::Or => @engine.LogicalType::Boolean
-    @sql.BinaryOp::Divide => @engine.LogicalType::Double
-    @sql.BinaryOp::Add | @sql.BinaryOp::Subtract | @sql.BinaryOp::Multiply =>
-      match (left_type, right_type) {
-        (@engine.LogicalType::Double, _) => @engine.LogicalType::Double
-        (_, @engine.LogicalType::Double) => @engine.LogicalType::Double
-        (@engine.LogicalType::Null, other) => other
-        (other, @engine.LogicalType::Null) => other
-        _ => @engine.LogicalType::BigInt
-      }
-    _ => @engine.LogicalType::Boolean
   }
 }
 
@@ -259,9 +217,9 @@ fn eval_expr_scalar(
       )
     @plan.PlanExpr::BooleanLiteral(value) => @engine.Value::Boolean(value)
     @plan.PlanExpr::NullLiteral => @engine.Value::Null
-    @plan.PlanExpr::Unary(op, inner) =>
+    @plan.PlanExpr::Unary(op, inner, _) =>
       eval_unary(op, eval_expr_scalar(inner, row))
-    @plan.PlanExpr::Binary(op, left, right) =>
+    @plan.PlanExpr::Binary(op, left, right, _) =>
       eval_binary(op, eval_expr_scalar(left, row), eval_expr_scalar(right, row))
     @plan.PlanExpr::IsNull(inner) =>
       @engine.Value::Boolean(
@@ -314,7 +272,10 @@ fn compare_values(
       }
     (@engine.Value::Varchar(l), @engine.Value::Varchar(r)) =>
       l.lexical_compare(r)
-    _ => raise ExecuteError::Execute("invalid aggregate comparison")
+    _ =>
+      raise ExecuteError::Internal(
+        "aggregate comparison received values that violate binder typing",
+      )
   }
 }
 
@@ -337,7 +298,10 @@ fn eval_unary(
           @engine.Value::Double(-v)
         (@sql.UnaryOp::Not, @engine.Value::Boolean(v)) =>
           @engine.Value::Boolean(!v)
-        _ => raise ExecuteError::Execute("invalid unary expression")
+        _ =>
+          raise ExecuteError::Internal(
+            "unary evaluation received values that violate binder typing",
+          )
       }
   }
 }
@@ -368,7 +332,7 @@ fn eval_boolean_binary(
   match op {
     @sql.BinaryOp::And => eval_boolean_and(left, right)
     @sql.BinaryOp::Or => eval_boolean_or(left, right)
-    _ => raise ExecuteError::Execute("invalid boolean operator")
+    _ => raise ExecuteError::Internal("invalid bound boolean operator")
   }
 }
 
@@ -386,7 +350,9 @@ fn eval_boolean_and(
     | (@engine.Value::Null, @engine.Value::Boolean(true))
     | (@engine.Value::Null, @engine.Value::Null) => @engine.Value::Null
     _ =>
-      raise ExecuteError::Execute("boolean operator requires BOOLEAN operands")
+      raise ExecuteError::Internal(
+        "boolean evaluation received values that violate binder typing",
+      )
   }
 }
 
@@ -404,7 +370,9 @@ fn eval_boolean_or(
     | (@engine.Value::Null, @engine.Value::Boolean(false))
     | (@engine.Value::Null, @engine.Value::Null) => @engine.Value::Null
     _ =>
-      raise ExecuteError::Execute("boolean operator requires BOOLEAN operands")
+      raise ExecuteError::Internal(
+        "boolean evaluation received values that violate binder typing",
+      )
   }
 }
 
@@ -424,7 +392,7 @@ fn eval_numeric_binary(
         @sql.BinaryOp::Multiply => @engine.Value::BigInt(l * r)
         @sql.BinaryOp::Divide =>
           @engine.Value::Double(l.to_double() / r.to_double())
-        _ => raise ExecuteError::Execute("invalid numeric operator")
+        _ => raise ExecuteError::Internal("invalid bound numeric operator")
       }
     _ => {
       let l = value_to_double(left)
@@ -435,7 +403,7 @@ fn eval_numeric_binary(
           @sql.BinaryOp::Subtract => l - r
           @sql.BinaryOp::Multiply => l * r
           @sql.BinaryOp::Divide => l / r
-          _ => raise ExecuteError::Execute("invalid numeric operator")
+          _ => raise ExecuteError::Internal("invalid bound numeric operator")
         },
       )
     }
@@ -455,7 +423,10 @@ fn eval_comparison(
       match op {
         @sql.BinaryOp::Equal => @engine.Value::Boolean(l == r)
         @sql.BinaryOp::NotEqual => @engine.Value::Boolean(l != r)
-        _ => raise ExecuteError::Execute("invalid BOOLEAN comparison")
+        _ =>
+          raise ExecuteError::Internal(
+            "BOOLEAN comparison violated binder typing contract",
+          )
       }
     (@engine.Value::Varchar(l), @engine.Value::Varchar(r)) =>
       @engine.Value::Boolean(compare_int(op, l.lexical_compare(r)))
@@ -476,7 +447,7 @@ fn compare_int(op : @sql.BinaryOp, ordering : Int) -> Bool raise ExecuteError {
     @sql.BinaryOp::LessThanOrEqual => ordering <= 0
     @sql.BinaryOp::GreaterThan => ordering > 0
     @sql.BinaryOp::GreaterThanOrEqual => ordering >= 0
-    _ => raise ExecuteError::Execute("invalid comparison operator")
+    _ => raise ExecuteError::Internal("invalid bound comparison operator")
   }
 }
 
@@ -493,7 +464,7 @@ fn compare_double(
     @sql.BinaryOp::LessThanOrEqual => left <= right
     @sql.BinaryOp::GreaterThan => left > right
     @sql.BinaryOp::GreaterThanOrEqual => left >= right
-    _ => raise ExecuteError::Execute("invalid comparison operator")
+    _ => raise ExecuteError::Internal("invalid bound comparison operator")
   }
 }
 
@@ -503,8 +474,8 @@ fn value_to_double(value : @engine.Value) -> Double raise ExecuteError {
     @engine.Value::BigInt(v) => v.to_double()
     @engine.Value::Double(v) => v
     _ =>
-      raise ExecuteError::Execute(
-        "numeric operator requires BIGINT or DOUBLE operands",
+      raise ExecuteError::Internal(
+        "numeric evaluation received values that violate binder typing",
       )
   }
 }

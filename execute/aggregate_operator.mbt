@@ -239,7 +239,10 @@ fn update_aggregate_state(
       AggregateState::Max(update_extreme_value(current, value, false))
     (@plan.AggregateKind::Max, AggregateState::Max(current), None) =>
       AggregateState::Max(current)
-    _ => raise ExecuteError::Execute("invalid aggregate state update")
+    _ =>
+      raise ExecuteError::Internal(
+        "aggregate update received values that violate binder typing",
+      )
   }
 }
 

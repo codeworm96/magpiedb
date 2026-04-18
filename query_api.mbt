@@ -23,6 +23,7 @@ priv enum DbErrorKind {
   Io
   Execute
   Unsupported
+  Internal
 }
 
 ///|
@@ -88,6 +89,7 @@ fn map_execute_error(err : @execute.ExecuteError) -> DbError {
     @execute.ExecuteError::Execute(message) => (DbErrorKind::Execute, message)
     @execute.ExecuteError::Unsupported(message) =>
       (DbErrorKind::Unsupported, message)
+    @execute.ExecuteError::Internal(message) => (DbErrorKind::Internal, message)
   }
   map_db_error(kind, message)
 }
@@ -114,5 +116,6 @@ fn map_db_error(kind : DbErrorKind, message : String) -> DbError {
     DbErrorKind::Io => DbError::Io(message)
     DbErrorKind::Execute => DbError::Execute(message)
     DbErrorKind::Unsupported => DbError::Unsupported(message)
+    DbErrorKind::Internal => DbError::Internal(message)
   }
 }

@@ -48,6 +48,25 @@ async test "query rejects unknown columns" {
 }
 
 ///|
+async test "query rejects invalid comparison during binding" {
+  let conn = Database::new().connect()
+  let err = conn
+    .query(
+      "SELECT id FROM read_jsonl('fixtures/jsonl/events.jsonl') WHERE active > 1",
+    )
+    .unwrap_err()
+
+  match err {
+    DbError::Bind(message) =>
+      assert_true(
+        message.contains("BOOLEAN comparisons") ||
+        message.contains("comparison requires"),
+      )
+    _ => fail("expected bind error")
+  }
+}
+
+///|
 async test "query executes projection and filter over read_csv" {
   let conn = Database::new().connect()
   let result = conn

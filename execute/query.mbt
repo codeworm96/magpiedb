@@ -12,6 +12,7 @@ pub suberror ExecuteError {
   Io(String)
   Execute(String)
   Unsupported(String)
+  Internal(String)
 } derive(Debug)
 
 ///|

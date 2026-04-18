@@ -90,8 +90,8 @@ pub(all) enum PlanExpr {
   DoubleLiteral(String)
   BooleanLiteral(Bool)
   NullLiteral
-  Unary(@sql.UnaryOp, PlanExpr)
-  Binary(@sql.BinaryOp, PlanExpr, PlanExpr)
+  Unary(@sql.UnaryOp, PlanExpr, @engine.LogicalType)
+  Binary(@sql.BinaryOp, PlanExpr, PlanExpr, @engine.LogicalType)
   IsNull(PlanExpr)
   IsNotNull(PlanExpr)
   Cast(PlanExpr, @engine.LogicalType)
