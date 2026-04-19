@@ -17,5 +17,6 @@ test "scan error message formats line-aware variants" {
 ///|
 test "scan error message preserves direct io and csv messages" {
   assert_eq(ScanError::Io("boom").message(), "boom")
+  assert_eq(ScanError::Parquet("bad parquet").message(), "bad parquet")
   assert_eq(ScanError::CsvMalformed("bad row").message(), "bad row")
 }

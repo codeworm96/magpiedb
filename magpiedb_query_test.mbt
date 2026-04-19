@@ -1,4 +1,34 @@
 ///|
+fn write_query_people_parquet(path : String) -> Unit {
+  let file = @parquet.new_parquet_file(
+    [
+      @parquet.new_column("id", @parquet.Int64, @parquet.Required),
+      @parquet.new_column("name", @parquet.String, @parquet.Required),
+      @parquet.new_column("age", @parquet.Int64, @parquet.Optional),
+    ],
+    [
+      [
+        @parquet.Value::Int64(1L),
+        @parquet.Value::String("Ada"),
+        @parquet.Value::Int64(30L),
+      ],
+      [
+        @parquet.Value::Int64(2L),
+        @parquet.Value::String("Bob"),
+        @parquet.Value::Null,
+      ],
+      [
+        @parquet.Value::Int64(3L),
+        @parquet.Value::String("Carla"),
+        @parquet.Value::Int64(41L),
+      ],
+    ],
+    Some("magpiedb-query-test"),
+  )
+  try! @parquet.write_file(path, file)
+}
+
+///|
 async test "query executes projection and filter over read_jsonl" {
   let conn = Database::new().connect()
   let result = conn
@@ -73,6 +103,44 @@ async test "query executes projection and filter over read_csv" {
     .query(
       "SELECT name, age FROM read_csv('fixtures/csv/people.csv') WHERE age > 18",
     )
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "name", data_type: LogicalType::Varchar, nullable: false },
+    { name: "age", data_type: LogicalType::BigInt, nullable: true },
+  ])
+  assert_eq(result.next(), Some([Value::Varchar("Ada"), Value::BigInt(30L)]))
+  assert_eq(result.next(), Some([Value::Varchar("Carla"), Value::BigInt(41L)]))
+  assert_eq(result.next(), None)
+}
+
+///|
+async test "query executes projection and filter over read_parquet" {
+  let path = "/tmp/magpiedb-query-people.parquet"
+  write_query_people_parquet(path)
+
+  let conn = Database::new().connect()
+  let result = conn
+    .query("SELECT name, age FROM read_parquet('\{path}') WHERE age > 18")
+    .unwrap()
+
+  assert_eq(result.schema().columns, [
+    { name: "name", data_type: LogicalType::Varchar, nullable: false },
+    { name: "age", data_type: LogicalType::BigInt, nullable: true },
+  ])
+  assert_eq(result.next(), Some([Value::Varchar("Ada"), Value::BigInt(30L)]))
+  assert_eq(result.next(), Some([Value::Varchar("Carla"), Value::BigInt(41L)]))
+  assert_eq(result.next(), None)
+}
+
+///|
+async test "query executes projection and filter over quoted parquet source" {
+  let path = "/tmp/magpiedb-query-path-people.parquet"
+  write_query_people_parquet(path)
+
+  let conn = Database::new().connect()
+  let result = conn
+    .query("SELECT name, age FROM '\{path}' WHERE age > 18")
     .unwrap()
 
   assert_eq(result.schema().columns, [

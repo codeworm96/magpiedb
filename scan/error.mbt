@@ -2,6 +2,7 @@
 /// Scan errors stay package-local for now and are mapped to `DbError` at the public API boundary.
 pub(all) suberror ScanError {
   Io(String)
+  Parquet(String)
   JsonParse(Int, String)
   JsonRootNotObject(Int)
   CsvMalformed(String)
@@ -11,7 +12,7 @@ pub(all) suberror ScanError {
 ///|
 pub fn ScanError::message(self : ScanError) -> String {
   match self {
-    Io(message) | CsvMalformed(message) => message
+    Io(message) | Parquet(message) | CsvMalformed(message) => message
     JsonParse(line_no, message) =>
       "json parse error at line \{line_no}: \{message}"
     JsonRootNotObject(line_no) => "expected JSON object at line \{line_no}"

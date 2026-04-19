@@ -1,7 +1,9 @@
 import {
   "moonbitlang/async/fs" @async_fs,
+  "moonbitlang/core/encoding/utf8" @utf8,
   "moonbitlang/core/json",
   "moonbitlang/core/string",
+  "mizchi/parquet" @parquet,
   "codeworm96/magpiedb/engine",
 }
 

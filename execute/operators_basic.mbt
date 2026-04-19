@@ -145,5 +145,7 @@ fn planned_source_open_info(
       (@scan.ScanSourceKind::Csv, scan.path, scan.schema)
     @plan.ScanSource::Jsonl(scan) =>
       (@scan.ScanSourceKind::Jsonl, scan.path, scan.schema)
+    @plan.ScanSource::Parquet(scan) =>
+      (@scan.ScanSourceKind::Parquet, scan.path, scan.schema)
   }
 }

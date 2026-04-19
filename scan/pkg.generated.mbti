@@ -11,6 +11,8 @@ pub async fn infer_csv_schema(String) -> @engine.Schema raise ScanError
 
 pub async fn infer_jsonl_schema(String) -> @engine.Schema raise ScanError
 
+pub fn infer_parquet_schema(String) -> @engine.Schema raise ScanError
+
 pub async fn infer_source_schema(ScanSourceKind, String) -> @engine.Schema raise ScanError
 
 pub async fn open_source(ScanSourceKind, String) -> Scanner raise ScanError
@@ -25,15 +27,22 @@ pub async fn read_jsonl(String) -> JsonlScanner raise ScanError
 
 pub async fn read_jsonl_with_schema(String, @engine.Schema) -> JsonlScanner raise ScanError
 
+pub fn read_parquet(String) -> ParquetScanner raise ScanError
+
+pub fn read_parquet_with_schema(String, @engine.Schema) -> ParquetScanner raise ScanError
+
 pub async fn scan_csv(String) -> CsvScanner raise ScanError
 
 pub async fn scan_jsonl(String) -> JsonlScanner raise ScanError
+
+pub fn scan_parquet(String) -> ParquetScanner raise ScanError
 
 pub fn scan_source_kind(String) -> ScanSourceKind?
 
 // Errors
 pub(all) suberror ScanError {
   Io(String)
+  Parquet(String)
   JsonParse(Int, String)
   JsonRootNotObject(Int)
   CsvMalformed(String)
@@ -58,14 +67,24 @@ pub async fn JsonlScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanErro
 pub async fn JsonlScanner::reset(Self) -> Unit raise ScanError
 pub fn JsonlScanner::schema(Self) -> @engine.Schema
 
+pub struct ParquetScanner {
+  // private fields
+}
+pub fn ParquetScanner::close(Self) -> Unit
+pub fn ParquetScanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError
+pub fn ParquetScanner::reset(Self) -> Unit raise ScanError
+pub fn ParquetScanner::schema(Self) -> @engine.Schema
+
 pub(all) enum ScanSourceKind {
   Csv
   Jsonl
+  Parquet
 } derive(Eq, @debug.Debug)
 
 pub(all) enum Scanner {
   Csv(CsvScanner)
   Jsonl(JsonlScanner)
+  Parquet(ParquetScanner)
 }
 pub fn Scanner::close(Self) -> Unit
 pub async fn Scanner::next_chunk(Self) -> @engine.DataChunk? raise ScanError

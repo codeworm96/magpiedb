@@ -5,7 +5,8 @@
     "moonbitlang/ulex-runtime": "0.4.3",
     "sennenki/pretty_prompt": "0.1.2",
     "moonbitlang/async": "0.18.0",
-    "hustcer/tabular": "0.5.2"
+    "hustcer/tabular": "0.5.2",
+    "mizchi/parquet": "0.2.0"
   },
   "bin-deps": {
     "moonbitlang/ulex": "0.3.27",

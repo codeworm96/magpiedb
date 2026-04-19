@@ -3,7 +3,7 @@
 `magpiedb` is an experimental embedded OLAP database engine written in MoonBit.
 
 Today it runs as a native-first library and small CLI, with support for querying
-CSV and JSONL files using a compact SQL subset.
+CSV, JSONL, and Parquet files using a compact SQL subset.
 
 ## Current status
 
@@ -11,7 +11,8 @@ Implemented today:
 
 - `SELECT ... FROM read_csv('...')`
 - `SELECT ... FROM read_jsonl('...')`
-- `SELECT ... FROM 'path.csv'` / `SELECT ... FROM 'path.jsonl'`
+- `SELECT ... FROM read_parquet('...')`
+- `SELECT ... FROM 'path.csv'` / `SELECT ... FROM 'path.jsonl'` / `SELECT ... FROM 'path.parquet'`
 - `WHERE`
 - aliases and scalar expressions
 - aggregates: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
@@ -27,7 +28,7 @@ Not implemented yet:
 - `LEFT JOIN`
 - multiple joins in one query
 - persistent tables / on-disk storage
-- Parquet / Arrow
+- Arrow
 
 ## Quick start
 

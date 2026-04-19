@@ -2,12 +2,14 @@
 pub(all) enum ScanSourceKind {
   Csv
   Jsonl
+  Parquet
 } derive(Eq, Debug)
 
 ///|
 pub(all) enum Scanner {
   Csv(CsvScanner)
   Jsonl(JsonlScanner)
+  Parquet(ParquetScanner)
 }
 
 ///|
@@ -15,6 +17,7 @@ pub fn scan_source_kind(name : String) -> ScanSourceKind? {
   match name {
     "read_csv" => Some(ScanSourceKind::Csv)
     "read_jsonl" => Some(ScanSourceKind::Jsonl)
+    "read_parquet" => Some(ScanSourceKind::Parquet)
     _ => None
   }
 }
@@ -27,6 +30,7 @@ pub async fn infer_source_schema(
   match kind {
     ScanSourceKind::Csv => infer_csv_schema(path)
     ScanSourceKind::Jsonl => infer_jsonl_schema(path)
+    ScanSourceKind::Parquet => infer_parquet_schema(path)
   }
 }
 
@@ -38,6 +42,7 @@ pub async fn open_source(
   match kind {
     ScanSourceKind::Csv => Scanner::Csv(read_csv(path))
     ScanSourceKind::Jsonl => Scanner::Jsonl(read_jsonl(path))
+    ScanSourceKind::Parquet => Scanner::Parquet(read_parquet(path))
   }
 }
 
@@ -51,6 +56,8 @@ pub async fn open_source_with_schema(
     ScanSourceKind::Csv => Scanner::Csv(read_csv_with_schema(path, schema))
     ScanSourceKind::Jsonl =>
       Scanner::Jsonl(read_jsonl_with_schema(path, schema))
+    ScanSourceKind::Parquet =>
+      Scanner::Parquet(read_parquet_with_schema(path, schema))
   }
 }
 
@@ -59,6 +66,7 @@ pub fn Scanner::schema(self : Scanner) -> Schema {
   match self {
     Csv(scanner) => scanner.schema()
     Jsonl(scanner) => scanner.schema()
+    Parquet(scanner) => scanner.schema()
   }
 }
 
@@ -67,6 +75,7 @@ pub async fn Scanner::next_chunk(self : Scanner) -> DataChunk? raise ScanError {
   match self {
     Csv(scanner) => scanner.next_chunk()
     Jsonl(scanner) => scanner.next_chunk()
+    Parquet(scanner) => scanner.next_chunk()
   }
 }
 
@@ -75,5 +84,6 @@ pub fn Scanner::close(self : Scanner) -> Unit {
   match self {
     Csv(scanner) => scanner.close()
     Jsonl(scanner) => scanner.close()
+    Parquet(scanner) => scanner.close()
   }
 }

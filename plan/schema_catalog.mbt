@@ -61,5 +61,6 @@ fn schema_catalog_kind_name(kind : @scan.ScanSourceKind) -> String {
   match kind {
     @scan.ScanSourceKind::Csv => "read_csv"
     @scan.ScanSourceKind::Jsonl => "read_jsonl"
+    @scan.ScanSourceKind::Parquet => "read_parquet"
   }
 }

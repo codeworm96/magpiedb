@@ -20,9 +20,16 @@ pub(all) struct JsonlScan {
 } derive(Eq, Debug)
 
 ///|
+pub(all) struct ParquetScan {
+  path : String
+  schema : @engine.Schema
+} derive(Eq, Debug)
+
+///|
 pub(all) enum ScanSource {
   Csv(CsvScan)
   Jsonl(JsonlScan)
+  Parquet(ParquetScan)
 } derive(Eq, Debug)
 
 ///|
@@ -519,6 +526,8 @@ async fn bind_source_ref(
     @scan.ScanSourceKind::Csv => ScanSource::Csv(CsvScan::{ path, schema })
     @scan.ScanSourceKind::Jsonl =>
       ScanSource::Jsonl(JsonlScan::{ path, schema })
+    @scan.ScanSourceKind::Parquet =>
+      ScanSource::Parquet(ParquetScan::{ path, schema })
   }
 }
 
@@ -542,7 +551,7 @@ fn resolve_table_function_source(
     Some(kind) => kind
     None =>
       raise PlanError::Unsupported(
-        "only read_csv(path) and read_jsonl(path) are supported in the current MVP",
+        "only read_csv(path), read_jsonl(path), and read_parquet(path) are supported in the current MVP",
       )
   }
   (path, kind)
@@ -557,9 +566,11 @@ fn infer_scan_source_kind_from_path(
     @scan.ScanSourceKind::Csv
   } else if lowered.has_suffix(".jsonl") {
     @scan.ScanSourceKind::Jsonl
+  } else if lowered.has_suffix(".parquet") {
+    @scan.ScanSourceKind::Parquet
   } else {
     raise PlanError::Unsupported(
-      "source path \{path} must end with .csv or .jsonl",
+      "source path \{path} must end with .csv, .jsonl, or .parquet",
     )
   }
 }
@@ -1132,6 +1143,7 @@ fn scan_source_schema(source : ScanSource) -> @engine.Schema {
   match source {
     Csv(scan) => scan.schema
     Jsonl(scan) => scan.schema
+    Parquet(scan) => scan.schema
   }
 }
 

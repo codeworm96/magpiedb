@@ -83,6 +83,11 @@ pub(all) struct LimitPlan {
   limit : Int
 } derive(Eq, @debug.Debug)
 
+pub(all) struct ParquetScan {
+  path : String
+  schema : @engine.Schema
+} derive(Eq, @debug.Debug)
+
 pub(all) enum PlanExpr {
   ColumnRef(BoundColumnRef)
   StringLiteral(String)
@@ -130,6 +135,7 @@ pub(all) struct ScanPlan {
 pub(all) enum ScanSource {
   Csv(CsvScan)
   Jsonl(JsonlScan)
+  Parquet(ParquetScan)
 } derive(Eq, @debug.Debug)
 
 pub(all) struct SchemaCatalog {
