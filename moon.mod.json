@@ -1,6 +1,6 @@
 {
   "name": "codeworm96/magpiedb",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "deps": {
     "moonbitlang/ulex-runtime": "0.4.3",
     "sennenki/pretty_prompt": "0.1.2",
@@ -13,9 +13,9 @@
     "moonbitlang/yacc": "0.7.13"
   },
   "readme": "README.mbt.md",
-  "repository": "",
+  "repository": "https://github.com/codeworm96/magpiedb",
   "license": "Apache-2.0",
-  "keywords": [],
-  "description": "",
+  "keywords": ["sql", "database", "json", "csv", "parquet"],
+  "description": "vibe coded lightweight OLAP database",
   "preferred-target": "native"
 }
