@@ -1,7 +1,7 @@
 <div align=center>
 
 <picture align=center>
-    <img alt="MagpieDB Logo" src="https://github.com/codeworm96/magpiedb/blob/main/assets/logo.png?raw=true">
+    <img alt="MagpieDB Logo" width=256 src="https://github.com/codeworm96/magpiedb/blob/main/assets/logo.png?raw=true">
 </picture>
 
 </div>
