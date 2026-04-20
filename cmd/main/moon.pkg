@@ -1,5 +1,6 @@
 import {
   "moonbitlang/async",
+  "moonbitlang/async/fs" @fs,
   "moonbitlang/core/env",
   "hustcer/tabular" @tabular,
   "codeworm96/magpiedb" @lib,

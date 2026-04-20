@@ -4,11 +4,25 @@ async fn main {
   let args = @env.args()
   let conn = @lib.Database::new().connect()
 
-  if args.length() >= 2 {
-    run_query(conn, args[1])
+  if args.length() == 1 {
+    run_repl(conn)
     return
   }
 
+  if args.length() != 3 {
+    print_usage()
+    return
+  }
+
+  match args[1] {
+    "-c" => run_query(conn, args[2])
+    "-f" => run_sql_file(conn, args[2])
+    _ => print_usage()
+  }
+}
+
+///|
+async fn run_repl(conn : @lib.Connection) -> Unit {
   let prompt = @pp.Prompt::new(
     @ppsys.SystemConsolePort::new(),
     @ppsys.SystemClipboardPort::new(),
@@ -28,6 +42,22 @@ async fn main {
   }
 
   prompt.dispose()
+}
+
+///|
+fn print_usage() -> Unit {
+  println("Usage: magpiedb")
+  println("       magpiedb -c \"SQL\"")
+  println("       magpiedb -f FILE")
+}
+
+///|
+async fn run_sql_file(conn : @lib.Connection, path : String) -> Unit {
+  let result = try? @fs.read_file(path).text()
+  match result {
+    Ok(sql) => run_query(conn, sql)
+    Err(err) => println("failed to read SQL file \{path}: \{err}")
+  }
 }
 
 ///|
