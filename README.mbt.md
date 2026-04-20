@@ -38,17 +38,26 @@ Run the CLI:
 moon run cmd/main
 ```
 
-Run a single query directly:
+With no arguments, the CLI starts an interactive REPL using `M ` as the prompt.
+Enter `.quit` to exit.
+
+Run a single query directly and exit:
 
 ```bash
-moon run cmd/main "SELECT name, age FROM read_csv('fixtures/csv/people.csv') WHERE age > 18"
+moon run cmd/main -- -c "SELECT name, age FROM read_csv('fixtures/csv/people.csv') WHERE age > 18"
+```
+
+Run a query from a SQL file and exit:
+
+```bash
+moon run cmd/main -- -f query.sql
 ```
 
 You can also query a file path directly and let `magpiedb` infer the format from
 the suffix:
 
 ```bash
-moon run cmd/main "SELECT name, age FROM 'fixtures/csv/people.csv' WHERE age > 18"
+moon run cmd/main -- -c "SELECT name, age FROM 'fixtures/csv/people.csv' WHERE age > 18"
 ```
 
 Run tests:
